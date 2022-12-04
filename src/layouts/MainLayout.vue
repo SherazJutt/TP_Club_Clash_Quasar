@@ -2,7 +2,7 @@
   <q-layout class="bg-grey-1">
     <q-header reveal elevated class="text-white bg-blue-9" height-hint="61.59">
       <q-toolbar class="q-py-sm q-px-md">
-        <q-avatar size="42px">
+        <q-avatar square size="42px">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="-75 -40 120 80">
             <path fill="#fff" d="M-75-40H45v80H-75z" />
             <path fill="#01411C" d="M-45-40h90v80h-90z" />
@@ -76,7 +76,6 @@
 <script>
 import { ref } from 'vue'
 import { fabGithub } from '@quasar/extras/fontawesome-v6'
-import router from 'src/router'
 import { auth } from '../firebase'
 import { signOut } from "firebase/auth";
 
@@ -140,12 +139,12 @@ export default {
       filter
     }
   },
-  mounted() {
-    let token = localStorage.getItem('access_token')
-    if (!token) {
-      this.$router.push("/auth")
-    }
-  },
+  // mounted() {
+  //   let token = localStorage.getItem('access_token')
+  //   if (!token) {
+  //     this.$router.push("/auth")
+  //   }
+  // },
   methods: {
     logout() {
       signOut(auth).then(() => {
