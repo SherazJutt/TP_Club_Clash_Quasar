@@ -9,8 +9,7 @@
       <q-tab-panel name="Defence">
         <div class="border q-mb-sm" v-for="(race, index) in defence" :key="index">
           <q-expansion-item expand-icon-class="text-white" group="somegroup"
-            style="font-size: 20px; border-radius: 30px"
-            :label="'Race ' + ' #             ' + (index + 1) + ((race.category))"
+            style="font-size: 20px; border-radius: 30px" :label="'Race ' + ' # ' + (index + 1) + ((race.category))"
             header-class="bg-blue-8 text-white q-py-md">
             <q-markup-table>
               <thead>
@@ -52,17 +51,22 @@ const defence = ref([])
 const attack = ref([])
 const columns = ref(['Category', 'Race No', 'Recommended Car', 'Refrence Time'])
 const tab = ref('Defence')
-
-
+let uid = localStorage.getItem('access_token');
+if (uid) {
+  $q.loading.show()
+}
 onMounted(() => {
-  // $q.loading.show()
-  let uid = localStorage.getItem('access_token');
-  getDoc(doc(db, "user_races", uid)).then(data => {
-    defence.value = data.data().races[0].defence;
-    attack.value = data.data().races[0].attack;
-    console.log(data.data().races[0].defence);
-    $q.loading.hide()
-  })
+  if (uid) {
+    getDoc(doc(db, "user_races", uid)).then(data => {
+      defence.value = data.data().races[0].defence;
+      attack.value = data.data().races[0].attack;
+      console.log(data.data().races[0].defence);
+      $q.loading.hide()
+    })
+  } else {
+    // this.$router.push("/auth")
+  }
+
 
 })
 

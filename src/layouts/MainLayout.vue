@@ -139,12 +139,22 @@ export default {
       filter
     }
   },
-  // mounted() {
-  //   let token = localStorage.getItem('access_token')
-  //   if (!token) {
-  //     this.$router.push("/auth")
-  //   }
-  // },
+  mounted() {
+
+
+    // const user = auth.currentUser;
+
+    // if (user) {
+    // } else {
+    //   // No user is signed in.
+    // }
+
+
+    let token = localStorage.getItem('access_token')
+    if (!token) {
+      this.$router.push("/auth")
+    }
+  },
   methods: {
     logout() {
       signOut(auth).then(() => {
