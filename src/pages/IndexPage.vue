@@ -1,20 +1,27 @@
 <template>
   <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
+    <div v-if="(user_role === 'admin')">{{ user_data }}</div>
 
-    <q-tabs v-model="tab" class="bg-grey-1 q-px-md" dense align="justify">
+
+    <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
       <q-tab class="text-red" name="Attack" label="Attack" />
     </q-tabs>
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="Defence">
         <div class="border q-mb-sm" v-for="(race, index) in defence" :key="index">
-          <q-expansion-item expand-icon-class="text-white" group="somegroup"
-            style="font-size: 20px; border-radius: 30px" :label="'Race ' + ' # ' + (index + 1) + ((race.category))"
-            header-class="bg-blue-8 text-white q-py-md">
+          <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup"
+            header-class="bg-blue-8 text-white q-py-md justify-between">
+            <template v-slot:header>
+              <div class="c-h-main-h">Race # {{ (index + 1) }}</div>
+              <span class="text-bold text-capitalize c-h-main-h q-pr-lg">{{
+                  race.category
+              }}</span>
+            </template>
             <q-markup-table>
               <thead>
                 <tr>
-                  <th class="text-center" v-for="(column, index) in columns" :key="index">{{ column }}</th>
+                  <th class="text-center" v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -31,17 +38,58 @@
       </q-tab-panel>
 
       <q-tab-panel name="Attack">
-        <div class="text-h6">Attack</div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-markup-table class="q-mb-md">
+          <thead>
+            <tr>
+              <th class="text-center" v-for="(column, index) in attack_columns" :key="index">{{ column }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-center" v-for="(street, index) in attack" :key="index">
+              <td class="text-center">{{ street.category }}</td>
+              <td class="text-center">{{ street.street_no }}</td>
+              <td class="text-center">{{ street.difficulty }}</td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+
+        <div class="border q-mb-sm hidden" v-for="(race, index) in attack" :key="index">
+          <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup"
+            header-class="bg-blue-8 text-white q-py-md justify-between">
+            <template v-slot:header>
+              <div class="c-h-main-h">Race # {{ (index + 1) }}</div>
+              <span class="text-bold text-capitalize c-h-main-h q-pr-lg">{{
+                  race.category
+              }}</span>
+            </template>
+            <q-markup-table>
+              <thead>
+                <tr>
+                  <th class="text-center" v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center">
+                  <td class="text-center">{{ race.category }}</td>
+                  <td class="text-center">{{ race.race_no }}</td>
+                  <td class="text-center">{{ race.recommended_car }}</td>
+                  <td class="text-center">{{ race.ref_time }}</td>
+                </tr>
+              </tbody>
+            </q-markup-table>
+          </q-expansion-item>
+        </div>
+
       </q-tab-panel>
+
     </q-tab-panels>
 
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted } from "vue";
 import { collection, onSnapshot, getDoc, addDoc, doc, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, } from "firebase/firestore";
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
@@ -49,8 +97,11 @@ let timer
 const inputfield = ref([])
 const defence = ref([])
 const attack = ref([])
-const columns = ref(['Category', 'Race No', 'Recommended Car', 'Refrence Time'])
+const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Refrence Time'])
+const attack_columns = ref(['Category', 'Street No', 'Difficulty'])
 const tab = ref('Defence')
+const user_role = ref()
+const user_data = ref()
 let uid = localStorage.getItem('access_token');
 if (uid) {
   $q.loading.show()
@@ -60,13 +111,29 @@ onMounted(() => {
     getDoc(doc(db, "user_races", uid)).then(data => {
       defence.value = data.data().races[0].defence;
       attack.value = data.data().races[0].attack;
-      console.log(data.data().races[0].defence);
+      // console.log(data.data().races[1]);
       $q.loading.hide()
     })
-  } else {
-    // this.$router.push("/auth")
   }
+  getDoc(doc(db, "users_data", '4HlBybDueJRoMQjvtfS40yqvMXD3')).then(data => {
+    console.log(data.data());
+    user_role.value = data.data().role
+    user_data.value = data.data()
+  })
 
+
+
+
+
+
+
+
+  // auth.onAuthStateChanged((user) => {
+  //   if (user) {
+  //     console.log(user);
+  //     // datadate.value = user.metadata.creationTime
+  //   }
+  // });
 
 })
 
@@ -76,5 +143,9 @@ const addnewsnippet = () => {
   })
   inputfield.value = ''
 }
-
 </script>
+<style lang="scss" scoped>
+.c-h-main-h {
+  font-size: 20px;
+}
+</style>

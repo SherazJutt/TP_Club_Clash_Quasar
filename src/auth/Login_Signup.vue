@@ -81,8 +81,36 @@ export default ({
   },
   methods: {
     submit() {
+
+
+
+
+
       if (this.register) {
         console.log('signup =>', this.$refs.email, this.$refs.password);
+
+        createUserWithEmailAndPassword(auth, this.email, this.password).then((data) => {
+          // add user details in user_data collection
+          setDoc(doc(db, "users_data", data.user.uid), {
+            name: this.username,
+            email: data.user.email,
+            role: 'user',
+            status: 'enabled',
+            datetime: Date.now()
+          });
+          // add cars details in cars collection
+          setDoc(doc(db, 'cars', data.user.uid), {
+            d: arrayUnion(),
+            c: arrayUnion(),
+            b: arrayUnion(),
+            a: arrayUnion(),
+            s: arrayUnion(),
+          });
+          // set token in staorage
+          localStorage.setItem('access_token', data.user.uid)
+          router.push('/')
+        }).catch(error => console.log(error))
+
       } else {
         // console.log('login =>', this.email, this.password);
         signInWithEmailAndPassword(auth, this.email, this.password).then((data) => {
@@ -118,7 +146,7 @@ export default ({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-card-main {
   max-width: 400px;
   min-width: 300px;

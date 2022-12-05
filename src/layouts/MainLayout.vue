@@ -140,16 +140,6 @@ export default {
     }
   },
   mounted() {
-
-
-    // const user = auth.currentUser;
-
-    // if (user) {
-    // } else {
-    //   // No user is signed in.
-    // }
-
-
     let token = localStorage.getItem('access_token')
     if (!token) {
       this.$router.push("/auth")
@@ -169,7 +159,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .GL {
   &__select-GL__menu-link {
     .default-type {

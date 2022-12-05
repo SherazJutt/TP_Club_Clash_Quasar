@@ -1,36 +1,25 @@
 <template>
   <div class="q-pa-md">
-    <q-btn color="purple" @click="showLoading" label="Show Loading" />
+    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum dignissimos at ullam neque! Aut, dolore culpa sit
+    blanditiis ullam nulla in recusandae magni? Numquam inventore porro, assumenda odio corporis officiis.
   </div>
 </template>
 
-<script>
-import { useQuasar } from 'quasar'
-import { onBeforeUnmount } from 'vue'
+<script setup>
+import { getAuth } from "firebase/auth";
 
-export default {
-  setup() {
-    const $q = useQuasar()
-    let timer
+const auth = getAuth();
+const user = auth.currentUser;
 
-    onBeforeUnmount(() => {
-      if (timer !== void 0) {
-        clearTimeout(timer)
-        $q.loading.hide()
-      }
-    })
+console.log('yes');
 
-    return {
-      showLoading() {
-        $q.loading.show()
-
-        // hiding in 2s
-        timer = setTimeout(() => {
-          $q.loading.hide()
-          timer = void 0
-        }, 2000)
-      }
-    }
-  }
+if (user !== null) {
+  user.providerData.forEach((profile) => {
+    console.log("Sign-in provider: " + profile.providerId);
+    console.log("  Provider-specific UID: " + profile.uid);
+    console.log("  Name: " + profile.displayName);
+    console.log("  Email: " + profile.email);
+    console.log("  Photo URL: " + profile.photoURL);
+  });
 }
 </script>
