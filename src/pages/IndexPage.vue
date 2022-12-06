@@ -2,6 +2,23 @@
   <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
     <div v-if="(user_role === 'admin')">{{ user_data }}</div>
 
+    <!-- <div>{{ allraces }}</div> -->
+
+
+    <ul>
+      <div>{{ allarray }}</div>
+      <li v-for="(item, index) in allarray" :key="index">
+        <span>{{ item.category }}</span>
+        <span>{{ item.race_no }}</span>
+        <button @click="deletePosition(index)">Delete</button>
+      </li>
+    </ul>
+
+
+
+    <q-btn color="primary" label="Add data" @click="addarrvalue" />
+    <q-btn color="primary" label="Save changes" class="q-ml-xl" @click="savechanges" />
+    <!-- <q-btn color="primary" label="delete data" @click="deletearrvalue" /> -->
 
     <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
@@ -88,12 +105,12 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-import { collection, onSnapshot, getDoc, addDoc, doc, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, } from "firebase/firestore";
+import { collection, onSnapshot, getDoc, addDoc, doc, deleteField, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, arrayRemove, } from "firebase/firestore";
 import { db, auth } from '../firebase';
-import { useQuasar } from 'quasar'
+import { date, useQuasar } from 'quasar'
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
 
 const $q = useQuasar()
-let timer
 const inputfield = ref([])
 const defence = ref([])
 const attack = ref([])
@@ -102,47 +119,102 @@ const attack_columns = ref(['Category', 'Street No', 'Difficulty'])
 const tab = ref('Defence')
 const user_role = ref()
 const user_data = ref()
+const allraces = ref()
+const allarray = ref()
+
+
+
 let uid = localStorage.getItem('access_token');
 if (uid) {
   $q.loading.show()
 }
+
 onMounted(() => {
+
+
+  onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
+    console.log("Current data: ", data.data().defence);
+    let olddataarr = [];
+    let docdata = data.data().defence;
+    docdata.forEach(element => {
+      olddataarr.push(data.data().defence)
+    });
+    allarray.value = olddataarr[0]
+    // console.log(allarray.value);
+  });
+
+  // getDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1')).then(data => {
+  //   // console.log(data.data().defence);
+  //   let olddataarr = []
+  //   data.data().defence.forEach(element => {
+  //     console.log(element);
+  //     olddataarr.push(data.data().defence)
+  //   });
+  //   allarray.value = olddataarr[0]
+  //   // console.log(data.data().defence[0]);
+  // })
+
+
+
+
+
   if (uid) {
     getDoc(doc(db, "user_races", uid)).then(data => {
-      defence.value = data.data().races[0].defence;
-      attack.value = data.data().races[0].attack;
-      // console.log(data.data().races[1]);
+      // defence.value = data.data().races[0].defence;
+      // attack.value = data.data().races[0].attack;
+      allraces.value = data.data();
+      // console.log(data.data().defence[0].races);
       $q.loading.hide()
     })
   }
   getDoc(doc(db, "users_data", '4HlBybDueJRoMQjvtfS40yqvMXD3')).then(data => {
-    console.log(data.data());
+    // console.log(data.data());
     user_role.value = data.data().role
     user_data.value = data.data()
   })
 
-
-
-
-
-
-
-
-  // auth.onAuthStateChanged((user) => {
-  //   if (user) {
-  //     console.log(user);
-  //     // datadate.value = user.metadata.creationTime
-  //   }
-  // });
-
 })
 
-const addnewsnippet = () => {
-  addDoc(collection(db, "cars"), {
-    done: true,
+// add value to array
+
+const addarrvalue = () => {
+  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    defence: arrayUnion(
+      {
+        category: 'down hill',
+        race_no: '9',
+        recommended_car: 'BC',
+        refrence_time: '1:23:245',
+        timestamp: new Date()
+      }
+    )
+
   })
-  inputfield.value = ''
 }
+
+const deletePosition = (index) => {
+  console.log(index);
+  allarray.value.splice(index, 1);
+}
+
+
+const savechanges = () => {
+
+  // updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+  //   defence: deleteField()
+  // });
+
+  console.log(allarray.value);
+  // allarray.value.forEach(element => {
+  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    // defence: [{ na: 'ooo', ll: 'hhggg9' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }]
+    defence: allarray.value
+  })
+  // });
+}
+
+
+
 </script>
 <style lang="scss" scoped>
 .c-h-main-h {

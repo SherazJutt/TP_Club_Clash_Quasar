@@ -50,7 +50,8 @@
                 </q-item>
                 <q-separator />
                 <q-item clickable class="GL__menu-link">
-                  <q-item-section>Help</q-item-section>
+                  <q-item-section><router-link class="text-decoration-none rl-profile"
+                      to="/profile">Profile</router-link></q-item-section>
                 </q-item>
                 <q-item clickable class="GL__menu-link">
                   <q-item-section>Settings</q-item-section>
@@ -72,94 +73,31 @@
 
   </q-layout>
 </template>
-
-<script>
-import { ref } from 'vue'
-import { fabGithub } from '@quasar/extras/fontawesome-v6'
+<script setup>
 import { auth } from '../firebase'
 import { signOut } from "firebase/auth";
+import { useRouter } from 'vue-router'
 
-const stringOptions = [
-  'quasarframework/quasar',
-  'quasarframework/quasar-awesome'
-]
+const router = useRouter()
 
-export default {
-  name: 'MyLayout',
-
-  setup() {
-    const text = ref('')
-    const options = ref(null)
-    const filteredOptions = ref([])
-    const search = ref(null) // $refs.search
-
-    function filter(val, update) {
-      if (options.value === null) {
-        // load data
-        setTimeout(() => {
-          options.value = stringOptions
-          search.value.filter('')
-        }, 2000)
-        update()
-        return
-      }
-
-      if (val === '') {
-        update(() => {
-          filteredOptions.value = options.value.map(op => ({ label: op }))
-        })
-        return
-      }
-
-      update(() => {
-        filteredOptions.value = [
-          {
-            label: val,
-            type: 'In this repository'
-          },
-          {
-            label: val,
-            type: 'All GitHub'
-          },
-          ...options.value
-            .filter(op => op.toLowerCase().includes(val.toLowerCase()))
-            .map(op => ({ label: op }))
-        ]
-      })
-    }
-
-    return {
-      fabGithub,
-
-      text,
-      options,
-      filteredOptions,
-      search,
-
-      filter
-    }
-  },
-  mounted() {
-    let token = localStorage.getItem('access_token')
-    if (!token) {
-      this.$router.push("/auth")
-    }
-  },
-  methods: {
-    logout() {
-      signOut(auth).then(() => {
-        localStorage.removeItem('access_token')
-        this.$router.push("/auth")
-      }).catch((error) => {
-        console.log(error);
-      });
-    }
-  },
-
+function logout() {
+  signOut(auth).then(() => {
+    localStorage.removeItem('access_token')
+    router.push("/auth")
+  }).catch((error) => {
+    console.log(error);
+  });
 }
 </script>
-
 <style lang="scss" scoped>
+.rl-profile {
+  color: black;
+
+  &:hover {
+    color: white;
+  }
+}
+
 .GL {
   &__select-GL__menu-link {
     .default-type {
