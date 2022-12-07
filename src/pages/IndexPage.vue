@@ -16,9 +16,8 @@
 
 
 
-    <q-btn color="primary" label="Add data" @click="addarrvalue" />
+    <q-btn color="primary" label="Add data" @click="adddata" />
     <q-btn color="primary" label="Save changes" class="q-ml-xl" @click="savechanges" />
-    <!-- <q-btn color="primary" label="delete data" @click="deletearrvalue" /> -->
 
     <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
@@ -133,13 +132,14 @@ onMounted(() => {
 
 
   onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
-    console.log("Current data: ", data.data().defence);
+    // console.log("Current data: ", data.data().races[0].defence);
     let olddataarr = [];
-    let docdata = data.data().defence;
+    let docdata = data.data().races[0].defence;
     docdata.forEach(element => {
-      olddataarr.push(data.data().defence)
+      // console.log(data.data().defence);
+      olddataarr.push(element)
     });
-    allarray.value = olddataarr[0]
+    allarray.value = olddataarr
     // console.log(allarray.value);
   });
 
@@ -199,6 +199,12 @@ const deletePosition = (index) => {
 
 
 const savechanges = () => {
+  console.log(allarray.value);
+  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    races: { defence: allarray.value }
+  })
+}
+const adddata = () => {
 
   // updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
   //   defence: deleteField()
@@ -208,7 +214,26 @@ const savechanges = () => {
   // allarray.value.forEach(element => {
   updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
     // defence: [{ na: 'ooo', ll: 'hhggg9' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }]
-    defence: allarray.value
+    // defence: allarray.value
+    races: [
+      {
+        defence: [
+          {
+            "race_no": "9",
+            "recommended_car": "BC", "refrence_time": "1:23:245", "category": "down hill"
+          },
+          {
+            "race_no": "10",
+            "recommended_car": "ssc", "refrence_time": "1:23:245", "category": "down village"
+          },
+          {
+            "race_no": "12",
+            "recommended_car": "f5", "refrence_time": "1:23:245", "category": "sub urbs"
+          }
+        ]
+      }
+    ]
+
   })
   // });
 }
