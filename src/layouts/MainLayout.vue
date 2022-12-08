@@ -11,8 +11,7 @@
             <path fill="#fff" d="M8.751-17.959l10.11 11.373L3.997-9.844l13.94-6.1-7.692 13.129z" />
           </svg>
         </q-avatar>
-        <div
-          class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
+        <div class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
           <router-link class="text-white" to="/">Home</router-link>
           <router-link class="text-white" to="/garage">Garage</router-link>
         </div>
@@ -54,8 +53,7 @@
                 </q-item>
                 <q-separator />
                 <q-item clickable class="GL__menu-link">
-                  <q-item-section><router-link class="text-decoration-none rl-profile"
-                      to="/profile">Profile</router-link></q-item-section>
+                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/profile">Profile</router-link></q-item-section>
                 </q-item>
                 <q-item clickable class="GL__menu-link">
                   <q-item-section>Settings</q-item-section>

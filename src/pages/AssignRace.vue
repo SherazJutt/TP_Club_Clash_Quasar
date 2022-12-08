@@ -26,24 +26,18 @@
             </template>
           </q-select>
           <div class="reftime-main">
-            <div><span class="text-blue-9">Refrence time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milsec">{{ reftime.milsec }} Miliseconds</small></div>
+            <div><span class="text-blue-9">Refrence time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
             <div class="reftime q-mt-sm" hint="yes">
               <q-select transition-hide="jump-up" clearable filled v-model="reftime.min" :options="min" label="Minutes" />
               <q-select transition-hide="jump-up" clearable filled v-model="reftime.sec" :options="sec" label="Seconds" />
-              <q-input filled type="number" clearable v-model="reftime.milsec" label="Miliseconds" />
+              <q-input filled type="number" clearable v-model="reftime.milisec" label="Miliseconds" />
             </div>
           </div>
         </div>
       </div>
 
-      <q-btn color="primary" :label="('assign this race to ')" type="submit" />
+      <q-btn color="primary" type="submit" v-if="race_no">Assign race no<span class="q-ml-xs"> {{ race_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
     </q-form>
-    <div>name: {{ player_name.label }}</div>
-
-
-
-    <br v-for="item in 15">
-
 
     <ul class="q-mb-xl">
       <div class="q-mb-xl">{{ outdefencearr }}</div>
@@ -109,22 +103,16 @@ function setModel(val) {
   recommended_car.value = val
 }
 // refrence_time
-const reftime = ref({ min: '', sec: '', milsec: '' })
+const reftime = ref({ min: '', sec: '', milisec: '' })
 const min = ['1', '2']
 const sec = ['1', '2', '3', '4', '5', '5', '7', '8', '9']
-// form submit
-const onSubmit = () => {
-  console.log(player_name.value.uid, main_category.value, race_no.value, available_cars.value, recommended_car.value, reftime.value);
-}
 
 // database functions
 const outdefencearr = ref()
 const outattack = ref()
 
 onMounted(() => {
-  onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
-    // console.log("Current data: ", data.data().races.defence);
-    // console.log("Current data: ", data.data().races[0].attack);
+  onSnapshot(doc(db, "users_data", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
     let defencearr = [];
     let attackarr = [];
     let defence = data.data().races[0].defence;
@@ -135,10 +123,61 @@ onMounted(() => {
     attack.forEach(element => {
       attackarr.push(element)
     });
+
+
+    if (attack.length > 0) {
+      console.log('yes');
+    } else {
+      console.log('no');
+    }
+
+
+    console.log(defence.length);
     outdefencearr.value = defencearr
     outattack.value = attackarr
   });
 })
+
+// form submit
+const onSubmit = () => {
+  outdefencearr.value.push({
+    category: main_category.value,
+    race_no: race_no.value,
+    available_cars: available_cars.value,
+    recommended_car: recommended_car.value,
+    reftime: reftime.value,
+  })
+  console.log(outdefencearr.value);
+  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    races: [{ defence: outdefencearr.value, attack: outattack.value }]
+  })
+
+}
+
+
+// assign races
+// const assign_race = () => {
+//   updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+//     races: [{ defence: outdefencearr.value, attack: outattack.value }]
+//   })
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // add value to array
 // const addarrvalue = () => {
@@ -163,8 +202,10 @@ const deletePosition1 = (index) => {
   outattack.value.splice(index, 1);
 }
 
+// ===============
+
 const savechanges = () => {
-  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+  updateDoc(doc(db, "users_data", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
     races: [{ defence: outdefencearr.value, attack: outattack.value }]
   })
 }
@@ -174,7 +215,7 @@ const adddata = () => {
   //   defence: deleteField()
   // });
 
-  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+  updateDoc(doc(db, "users_data", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
     // defence: [{ na: 'ooo', ll: 'hhggg9' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }]
     // defence: allarray.value
     races: [
