@@ -2,7 +2,7 @@
   <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
 
 
-    <q-form @submit="onSubmit" class="q-gutter-md">
+    <q-form @submit="assign_race" class="q-gutter-md">
 
       <div class="main-selects">
         <div class="cols-2-grid">
@@ -18,7 +18,7 @@
 
       <div>
         <div class="recommended_cars">
-          <q-select filled class="mt-30px" :model-value="recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setModel">
+          <q-select filled class="mt-30px" :model-value="recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">add cars to show</q-item-section>
@@ -48,20 +48,8 @@
       </li>
     </ul>
 
-    <div class="q-mb-xl">{{ outattack }}</div>
-    <ul class="q-mb-xl">
-      <li v-for="(item, index) in outattack" :key="index">
-        <span>category = {{ item.category }}</span> =>
-        <span>street no = {{ item.street_no }}</span>=
-        <span>difficulty = {{ item.difficulty }}</span>
-        <button class="q-ml-md" @click="deletePosition1(index)">Delete</button>
-      </li>
-    </ul>
-
-
-
-    <q-btn color="primary" label="Add data" @click="adddata" />
     <q-btn color="primary" label="Save changes" class="q-ml-xl" @click="savechanges" />
+    <q-btn color="primary" label="Add" class="q-ml-xl" @click="add" />
 
 
 
@@ -75,11 +63,6 @@ import { db, auth } from '../firebase';
 // player_name
 const player_name = ref(null)
 const player_name_arr = ref([{ label: 'sheraz', uid: 'glaisdosadmwalskknjd' }, { label: 'haider', uid: 'glaisdoalsdksadmwknjd', },])
-
-const plname = player_name
-
-
-
 // main_category
 const main_category = ref(null)
 const main_category_arr = ['gold hills', 'back kitchen', 'Sub Urbs', 'high village', 'down village']
@@ -99,7 +82,7 @@ function filterFn(val, update, abort) {
     recommended_cars.value = recommended_cars_arr.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
   })
 }
-function setModel(val) {
+function setreccar(val) {
   recommended_car.value = val
 }
 // refrence_time
@@ -111,35 +94,30 @@ const sec = ['1', '2', '3', '4', '5', '5', '7', '8', '9']
 const outdefencearr = ref()
 const outattack = ref()
 
+// dynamic variables
+let collection_name = 'user_races'
+const clubname = 'races'
+
 onMounted(() => {
-  onSnapshot(doc(db, "users_data", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
+  onSnapshot(doc(db, collection_name, "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
+
     let defencearr = [];
     let attackarr = [];
-    let defence = data.data().races[0].defence;
-    let attack = data.data().races[0].attack;
+    let defence = data.data().races.defence;
+    let attack = data.data().races.attack;
     defence.forEach(element => {
       defencearr.push(element)
     });
     attack.forEach(element => {
       attackarr.push(element)
     });
-
-
-    if (attack.length > 0) {
-      console.log('yes');
-    } else {
-      console.log('no');
-    }
-
-
-    console.log(defence.length);
     outdefencearr.value = defencearr
     outattack.value = attackarr
   });
 })
 
 // form submit
-const onSubmit = () => {
+const assign_race = () => {
   outdefencearr.value.push({
     category: main_category.value,
     race_no: race_no.value,
@@ -147,118 +125,34 @@ const onSubmit = () => {
     recommended_car: recommended_car.value,
     reftime: reftime.value,
   })
-  console.log(outdefencearr.value);
-  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-    races: [{ defence: outdefencearr.value, attack: outattack.value }]
+  updateDoc(doc(db, collection_name, 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    [clubname]: { defence: outdefencearr.value, attack: outattack.value }
   })
-
+  // reset field values
+  main_category.value = ''
+  race_no.value = ''
+  available_cars.value = null
+  recommended_car.value = ''
+  reftime.value = { min: '', sec: '', milisec: '' }
 }
-
-
-// assign races
-// const assign_race = () => {
-//   updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-//     races: [{ defence: outdefencearr.value, attack: outattack.value }]
-//   })
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// add value to array
-// const addarrvalue = () => {
-//   updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-//     defence: arrayUnion(
-//       {
-//         category: 'down hill',
-//         race_no: '9',
-//         recommended_car: 'BC',
-//         refrence_time: '1:23:245',
-//         timestamp: new Date()
-//       }
-//     )
-//   })
-
-// }
 
 const deletePosition = (index) => {
   outdefencearr.value.splice(index, 1);
 }
-const deletePosition1 = (index) => {
-  outattack.value.splice(index, 1);
-}
-
-// ===============
-
 const savechanges = () => {
-  updateDoc(doc(db, "users_data", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-    races: [{ defence: outdefencearr.value, attack: outattack.value }]
-  })
-}
-const adddata = () => {
-
-  // updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-  //   defence: deleteField()
-  // });
-
-  updateDoc(doc(db, "users_data", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-    // defence: [{ na: 'ooo', ll: 'hhggg9' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }]
-    // defence: allarray.value
-    races: [
-      {
-        defence: [
-          {
-            "race_no": "9",
-            "recommended_car": "BC", "refrence_time": "1:23:245", "category": "down hill"
-          },
-          {
-            "race_no": "10",
-            "recommended_car": "ssc", "refrence_time": "1:23:245", "category": "down village"
-          },
-          {
-            "race_no": "12",
-            "recommended_car": "f5", "refrence_time": "1:23:245", "category": "sub urbs"
-          }
-        ],
-        attack: [
-          {
-            "category": "back kitchen",
-            "street_no": "5",
-            "difficulty": "easy",
-          },
-          {
-            "category": "back kitchen",
-            "street_no": "6",
-            "difficulty": "easy",
-          },
-          {
-            "category": "back kitchen",
-            "street_no": "7",
-            "difficulty": "easy",
-          }
-        ]
-
-      }
-    ]
+  console.log(outdefencearr.value);
+  console.log(outattack.value);
+  updateDoc(doc(db, collection_name, 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    [clubname]: { defence: outdefencearr.value, attack: outattack.value }
 
   })
 }
 
-
+const add = () => {
+  updateDoc(doc(db, collection_name, 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+    [clubname]: { defence: [], attack: [] }
+  })
+}
 
 </script>
 <style lang="scss" scoped>
