@@ -2,23 +2,6 @@
   <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
     <div v-if="(user_role === 'admin')">{{ user_data }}</div>
 
-    <!-- <div>{{ allraces }}</div> -->
-
-
-    <ul>
-      <div>{{ allarray }}</div>
-      <li v-for="(item, index) in allarray" :key="index">
-        <span>{{ item.category }}</span>
-        <span>{{ item.race_no }}</span>
-        <button @click="deletePosition(index)">Delete</button>
-      </li>
-    </ul>
-
-
-
-    <q-btn color="primary" label="Add data" @click="adddata" />
-    <q-btn color="primary" label="Save changes" class="q-ml-xl" @click="savechanges" />
-
     <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
       <q-tab class="text-red" name="Attack" label="Attack" />
@@ -131,17 +114,16 @@ if (uid) {
 onMounted(() => {
 
 
-  onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
-    // console.log("Current data: ", data.data().races[0].defence);
-    let olddataarr = [];
-    let docdata = data.data().races[0].defence;
-    docdata.forEach(element => {
-      // console.log(data.data().defence);
-      olddataarr.push(element)
-    });
-    allarray.value = olddataarr
-    // console.log(allarray.value);
-  });
+  // onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
+  //   console.log("Current data: ", data.data().defence);
+  //   let olddataarr = [];
+  //   let docdata = data.data().defence;
+  //   docdata.forEach(element => {
+  //     olddataarr.push(data.data().defence)
+  //   });
+  //   allarray.value = olddataarr[0]
+  //   // console.log(allarray.value);
+  // });
 
   // getDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1')).then(data => {
   //   // console.log(data.data().defence);
@@ -174,71 +156,6 @@ onMounted(() => {
   })
 
 })
-
-// add value to array
-
-const addarrvalue = () => {
-  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-    defence: arrayUnion(
-      {
-        category: 'down hill',
-        race_no: '9',
-        recommended_car: 'BC',
-        refrence_time: '1:23:245',
-        timestamp: new Date()
-      }
-    )
-
-  })
-}
-
-const deletePosition = (index) => {
-  console.log(index);
-  allarray.value.splice(index, 1);
-}
-
-
-const savechanges = () => {
-  console.log(allarray.value);
-  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-    races: { defence: allarray.value }
-  })
-}
-const adddata = () => {
-
-  // updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-  //   defence: deleteField()
-  // });
-
-  console.log(allarray.value);
-  // allarray.value.forEach(element => {
-  updateDoc(doc(db, "user_races", 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
-    // defence: [{ na: 'ooo', ll: 'hhggg9' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }, { na: 'ooo', ll: 'hhggg' }]
-    // defence: allarray.value
-    races: [
-      {
-        defence: [
-          {
-            "race_no": "9",
-            "recommended_car": "BC", "refrence_time": "1:23:245", "category": "down hill"
-          },
-          {
-            "race_no": "10",
-            "recommended_car": "ssc", "refrence_time": "1:23:245", "category": "down village"
-          },
-          {
-            "race_no": "12",
-            "recommended_car": "f5", "refrence_time": "1:23:245", "category": "sub urbs"
-          }
-        ]
-      }
-    ]
-
-  })
-  // });
-}
-
-
 
 </script>
 <style lang="scss" scoped>

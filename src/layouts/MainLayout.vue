@@ -26,8 +26,12 @@
               <q-icon name="add" size="20px" />
               <q-icon name="arrow_drop_down" size="16px" style="margin-left: -2px" />
             </div>
-            <q-menu auto-close>
-              <q-list dense style="min-width: 100px">
+            <q-menu auto-close max-width="false">
+              <q-list dense="" style="min-width: 120px">
+                <q-item clickable class="GL__menu-link">
+                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/assignraces">Assign
+                      Races</router-link></q-item-section>
+                </q-item>
                 <q-item clickable class="GL__menu-link">
                   <q-item-section>New Car</q-item-section>
                 </q-item>

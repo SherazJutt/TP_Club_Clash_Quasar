@@ -20,6 +20,7 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: '/garage', component: () => import('pages/Garage.vue') },
       { path: '/profile', component: () => import('src/pages/Profile.vue') },
+      { path: '/assignraces', component: () => import('src/pages/AssignRace.vue') },
       { path: '/test', component: () => import('pages/test.vue') },
     ],
   },

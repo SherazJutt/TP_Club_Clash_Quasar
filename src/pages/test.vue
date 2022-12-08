@@ -1,72 +1,44 @@
 <template>
-  <div id="app">
-    <ul>
-      <div>{{ myArray }}</div>
-      <li v-for="(item, index) in myArray" :key="index">
-        {{ item }}
-        <button @click="deleteItem(index)">Delete</button>
-      </li>
-    </ul>
-    <div>
-      Remove Object from Array
-      <div>{{ students }}</div>
-      <ul>
-        <li v-for="student in students" :key="student.id">
-          <span>Name: {{ student.name }}</span> | subject: {{ student.sub }}
-          <button @click="deleteObj(student.id)">Delete</button>
-        </li>
-      </ul>
+  <div class="q-pa-md">
+    <div class="q-gutter-md row">
+      <q-select filled :model-value="model" label="Select cars" use-input hide-selected fill-input input-debounce="0"
+        :options="options" @filter="filterFn" @input-value="setModel" hint="Text autocomplete"
+        style="width: 250px; padding-bottom: 32px">
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">add cars to show</q-item-section>
+          </q-item>
+        </template>
+      </q-select>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
+
+const stringOptions = ['tvr', 'ssc', 'venom', 'jesko', 'imola']
+
 export default {
-  name: "App",
-  data() {
+  setup() {
+    const model = ref(null)
+    const options = ref(stringOptions)
+
     return {
-      myArray: ["tiger", "cat", "dog", "crow"],
-      students: [
-        {
-          id: 1,
-          name: "Jake",
-          sub: "English",
-        },
-        {
-          id: 2,
-          name: "Jimmy",
-          sub: "Science",
-        },
-        {
-          id: 3,
-          name: "Tom",
-          sub: "Math",
-        },
-      ],
-    };
-  },
-  methods: {
-    deleteItem(index) {
-      this.myArray.splice(index, 1);
-    },
-    deleteObj(id) {
-      let updateStudentList = this.students.filter((el) => el.id !== id);
-      this.students = updateStudentList;
-    },
-  },
-};
+      model,
+      options,
+
+      filterFn(val, update, abort) {
+        update(() => {
+          const needle = val.toLocaleLowerCase()
+          options.value = stringOptions.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
+        })
+      },
+
+      setModel(val) {
+        model.value = val
+      }
+    }
+  }
+}
 </script>
-
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-li {
-  padding-bottom: 10px;
-}
-</style>
