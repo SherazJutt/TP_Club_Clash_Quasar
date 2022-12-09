@@ -3,9 +3,9 @@
     <div class="main-page text-center">
       <!-- <h3 class="text-white q-ma-none q-mb-md">Continue With</h3> -->
       <q-btn text-color="white" class="border-white google-btn" @click="SignInWithGoogle">
-        <q-avatar size="42px">
-          <!-- <img src="src/assets/google_logo.svg"> -->
-        </q-avatar>
+        <!-- <q-avatar size="42px">
+          <img src="src/assets/google_logo.svg">
+        </q-avatar> -->
         <span class="siwg">Sign In With Google updated</span>
       </q-btn>
     </div>
