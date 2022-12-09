@@ -2,7 +2,7 @@
   <q-layout class="bg-grey-1">
     <q-header reveal elevated class="text-white bg-blue-9" height-hint="61.59">
       <q-toolbar class="q-py-sm q-px-md">
-        <q-avatar size="42px">
+        <q-avatar square size="42px">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="-75 -40 120 80">
             <path fill="#fff" d="M-75-40H45v80H-75z" />
             <path fill="#01411C" d="M-45-40h90v80h-90z" />
@@ -11,8 +11,7 @@
             <path fill="#fff" d="M8.751-17.959l10.11 11.373L3.997-9.844l13.94-6.1-7.692 13.129z" />
           </svg>
         </q-avatar>
-        <div
-          class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
+        <div class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
           <router-link class="text-white" to="/">Home</router-link>
           <router-link class="text-white" to="/garage">Garage</router-link>
         </div>
@@ -26,8 +25,12 @@
               <q-icon name="add" size="20px" />
               <q-icon name="arrow_drop_down" size="16px" style="margin-left: -2px" />
             </div>
-            <q-menu auto-close>
-              <q-list dense style="min-width: 100px">
+            <q-menu auto-close max-width="false">
+              <q-list dense="" style="min-width: 120px">
+                <q-item clickable class="GL__menu-link">
+                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/assignraces">Assign
+                      Races</router-link></q-item-section>
+                </q-item>
                 <q-item clickable class="GL__menu-link">
                   <q-item-section>New Car</q-item-section>
                 </q-item>
@@ -50,7 +53,7 @@
                 </q-item>
                 <q-separator />
                 <q-item clickable class="GL__menu-link">
-                  <q-item-section>Help</q-item-section>
+                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/profile">Profile</router-link></q-item-section>
                 </q-item>
                 <q-item clickable class="GL__menu-link">
                   <q-item-section>Settings</q-item-section>
@@ -72,95 +75,31 @@
 
   </q-layout>
 </template>
-
-<script>
-import { ref } from 'vue'
-import { fabGithub } from '@quasar/extras/fontawesome-v6'
-import router from 'src/router'
+<script setup>
 import { auth } from '../firebase'
 import { signOut } from "firebase/auth";
+import { useRouter } from 'vue-router'
 
-const stringOptions = [
-  'quasarframework/quasar',
-  'quasarframework/quasar-awesome'
-]
+const router = useRouter()
 
-export default {
-  name: 'MyLayout',
-
-  setup() {
-    const text = ref('')
-    const options = ref(null)
-    const filteredOptions = ref([])
-    const search = ref(null) // $refs.search
-
-    function filter(val, update) {
-      if (options.value === null) {
-        // load data
-        setTimeout(() => {
-          options.value = stringOptions
-          search.value.filter('')
-        }, 2000)
-        update()
-        return
-      }
-
-      if (val === '') {
-        update(() => {
-          filteredOptions.value = options.value.map(op => ({ label: op }))
-        })
-        return
-      }
-
-      update(() => {
-        filteredOptions.value = [
-          {
-            label: val,
-            type: 'In this repository'
-          },
-          {
-            label: val,
-            type: 'All GitHub'
-          },
-          ...options.value
-            .filter(op => op.toLowerCase().includes(val.toLowerCase()))
-            .map(op => ({ label: op }))
-        ]
-      })
-    }
-
-    return {
-      fabGithub,
-
-      text,
-      options,
-      filteredOptions,
-      search,
-
-      filter
-    }
-  },
-  mounted() {
-    let token = localStorage.getItem('access_token')
-    if (!token) {
-      this.$router.push("/auth")
-    }
-  },
-  methods: {
-    logout() {
-      signOut(auth).then(() => {
-        localStorage.removeItem('access_token')
-        this.$router.push("/auth")
-      }).catch((error) => {
-        console.log(error);
-      });
-    }
-  },
-
+function logout() {
+  signOut(auth).then(() => {
+    localStorage.removeItem('access_token')
+    router.push("/auth")
+  }).catch((error) => {
+    console.log(error);
+  });
 }
 </script>
+<style lang="scss" scoped>
+.rl-profile {
+  color: black;
 
-<style lang="scss">
+  &:hover {
+    color: white;
+  }
+}
+
 .GL {
   &__select-GL__menu-link {
     .default-type {
