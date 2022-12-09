@@ -30,7 +30,7 @@
                   <td class="text-center">{{ race.race_no }}</td>
                   <td class="text-center">{{ race.recommended_car }}</td>
                   <td class="text-center"><span v-for="(item, index) in race.available_cars" :key="index" class="text-uppercase"><span class="border-primary" style="border-radius: 100px; padding: 3px 7px; margin-right: 4px;">{{ item }}</span></span></td>
-                  <td class="text-center"><span>{{ race.reftime.min }} <small>mins</small></span> <span>{{ race.reftime.sec }} <small>seconds</small></span> <span>{{ race.reftime.sec }} <small>milliseconds</small></span></td>
+                  <td class="text-center"><span>{{ race.reftime.min }} <small>mins</small></span> <span>{{ race.reftime.sec }} <small>seconds</small></span> <span>{{ race.reftime.milisec }} <small>milliseconds</small></span></td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -106,6 +106,14 @@ const allraces = ref()
 const allarray = ref()
 
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log(user);
+  } else {
+    console.log('error');
+  }
+});
+
 
 let uid = localStorage.getItem('access_token');
 if (uid) {
@@ -116,7 +124,7 @@ onMounted(() => {
 
 
   onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
-    console.log("Current data: ", data.data().races.defence);
+    // console.log("Current data: ", data.data().races.defence);
     let olddataarr = [];
     let docdata = data.data().races.defence;
     docdata.forEach(() => {
