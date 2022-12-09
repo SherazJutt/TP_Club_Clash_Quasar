@@ -6,6 +6,7 @@
         <!-- <q-avatar size="42px">
           <img src="src/assets/google_logo.svg">
         </q-avatar> -->
+
         <span class="siwg">Sign In With Google updated</span>
       </q-btn>
     </div>
