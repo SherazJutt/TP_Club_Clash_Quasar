@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    localStorage.setItem('access_token', user.uid)
+    // localStorage.setItem('access_token', user.uid)
   }
 });
 
@@ -12,10 +12,12 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     beforeEnter: () => {
-      let token = localStorage.getItem('access_token')
-      if (!token) {
-        return '/auth'
-      }
+
+      console.log('token');
+      //   let token = localStorage.getItem('access_token')
+      //   if (!token) {
+      //     return '/auth'
+      //   }
     },
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
@@ -41,6 +43,7 @@ const routes = [
 
     ],
   },
+
   // Always leave this as last one,
   // but you can also remove it
   {
