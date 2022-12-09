@@ -1,9 +1,8 @@
 <template>
   <q-layout>
     <ul>
-      <li>username: <span v-if="user_data.displayName">{{ user_data.displayName }}</span> <span v-else>Set
-          Your Username</span>
-      </li>
+      <li> <q-img :src="user_data.photoURL" loading="lazy" spinner-color="white" height="140px" style="max-width: 150px" /></li>
+      <li>username: <span v-if="user_data.displayName">{{ user_data.displayName }}</span> <span v-else>Set Your Username</span></li>
       <li>email: {{ user_data.email }}</li>
       <li>account create on: {{ creationTime }}</li>
       <li>last sign in on: {{ lastSignInTime }}</li>

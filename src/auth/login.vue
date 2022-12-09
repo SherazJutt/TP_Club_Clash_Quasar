@@ -1,25 +1,21 @@
 <template>
-  <q-page padding>
-
-    <h1 class="">Login</h1>
-
-    <q-form @submit="login" class="q-gutter-md">
-      <q-input required="" type="email" v-model="email" label="Email" />
-      <q-input required="" type="password" v-model="password" label="Password" />
-
-      <div class="flex justify-between">
-        <q-btn label="Login" type="submit" color="primary" />
-        <q-btn color="primary" label="Signup here" to="/signup" />
-      </div>
-    </q-form>
-
+  <q-page class="bg-grey-10">
+    <div class="main-page text-center">
+      <!-- <h3 class="text-white q-ma-none q-mb-md">Continue With</h3> -->
+      <q-btn text-color="white" class="border-white google-btn" @click="SignInWithGoogle">
+        <q-avatar size="42px">
+          <img src="src/assets/google_logo.svg">
+        </q-avatar>
+        <span class="siwg">Sign In With Google</span>
+      </q-btn>
+    </div>
   </q-page>
 </template>
 <script setup>
 import { ref } from "vue";
 import { auth } from '../firebase'
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'vue-router'
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signInWithRedirect } from "firebase/auth";
 
 
 const router = useRouter()
@@ -43,4 +39,38 @@ const login = () => {
     }
   })
 }
+
+const SignInWithGoogle = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithRedirect(auth, provider).then((data) => {
+    // console.log(data);
+    localStorage.setItem('access_token', data.user.uid)
+    router.push("/")
+  })
+}
 </script>
+
+<style lang="scss" scoped>
+.main-page {
+  // background-color: red;
+  max-width: 500px;
+  max-height: 500px;
+}
+
+.q-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.google-btn {
+  padding: 9px;
+}
+
+.siwg {
+  letter-spacing: 1px;
+  margin-left: 9px;
+}
+</style>

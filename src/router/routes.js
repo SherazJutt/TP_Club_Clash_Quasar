@@ -36,7 +36,7 @@ const routes = [
     children: [
       { path: '', component: () => import('../auth/login.vue') },
       { path: '/login', component: () => import('../auth/login.vue') },
-      { path: '/signup', component: () => import('../auth/signup.vue') },
+      // { path: '/signup', component: () => import('../auth/signup.vue') },
 
     ],
   },
