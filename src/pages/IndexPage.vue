@@ -29,6 +29,7 @@
                   <td class="text-center">{{ race.category }}</td>
                   <td class="text-center">{{ race.race_no }}</td>
                   <td class="text-center">{{ race.recommended_car }}</td>
+                  <td class="text-center"><span v-for="(item, index) in race.available_cars" :key="index" class="text-uppercase"><span class="border-primary" style="border-radius: 100px; padding: 3px 7px; margin-right: 4px;">{{ item }}</span></span></td>
                   <td class="text-center"><span>{{ race.reftime.min }} <small>mins</small></span> <span>{{ race.reftime.sec }} <small>seconds</small></span> <span>{{ race.reftime.sec }} <small>milliseconds</small></span></td>
                 </tr>
               </tbody>
@@ -96,7 +97,7 @@ const $q = useQuasar()
 const inputfield = ref([])
 const defence = ref([])
 const attack = ref([])
-const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Refrence Time'])
+const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Available Cars', 'Refrence Time'])
 const attack_columns = ref(['Category', 'Street No', 'Difficulty'])
 const tab = ref('Defence')
 const user_role = ref()

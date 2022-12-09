@@ -11,6 +11,10 @@
   border: 1px solid $light-gray;
 }
 
+.border-primary {
+  border: 1px solid $primary;
+}
+
 .q-item {
   text-transform: capitalize;
 }
