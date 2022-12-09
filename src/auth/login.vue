@@ -42,7 +42,7 @@ const password = ref([])
 
 const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
-  signInWithRedirect(auth, provider).then((data) => {
+  signInWithPopup(auth, provider).then((data) => {
     console.log(data);
     localStorage.setItem('access_token', data.user.uid)
     router.push("/")
