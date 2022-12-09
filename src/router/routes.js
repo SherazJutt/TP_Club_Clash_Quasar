@@ -1,12 +1,13 @@
-import { nextTick } from 'vue';
-import { useRouter, useRoute } from 'vue-router'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebase';
 
-const router = useRouter()
-
-
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    localStorage.setItem('access_token', user.uid)
+  }
+});
 
 const routes = [
-
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -36,7 +37,7 @@ const routes = [
     children: [
       { path: '', component: () => import('../auth/login.vue') },
       { path: '/login', component: () => import('../auth/login.vue') },
-      // { path: '/signup', component: () => import('../auth/signup.vue') },
+      { path: '/signup', component: () => import('../auth/signup.vue') },
 
     ],
   },

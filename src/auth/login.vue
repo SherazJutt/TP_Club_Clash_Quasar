@@ -12,7 +12,7 @@
   </q-page>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { auth } from '../firebase'
 import { useRouter } from 'vue-router'
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signInWithRedirect } from "firebase/auth";
@@ -22,32 +22,50 @@ const router = useRouter()
 const email = ref([])
 const password = ref([])
 
-const login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value).then((data) => {
-    localStorage.setItem('access_token', data.user.uid)
-    router.push("/")
-  }).catch((error) => {
-    switch (error.code) {
-      case 'auth/user-not-found':
-        alert("User not found")
-        break
-      case 'auth/wrong-password':
-        alert("Wrong password")
-        break
-      default:
-        alert("Something went wrong")
-    }
-  })
-}
+// const login = () => {
+//   signInWithEmailAndPassword(auth, email.value, password.value).then((data) => {
+//     localStorage.setItem('access_token', data.user.uid)
+//     router.push("/")
+//   }).catch((error) => {
+//     switch (error.code) {
+//       case 'auth/user-not-found':
+//         alert("User not found")
+//         break
+//       case 'auth/wrong-password':
+//         alert("Wrong password")
+//         break
+//       default:
+//         alert("Something went wrong")
+//     }
+//   })
+// }
 
 const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   signInWithRedirect(auth, provider).then((data) => {
-    // console.log(data);
+    console.log(data);
     localStorage.setItem('access_token', data.user.uid)
     router.push("/")
   })
 }
+
+setInterval(function () {
+  // console.log('logged');
+  let token = localStorage.getItem('access_token')
+  if (token) {
+    router.push("/")
+  }
+
+}, 1000);
+
+
+onMounted(() => {
+  console.log('mounted');
+  // router.push('/')
+})
+
+
+
 </script>
 
 <style lang="scss" scoped>
