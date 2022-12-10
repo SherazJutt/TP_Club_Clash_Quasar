@@ -1,23 +1,12 @@
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../firebase';
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // localStorage.setItem('access_token', user.uid)
-  }
-});
-
 const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     beforeEnter: () => {
-
-      console.log('token');
-      //   let token = localStorage.getItem('access_token')
-      //   if (!token) {
-      //     return '/auth'
-      //   }
+      let token = localStorage.getItem('access_token')
+      if (!token) {
+        return '/auth'
+      }
     },
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
