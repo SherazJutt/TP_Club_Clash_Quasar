@@ -1,12 +1,3 @@
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../firebase';
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    localStorage.setItem('access_token', user.uid)
-  }
-});
-
 const routes = [
   {
     path: '/',
@@ -41,6 +32,7 @@ const routes = [
 
     ],
   },
+
   // Always leave this as last one,
   // but you can also remove it
   {

@@ -25,7 +25,7 @@ const emailVerification = ref()
 onAuthStateChanged(auth, (user) => {
   if (user) {
     user_data.value = user
-    console.log(user);
+    // console.log(user);
 
     creationTime.value = user.metadata.creationTime;
     lastSignInTime.value = user.metadata.lastSignInTime;

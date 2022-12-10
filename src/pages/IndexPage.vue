@@ -105,16 +105,6 @@ const user_data = ref()
 const allraces = ref()
 const allarray = ref()
 
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log(user);
-  } else {
-    console.log('error');
-  }
-});
-
-
 let uid = localStorage.getItem('access_token');
 if (uid) {
   $q.loading.show()
