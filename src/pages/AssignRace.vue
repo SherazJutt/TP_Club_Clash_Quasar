@@ -1,6 +1,14 @@
 <template>
   <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
-
+    <div>{{ clash_info.user_id }}</div>
+    <div>{{ clash_info.opponent_club }}</div>
+    <div>{{ clash_info.is_defence }}</div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div>{{ user_data }}</div>
 
     <q-form @submit="assign_race" class="q-gutter-md">
 
@@ -26,7 +34,7 @@
             </template>
           </q-select>
           <div class="reftime-main">
-            <div><span class="text-blue-9">Refrence time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
+            <div><span class="text-blue-9">Reference time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
             <div class="reftime q-mt-sm" hint="yes">
               <q-select transition-hide="jump-up" clearable filled v-model="reftime.min" :options="min" label="Minutes" />
               <q-select transition-hide="jump-up" clearable filled v-model="reftime.sec" :options="sec" label="Seconds" />
@@ -48,6 +56,19 @@
       </li>
     </ul>
 
+
+    <div class="q-mb-xl">{{ outattackarr }}</div>
+    <ul class="q-mb-xl">
+      <li v-for="(item, index) in outattackarr" :key="index">
+        <span>category = {{ item.category }}</span> =>
+        <span>street no = {{ item.street_no }}</span>=
+        <span>difficulty = {{ item.difficulty }}</span>
+        <button class="q-ml-md" @click="deletePosition1(index)">Delete</button>
+      </li>
+    </ul>
+
+
+
     <q-btn color="primary" label="Save changes" class="q-ml-xl" @click="savechanges" />
     <q-btn color="primary" label="Add" class="q-ml-xl" @click="add" />
 
@@ -60,6 +81,7 @@ import { ref, onMounted } from "vue";
 import { collection, onSnapshot, getDoc, addDoc, doc, deleteField, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, arrayRemove, } from "firebase/firestore";
 import { db, auth } from '../firebase';
 
+defineProps(['user_data', 'clash_info'])
 // player_name
 const player_name = ref(null)
 const player_name_arr = ref([{ label: 'sheraz', uid: 'glaisdosadmwalskknjd' }, { label: 'haider', uid: 'glaisdoalsdksadmwknjd', },])
@@ -91,20 +113,20 @@ const min = ['1', '2']
 const sec = ['1', '2', '3', '4', '5', '5', '7', '8', '9']
 
 // database functions
-const outdefencearr = ref([])
-const outattack = ref()
+const outdefencearr = ref()
+const outattackarr = ref()
 
 // dynamic variables
-let curr_uid = localStorage.getItem('access_token')
-let collection_name = 'users_data'
-const clubname = 'currclub'
+let curruid = localStorage.getItem('access_token');
+let collection_name = 'user_races'
+const clubname = 'legion united'
 
 onMounted(() => {
-  onSnapshot(doc(db, collection_name, curr_uid), (data) => {
+  onSnapshot(doc(db, collection_name, curruid), (data) => {
     let defencearr = [];
     let attackarr = [];
-    let defence = data.data().races.defence;
-    let attack = data.data().races.attack;
+    let defence = data.data()[clubname].defence;
+    let attack = data.data()[clubname].attack;
     defence.forEach(element => {
       defencearr.push(element)
     });
@@ -112,9 +134,10 @@ onMounted(() => {
       attackarr.push(element)
     });
     outdefencearr.value = defencearr
-    outattack.value = attackarr
+    outattackarr.value = attackarr
   });
 })
+
 // form submit
 const assign_race = () => {
   outdefencearr.value.push({
@@ -124,8 +147,8 @@ const assign_race = () => {
     recommended_car: recommended_car.value,
     reftime: reftime.value,
   })
-  updateDoc(doc(db, collection_name, curr_uid), {
-    [clubname]: { defence: outdefencearr.value, attack: outattack.value }
+  updateDoc(doc(db, collection_name, curruid), {
+    [clubname]: { defence: outdefencearr.value, attack: outattackarr.value }
   })
   // reset field values
   main_category.value = ''
@@ -134,22 +157,57 @@ const assign_race = () => {
   recommended_car.value = ''
   reftime.value = { min: '', sec: '', milisec: '' }
 }
+
 const deletePosition = (index) => {
   outdefencearr.value.splice(index, 1);
 }
-const savechanges = () => {
-  console.log(outdefencearr.value);
-  console.log(outattack.value);
-  updateDoc(doc(db, collection_name, curr_uid), {
-    [clubname]: { defence: outdefencearr.value, attack: outattack.value }
-  })
+const deletePosition1 = (index) => {
+  outattackarr.value.splice(index, 1);
 }
-const add = () => {
-  updateDoc(doc(db, collection_name, curr_uid), {
-    [clubname]: { defence: [], attack: [] }
+const savechanges = () => {
+  updateDoc(doc(db, collection_name, curruid), {
+    [clubname]: { defence: outdefencearr.value, attack: outattackarr.value }
+
   })
 }
 
+const add = () => {
+  updateDoc(doc(db, collection_name, curruid), {
+    [clubname]: {
+      defence: [
+        {
+          "race_no": "9",
+          "recommended_car": "BC", "refrence_time": "1:23:245", "category": "down hill"
+        },
+        {
+          "race_no": "10",
+          "recommended_car": "ssc", "refrence_time": "1:23:245", "category": "down village"
+        },
+        {
+          "race_no": "12",
+          "recommended_car": "f5", "refrence_time": "1:23:245", "category": "sub urbs"
+        }
+      ],
+      attack: [
+        {
+          "category": "back kitchen",
+          "street_no": "5",
+          "difficulty": "easy",
+        },
+        {
+          "category": "back kitchen",
+          "street_no": "6",
+          "difficulty": "easy",
+        },
+        {
+          "category": "back kitchen",
+          "street_no": "7",
+          "difficulty": "easy",
+        }
+      ]
+    }
+  })
+}
 
 </script>
 <style lang="scss" scoped>

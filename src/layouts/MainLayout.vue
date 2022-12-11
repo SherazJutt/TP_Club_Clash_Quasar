@@ -14,25 +14,27 @@
         <div class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
           <router-link class="text-white" to="/">Home</router-link>
           <router-link class="text-white" to="/garage">Garage</router-link>
+
         </div>
 
         <q-space />
 
         <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
           <q-btn dense flat round size="sm" icon="notifications" />
-          <q-btn dense flat>
-            <div class="row items-center no-wrap">
-              <q-icon name="add" size="20px" />
-            </div>
-            <q-menu auto-close max-width="false">
-              <q-list dense style="min-width: 120px">
-                <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
-                <q-separator color="gray" />
-                <q-item clickable>New Car</q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-
+          <div v-if="(role === 'admin')">
+            <q-btn dense flat>
+              <div class="row items-center no-wrap">
+                <q-icon name="add" size="20px" />
+              </div>
+              <q-menu auto-close max-width="false">
+                <q-list dense style="min-width: 120px">
+                  <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
+                  <q-separator color="gray" />
+                  <q-item clickable>New Car</q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
           <q-btn dense flat>
             <q-avatar circle size="40px">
               <img :src="user_data.photoURL">
@@ -57,20 +59,39 @@
     </q-header>
 
     <q-page-container>
-      <router-view />
+      <router-view :clash_info="clash_info" :local_data="local_data" :custom_user_data="custom_user_data_arr" />
     </q-page-container>
 
   </q-layout>
 </template>
 <script setup>
 import { ref } from "vue";
+import { db, auth } from '../firebase'
 import { useRouter } from 'vue-router'
-import { auth } from '../firebase'
 import { signOut } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 
 const router = useRouter()
+// all user data
 const user_data = ref([])
+
+// locally stored user data
+let user_id = localStorage.getItem('access_token');
+const local_data = ref({ user_id: user_id })
+
+// clash_info array to send as props to child components
+const clash_info = ref()
+getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
+  clash_info.value = opponent_data.data()
+})
+//custom user data
+const custom_user_data_arr = ref()
+const role = ref()
+getDoc(doc(db, 'users_data', user_id)).then(custom_user_data => {
+  custom_user_data_arr.value = custom_user_data.data()
+  role.value = custom_user_data.data().role
+})
 
 function logout() {
   signOut(auth).then(() => {
