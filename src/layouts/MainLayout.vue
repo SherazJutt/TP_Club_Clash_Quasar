@@ -23,48 +23,35 @@
           <q-btn dense flat>
             <div class="row items-center no-wrap">
               <q-icon name="add" size="20px" />
-              <q-icon name="arrow_drop_down" size="16px" style="margin-left: -2px" />
             </div>
             <q-menu auto-close max-width="false">
-              <q-list dense="" style="min-width: 120px">
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/assignraces">Assign
-                      Races</router-link></q-item-section>
-                </q-item>
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section>New Car</q-item-section>
-                </q-item>
+              <q-list dense style="min-width: 120px">
+                <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
+                <q-separator color="gray" />
+                <q-item clickable>New Car</q-item>
               </q-list>
             </q-menu>
           </q-btn>
 
-          <q-btn dense flat no-wrap>
-            <q-avatar rounded size="20px">
-              <img src="https://cdn.quasar.dev/img/avatar3.jpg">
+          <q-btn dense flat>
+            <q-avatar circle size="40px">
+              <img :src="user_data.photoURL">
             </q-avatar>
-            <q-icon name="arrow_drop_down" size="16px" />
 
-            <q-menu auto-close>
+            <q-menu auto-close color="red">
               <q-list dense>
-                <q-item class="GL__menu-link-signed-in">
-                  <q-item-section>
-                    <div>Signed in as <strong>Sheraz</strong></div>
-                  </q-item-section>
+                <q-item class="text-black text-center justify-center">
+                  <div>Signed in as <br> <strong>{{ user_data.displayName }}</strong></div>
                 </q-item>
-                <q-separator />
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/profile">Profile</router-link></q-item-section>
-                </q-item>
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section>Settings</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section @click="logout">Sign out</q-item-section>
-                </q-item>
+                <q-separator color="gray" />
+                <q-item to="/profile" class="text-black items-center">Profile</q-item>
+                <q-separator color="gray" />
+                <q-item @click="logout" clickable class="items-center">Sign out</q-item>
               </q-list>
             </q-menu>
           </q-btn>
+
+
         </div>
       </q-toolbar>
     </q-header>
@@ -76,89 +63,29 @@
   </q-layout>
 </template>
 <script setup>
+import { ref } from "vue";
+import { useRouter } from 'vue-router'
 import { auth } from '../firebase'
 import { signOut } from "firebase/auth";
-import { useRouter } from 'vue-router'
+import { onAuthStateChanged } from 'firebase/auth'
 
 const router = useRouter()
+const user_data = ref([])
 
 function logout() {
   signOut(auth).then(() => {
     localStorage.removeItem('access_token')
     router.push("/auth")
-  }).catch((error) => {
-    console.log(error);
-  });
+  })
 }
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    user_data.value = user
+  } else {
+    console.log('not signed in');
+  }
+})
 </script>
 <style lang="scss" scoped>
-.rl-profile {
-  color: black;
 
-  &:hover {
-    color: white;
-  }
-}
-
-.GL {
-  &__select-GL__menu-link {
-    .default-type {
-      visibility: hidden;
-    }
-
-    &:hover {
-      background: #0366d6;
-      color: white;
-
-      .q-item__section--side {
-        color: white;
-      }
-
-      .default-type {
-        visibility: visible;
-      }
-    }
-  }
-
-  &__toolbar-link {
-    a {
-      color: white;
-      text-decoration: none;
-
-      &:hover {
-        opacity: 0.7;
-      }
-    }
-  }
-
-  &__menu-link:hover {
-    background: #0366d6;
-    color: white;
-  }
-
-  &__menu-link-signed-in,
-  &__menu-link-status {
-    &:hover {
-      &>div {
-        background: white !important;
-      }
-    }
-  }
-
-  &__menu-link-status {
-    color: $blue-grey-6;
-
-    &:hover {
-      color: $light-blue-9;
-    }
-  }
-
-  &__toolbar-select.q-field--focused {
-    width: 450px !important;
-
-    .q-field__append {
-      display: none;
-    }
-  }
-}
 </style>

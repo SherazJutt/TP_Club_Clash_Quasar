@@ -91,16 +91,16 @@ const min = ['1', '2']
 const sec = ['1', '2', '3', '4', '5', '5', '7', '8', '9']
 
 // database functions
-const outdefencearr = ref()
+const outdefencearr = ref([])
 const outattack = ref()
 
 // dynamic variables
-let collection_name = 'user_races'
-const clubname = 'races'
+let curr_uid = localStorage.getItem('access_token')
+let collection_name = 'users_data'
+const clubname = 'currclub'
 
 onMounted(() => {
-  onSnapshot(doc(db, collection_name, "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
-
+  onSnapshot(doc(db, collection_name, curr_uid), (data) => {
     let defencearr = [];
     let attackarr = [];
     let defence = data.data().races.defence;
@@ -115,7 +115,6 @@ onMounted(() => {
     outattack.value = attackarr
   });
 })
-
 // form submit
 const assign_race = () => {
   outdefencearr.value.push({
@@ -125,7 +124,7 @@ const assign_race = () => {
     recommended_car: recommended_car.value,
     reftime: reftime.value,
   })
-  updateDoc(doc(db, collection_name, 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+  updateDoc(doc(db, collection_name, curr_uid), {
     [clubname]: { defence: outdefencearr.value, attack: outattack.value }
   })
   // reset field values
@@ -135,24 +134,22 @@ const assign_race = () => {
   recommended_car.value = ''
   reftime.value = { min: '', sec: '', milisec: '' }
 }
-
 const deletePosition = (index) => {
   outdefencearr.value.splice(index, 1);
 }
 const savechanges = () => {
   console.log(outdefencearr.value);
   console.log(outattack.value);
-  updateDoc(doc(db, collection_name, 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+  updateDoc(doc(db, collection_name, curr_uid), {
     [clubname]: { defence: outdefencearr.value, attack: outattack.value }
-
   })
 }
-
 const add = () => {
-  updateDoc(doc(db, collection_name, 'IVgzvOggrDNNahOdkpnjfFdWnsq1'), {
+  updateDoc(doc(db, collection_name, curr_uid), {
     [clubname]: { defence: [], attack: [] }
   })
 }
+
 
 </script>
 <style lang="scss" scoped>

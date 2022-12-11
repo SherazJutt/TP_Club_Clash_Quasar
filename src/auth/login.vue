@@ -23,8 +23,9 @@
   </q-page>
 </template>
 <script setup>
-import { auth } from '../firebase'
-import { signInWithPopup, GoogleAuthProvider, } from "firebase/auth";
+import { db, auth } from '../firebase'
+import { signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+import { doc, setDoc, arrayUnion } from "firebase/firestore";
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -32,11 +33,30 @@ const router = useRouter()
 const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider).then((data) => {
+    const isNewUser = getAdditionalUserInfo(data).isNewUser
+    if (isNewUser == true) {
+      // add user details in user_data collection
+      console.log(data);
+      setDoc(doc(db, "users_data", data.user.uid), {
+        user_id: data.user.uid,
+        name: data.user.displayName,
+        email: data.user.email,
+        role: 'user',
+        status: 'enabled',
+        datetime: new Date(),
+        currclub: { defence: [], attack: [] }
+      });
+    }
     localStorage.setItem('access_token', data.user.uid)
     router.push("/")
   })
 }
-
+setInterval(function () {
+  let token = localStorage.getItem('access_token')
+  if (token) {
+    router.push("/")
+  }
+}, 500);
 </script>
 
 <style lang="scss" scoped>

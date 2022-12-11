@@ -1,9 +1,6 @@
 <template>
   <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
     <!-- <div v-if="(user_role === 'admin')">{{ user_data }}</div> -->
-
-    <div>{{ allarray }}</div>
-
     <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
       <q-tab class="text-red" name="Attack" label="Attack" />
@@ -30,7 +27,7 @@
                   <td class="text-center">{{ race.race_no }}</td>
                   <td class="text-center">{{ race.recommended_car }}</td>
                   <td class="text-center"><span v-for="(item, index) in race.available_cars" :key="index" class="text-uppercase"><span class="border-primary" style="border-radius: 100px; padding: 3px 7px; margin-right: 4px;">{{ item }}</span></span></td>
-                  <td class="text-center"><span>{{ race.reftime.min }} <small>mins</small></span> <span>{{ race.reftime.sec }} <small>seconds</small></span> <span>{{ race.reftime.milisec }} <small>milliseconds</small></span></td>
+                  <td class="text-center">{{ race.reftime.min }} : {{ race.reftime.sec }} : {{ race.reftime.milisec }}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -54,7 +51,7 @@
           </tbody>
         </q-markup-table>
 
-        <div class="border q-mb-sm hidden" v-for="(race, index) in attack" :key="index">
+        <!-- <div class="border q-mb-sm hidden" v-for="(race, index) in attack" :key="index">
           <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup" header-class="bg-blue-8 text-white q-py-md justify-between">
             <template v-slot:header>
               <div class="c-h-main-h">Race # {{ (index + 1) }}</div>
@@ -78,7 +75,7 @@
               </tbody>
             </q-markup-table>
           </q-expansion-item>
-        </div>
+        </div> -->
 
       </q-tab-panel>
 
@@ -88,20 +85,21 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-import { collection, onSnapshot, getDoc, addDoc, doc, deleteField, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, arrayRemove, } from "firebase/firestore";
-import { db, auth } from '../firebase';
-import { date, useQuasar } from 'quasar'
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
+import { useQuasar } from 'quasar'
+import { onSnapshot, getDoc, doc, } from "firebase/firestore";
+import { db } from '../firebase';
 
+// props
+defineProps(['user_data'])
 const $q = useQuasar()
 const inputfield = ref([])
 const defence = ref([])
 const attack = ref([])
-const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Available Cars', 'Refrence Time'])
+const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Available Cars', 'Reference Time'])
 const attack_columns = ref(['Category', 'Street No', 'Difficulty'])
 const tab = ref('Defence')
 const user_role = ref()
-const user_data = ref()
+// const user_data = ref()
 const allraces = ref()
 const allarray = ref()
 
@@ -111,16 +109,15 @@ if (uid) {
 }
 
 onMounted(() => {
-
-
-  onSnapshot(doc(db, "user_races", "IVgzvOggrDNNahOdkpnjfFdWnsq1"), (data) => {
+  onSnapshot(doc(db, "users_data", uid), (data) => {
     // console.log("Current data: ", data.data().races.defence);
     let olddataarr = [];
-    let docdata = data.data().races.defence;
-    docdata.forEach(() => {
-      olddataarr.push(data.data().races.defence)
-    });
-    allarray.value = olddataarr[0]
+    // let docdata = data.data().currclub.defence;
+    // console.log(data.data().currclub.defence);
+    // docdata.forEach(() => {
+    //   olddataarr.push(data.data().currclub.defence)
+    // });
+    // allarray.value = olddataarr[0]
     // console.log(allarray.value);
   });
 
@@ -135,10 +132,6 @@ onMounted(() => {
   //   // console.log(data.data().defence[0]);
   // })
 
-
-
-
-
   if (uid) {
     getDoc(doc(db, "user_races", uid)).then(data => {
       // defence.value = data.data().races[0].defence;
@@ -148,11 +141,11 @@ onMounted(() => {
       $q.loading.hide()
     })
   }
-  getDoc(doc(db, "users_data", '4HlBybDueJRoMQjvtfS40yqvMXD3')).then(data => {
-    // console.log(data.data());
-    user_role.value = data.data().role
-    user_data.value = data.data()
-  })
+  // getDoc(doc(db, "users_data", '4HlBybDueJRoMQjvtfS40yqvMXD3')).then(data => {
+  //   // console.log(data.data());
+  //   user_role.value = data.data().role
+  //   user_data.value = data.data()
+  // })
 
 })
 
