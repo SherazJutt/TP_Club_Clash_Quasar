@@ -101,7 +101,10 @@ onAuthStateChanged(auth, (user) => {
     user_data.value = user
     profile_picture.value = user.photoURL
   } else {
-    console.log('not signed in');
+    signOut(auth).then(() => {
+      localStorage.removeItem('access_token')
+      router.push("/auth")
+    })
   }
 })
 </script>
