@@ -78,9 +78,13 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { collection, getDocs, onSnapshot, getDoc, addDoc, doc, deleteField, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, arrayRemove, } from "firebase/firestore";
+import { ref, watch } from "vue";
+import { collection, getDocs, onSnapshot, getDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '../firebase';
+import { useRouter } from 'vue-router'
+
+
+const router = useRouter()
 
 // player_name
 const player_name = ref(null)
@@ -166,12 +170,6 @@ getDocs(collection(db, 'users_data')).then(data => {
 
 // form submit
 const assign_race = () => {
-
-  // if (main_category.value == null || race_no.value) {
-  //   console.log('cant submit');
-  // }
-  // console.log(main_category.value, race_no.value, available_cars.value, recommended_car.value, reftime.value);
-
   outdefencearr.value.push({
     category: main_category.value,
     race_no: race_no.value,
@@ -198,7 +196,7 @@ const savechanges = () => {
     [opponent_club.value]: { defence: outdefencearr.value, attack: outattackarr.value }
   })
 }
-console.log(outdefencearr.value.length);
+
 </script>
 <style lang="scss" scoped>
 .cols-2-grid {
