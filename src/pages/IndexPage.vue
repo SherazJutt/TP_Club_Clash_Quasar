@@ -41,7 +41,7 @@
 
       <q-tab-panel name="Attack">
 
-        <h1>not started</h1>
+        <h3 class="text-center">not started</h3>
 
       </q-tab-panel>
 
@@ -52,11 +52,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useQuasar } from 'quasar'
-import { onSnapshot, doc, } from "firebase/firestore";
+import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from '../firebase';
-
-// props
-defineProps(['custom_user_data', 'clash_info', 'local_data'])
 
 const $q = useQuasar()
 const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Available Cars', 'Reference Time'])
@@ -67,32 +64,32 @@ const tab = ref('Defence')
 // const user_data = ref()
 const race_data_arr = ref()
 
-let uid = localStorage.getItem('access_token');
+let user_id = localStorage.getItem('access_token');
 let collection_name = 'user_races'
-const clubname = 'legion united'
 
 $q.loading.show()
 
 let no_race = ref(false)
 let all_races = ref(false)
 
-
 onMounted(() => {
-  onSnapshot(doc(db, collection_name, uid), (data) => {
-    let defence_arr = [];
-    let defence = data.data()[clubname].defence;
-    console.log(defence.length);
-    if (defence.length > 0) {
-      all_races.value = true
-      defence.forEach((data) => {
-        defence_arr.push(data)
-      });
-      race_data_arr.value = defence_arr
-    } else {
-      no_race.value = true
-    }
-    $q.loading.hide()
-  });
+  getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
+    let opponent_club = opponent_data.data().opponent_club
+    onSnapshot(doc(db, collection_name, user_id), (data) => {
+      let defence_arr = [];
+      if (data.data()[opponent_club].defence.length > 0) {
+        let defence = data.data()[opponent_club].defence;
+        all_races.value = true
+        defence.forEach((data) => {
+          defence_arr.push(data)
+        });
+        race_data_arr.value = defence_arr
+      } else {
+        no_race.value = true
+      }
+      $q.loading.hide()
+    });
+  })
 })
 
 </script>

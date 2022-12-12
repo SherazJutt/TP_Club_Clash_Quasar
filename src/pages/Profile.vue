@@ -24,16 +24,9 @@
   </q-layout>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
-import { collection, onSnapshot, getDoc, addDoc, doc, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, } from "firebase/firestore";
-import { db, auth } from '../firebase';
+import { ref } from "vue";
+import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth'
-
-const props = defineProps(['custom_user_data', 'clash_info', 'local_data'])
-// const role = custom_user_data
-// setInterval(function () {
-//   console.log(role);
-// }, 1000);
 
 const user_data = ref([])
 const creationTime = ref()
@@ -43,16 +36,9 @@ const emailVerification = ref()
 onAuthStateChanged(auth, (user) => {
   if (user) {
     user_data.value = user
-    // console.log(user);
-
     creationTime.value = user.metadata.creationTime;
     lastSignInTime.value = user.metadata.lastSignInTime;
     emailVerification.value = user.emailVerified;
-
-    // email.value = user.email
-    // meta.value = user.metadata
-    // emailverify.value = user.emailVerified
-
   } else {
     console.log('not signed in');
   }

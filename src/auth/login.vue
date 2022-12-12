@@ -1,6 +1,6 @@
 <template>
   <q-page class="bg-grey-10">
-    <div class="main-page text-center">
+    <div class="main-page text-center flex column">
       <!-- <h3 class="text-white q-ma-none q-mb-md">Continue With</h3> -->
       <q-btn text-color="white" class="border-white google-btn" @click="SignInWithGoogle">
         <q-icon size="40px">
@@ -19,16 +19,22 @@
         </q-icon>
         <span class="siwg">Sign In With Google</span>
       </q-btn>
+      <!-- <q-btn v-if="next_button == true" class="q-mt-md q-pa-md" color="primary" label="go to home" /> -->
     </div>
   </q-page>
 </template>
 <script setup>
 import { db, auth } from '../firebase'
 import { signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
-import { doc, setDoc, getDoc, arrayUnion } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from 'vue-router'
+import { ref } from "vue";
+
 
 const router = useRouter()
+
+// let login_btn = ref(true)
+// let next_button = ref(false)
 
 const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
@@ -57,12 +63,9 @@ const SignInWithGoogle = () => {
     router.push("/")
   })
 }
-setInterval(function () {
-  let token = localStorage.getItem('access_token')
-  if (token) {
-    router.push("/")
-  }
-}, 500);
+// setTimeout(function () {
+//   next_button.value = true
+// }, 3000);
 </script>
 
 <style lang="scss" scoped>

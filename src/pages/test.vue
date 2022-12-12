@@ -1,43 +1,29 @@
-<template>
-  <div>
-    <q-btn color="primary" class="q-ma-xl" label="OK" @click="onClick" />
-  </div>
-</template>
 <script setup>
-import { db, auth } from '../firebase'
-import { signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
-import { doc, setDoc, getDoc, arrayUnion } from "firebase/firestore";
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const onClick = () => {
-
-  getDoc(doc(db, 'management_data', 'clash_information')).then(data => {
-    let opponent_club = data.data().opponent_club
-    console.log('opponent', data.data().opponent_club);
-
-    setDoc(doc(db, "users_data", 'ynCOHXLVfbSuJSzNlHO4wFj5rZ92'), {
-      user_id: 'ynCOHXLVfbSuJSzNlHO4wFj5rZ92',
-      datetime: new Date(),
-      [opponent_club]: { defence: [], attack: [] }
-    });
-    console.log('done');
+import { ref, watch } from 'vue'
+const props = defineProps(['custom_user_data', 'clash_info', 'local_data'])
 
 
+const question = ref('')
+const answer = ref('Questions usually contain a question mark. ;-)')
 
-  })
-
-
-
-  // setDoc(doc(db, "users_data", data.user.uid), {
-  //   user_id: data.user.uid,
-  //   name: data.user.displayName,
-  //   email: data.user.email,
-  //   role: 'user',
-  //   status: 'enabled',
-  //   datetime: new Date(),
-  //   currclub: { defence: [], attack: [] }
-  // });
-}
+// watch works directly on a ref
+watch(question, async (newQuestion, oldQuestion) => {
+  if (newQuestion.indexOf('?') > -1) {
+    answer.value = 'Thinking...'
+    try {
+      const res = await fetch('https://yesno.wtf/api')
+      answer.value = (await res.json()).answer
+    } catch (error) {
+      answer.value = 'Error! Could not reach the API. ' + error
+    }
+  }
+})
 </script>
+
+<template>
+  <p>
+    Ask a yes/no question:
+    <input v-model="question" />
+  </p>
+  <p>{{ answer }}</p>
+</template>

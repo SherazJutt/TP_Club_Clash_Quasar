@@ -36,10 +36,10 @@
             </q-btn>
           </div>
           <q-btn dense flat>
-            <q-avatar circle size="40px">
-              <img :src="user_data.photoURL">
+            <q-avatar circle size="30px">
+              <img v-if="profile_picture" :src="profile_picture">
+              <img v-else src="~assets/account_cowboy_hat.svg">
             </q-avatar>
-
             <q-menu auto-close color="red">
               <q-list dense>
                 <q-item class="text-black text-center justify-center">
@@ -59,7 +59,7 @@
     </q-header>
 
     <q-page-container>
-      <router-view :clash_info="clash_info" :local_data="local_data" :custom_user_data="custom_user_data_arr" />
+      <router-view :local_data="local_data" />
     </q-page-container>
 
   </q-layout>
@@ -75,16 +75,12 @@ import { onAuthStateChanged } from 'firebase/auth'
 const router = useRouter()
 // all user data
 const user_data = ref([])
+const profile_picture = ref([])
 
 // locally stored user data
 let user_id = localStorage.getItem('access_token');
 const local_data = ref({ user_id: user_id })
 
-// clash_info array to send as props to child components
-const clash_info = ref()
-getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-  clash_info.value = opponent_data.data()
-})
 //custom user data
 const custom_user_data_arr = ref()
 const role = ref()
@@ -99,9 +95,11 @@ function logout() {
     router.push("/auth")
   })
 }
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     user_data.value = user
+    profile_picture.value = user.photoURL
   } else {
     console.log('not signed in');
   }
