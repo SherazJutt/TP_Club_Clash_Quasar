@@ -14,151 +14,97 @@
         <div class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
           <router-link class="text-white" to="/">Home</router-link>
           <router-link class="text-white" to="/garage">Garage</router-link>
+
         </div>
 
         <q-space />
 
         <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
           <q-btn dense flat round size="sm" icon="notifications" />
+          <div v-if="(role === 'admin')">
+            <q-btn dense flat>
+              <div class="row items-center no-wrap">
+                <q-icon name="add" size="20px" />
+              </div>
+              <q-menu auto-close max-width="false">
+                <q-list dense style="min-width: 120px">
+                  <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
+                  <q-separator color="gray" />
+                  <q-item clickable>New Car</q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
           <q-btn dense flat>
-            <div class="row items-center no-wrap">
-              <q-icon name="add" size="20px" />
-              <q-icon name="arrow_drop_down" size="16px" style="margin-left: -2px" />
-            </div>
-            <q-menu auto-close max-width="false">
-              <q-list dense="" style="min-width: 120px">
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/assignraces">Assign
-                      Races</router-link></q-item-section>
-                </q-item>
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section>New Car</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-
-          <q-btn dense flat no-wrap>
-            <q-avatar rounded size="20px">
-              <img src="https://cdn.quasar.dev/img/avatar3.jpg">
+            <q-avatar circle size="30px">
+              <img v-if="profile_picture" :src="profile_picture">
+              <img v-else src="~assets/account_cowboy_hat.svg">
             </q-avatar>
-            <q-icon name="arrow_drop_down" size="16px" />
-
-            <q-menu auto-close>
+            <q-menu auto-close color="red">
               <q-list dense>
-                <q-item class="GL__menu-link-signed-in">
-                  <q-item-section>
-                    <div>Signed in as <strong>Sheraz</strong></div>
-                  </q-item-section>
+                <q-item class="text-black text-center justify-center">
+                  <div>Signed in as <br> <strong>{{ user_data.displayName }}</strong></div>
                 </q-item>
-                <q-separator />
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section><router-link class="text-decoration-none rl-profile" to="/profile">Profile</router-link></q-item-section>
-                </q-item>
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section>Settings</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable class="GL__menu-link">
-                  <q-item-section @click="logout">Sign out</q-item-section>
-                </q-item>
+                <q-separator color="gray" />
+                <q-item to="/profile" class="text-black items-center">Profile</q-item>
+                <q-separator color="gray" />
+                <q-item @click="logout" clickable class="items-center">Sign out</q-item>
               </q-list>
             </q-menu>
           </q-btn>
+
+
         </div>
       </q-toolbar>
     </q-header>
 
     <q-page-container>
-      <router-view />
+      <router-view :local_data="local_data" />
     </q-page-container>
 
   </q-layout>
 </template>
 <script setup>
-import { auth } from '../firebase'
-import { signOut } from "firebase/auth";
+import { ref } from "vue";
+import { db, auth } from '../firebase'
 import { useRouter } from 'vue-router'
+import { signOut } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
+import { onAuthStateChanged } from 'firebase/auth'
 
 const router = useRouter()
+// all user data
+const user_data = ref([])
+const profile_picture = ref([])
+
+// locally stored user data
+let user_id = localStorage.getItem('access_token');
+const local_data = ref({ user_id: user_id })
+
+//custom user data
+const custom_user_data_arr = ref()
+const role = ref()
+getDoc(doc(db, 'users_data', user_id)).then(custom_user_data => {
+  custom_user_data_arr.value = custom_user_data.data()
+  role.value = custom_user_data.data().role
+})
 
 function logout() {
   signOut(auth).then(() => {
     localStorage.removeItem('access_token')
     router.push("/auth")
-  }).catch((error) => {
-    console.log(error);
-  });
+  })
 }
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    user_data.value = user
+    profile_picture.value = user.photoURL
+  } else {
+    console.log('not signed in');
+  }
+})
 </script>
 <style lang="scss" scoped>
-.rl-profile {
-  color: black;
 
-  &:hover {
-    color: white;
-  }
-}
-
-.GL {
-  &__select-GL__menu-link {
-    .default-type {
-      visibility: hidden;
-    }
-
-    &:hover {
-      background: #0366d6;
-      color: white;
-
-      .q-item__section--side {
-        color: white;
-      }
-
-      .default-type {
-        visibility: visible;
-      }
-    }
-  }
-
-  &__toolbar-link {
-    a {
-      color: white;
-      text-decoration: none;
-
-      &:hover {
-        opacity: 0.7;
-      }
-    }
-  }
-
-  &__menu-link:hover {
-    background: #0366d6;
-    color: white;
-  }
-
-  &__menu-link-signed-in,
-  &__menu-link-status {
-    &:hover {
-      &>div {
-        background: white !important;
-      }
-    }
-  }
-
-  &__menu-link-status {
-    color: $blue-grey-6;
-
-    &:hover {
-      color: $light-blue-9;
-    }
-  }
-
-  &__toolbar-select.q-field--focused {
-    width: 450px !important;
-
-    .q-field__append {
-      display: none;
-    }
-  }
-}
 </style>

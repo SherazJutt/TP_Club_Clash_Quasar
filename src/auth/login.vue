@@ -1,6 +1,6 @@
 <template>
   <q-page class="bg-grey-10">
-    <div class="main-page text-center">
+    <div class="main-page text-center flex column">
       <!-- <h3 class="text-white q-ma-none q-mb-md">Continue With</h3> -->
       <q-btn text-color="white" class="border-white google-btn" @click="SignInWithGoogle">
         <q-icon size="40px">
@@ -19,24 +19,53 @@
         </q-icon>
         <span class="siwg">Sign In With Google</span>
       </q-btn>
+      <!-- <q-btn v-if="next_button == true" class="q-mt-md q-pa-md" color="primary" label="go to home" /> -->
     </div>
   </q-page>
 </template>
 <script setup>
-import { auth } from '../firebase'
-import { signInWithPopup, GoogleAuthProvider, } from "firebase/auth";
+import { db, auth } from '../firebase'
+import { signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from 'vue-router'
+import { ref } from "vue";
+
 
 const router = useRouter()
+
+// let login_btn = ref(true)
+// let next_button = ref(false)
 
 const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider).then((data) => {
+    const isNewUser = getAdditionalUserInfo(data).isNewUser
+    if (isNewUser == true) {
+      // add user details in user_data collection
+      setDoc(doc(db, "users_data", data.user.uid), {
+        user_id: data.user.uid,
+        name: data.user.displayName,
+        email: data.user.email,
+        role: 'user',
+        status: 'enabled',
+        datetime: new Date(),
+      });
+      // set opponent club array
+      console.log(data.user.uid);
+      getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
+        let opponent_club = opponent_data.data().opponent_club
+        setDoc(doc(db, "user_races", data.user.uid), {
+          [opponent_club]: { defence: [], attack: [] }
+        });
+      })
+    }
     localStorage.setItem('access_token', data.user.uid)
     router.push("/")
   })
 }
-
+// setTimeout(function () {
+//   next_button.value = true
+// }, 3000);
 </script>
 
 <style lang="scss" scoped>
