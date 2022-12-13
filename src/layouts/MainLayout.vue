@@ -65,12 +65,19 @@
   </q-layout>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { db, auth } from '../firebase'
 import { useRouter } from 'vue-router'
 import { signOut } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
+import { useGlobalVariables } from 'src/stores/GlobalVariables';
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
+$q.loading.show()
+
+const GlobalVariables = useGlobalVariables();
 
 const router = useRouter()
 // all user data
@@ -103,10 +110,15 @@ onAuthStateChanged(auth, (user) => {
   } else {
     signOut(auth).then(() => {
       localStorage.removeItem('access_token')
+      $q.loading.hide()
       router.push("/auth")
     })
   }
 })
+onBeforeMount(() => {
+  GlobalVariables.setUser()
+})
+
 </script>
 <style lang="scss" scoped>
 

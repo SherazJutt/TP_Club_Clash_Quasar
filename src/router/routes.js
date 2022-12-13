@@ -16,6 +16,7 @@ const routes = [
       { path: '/test', component: () => import('pages/test.vue') },
     ],
   },
+
   {
     path: '/auth',
     component: () => import('layouts/NoLayout.vue'),
