@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
+  <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1000px">
     <q-form @submit="assign_race" class="q-gutter-md">
       <div class="main-selects">
         <div class="cols-2-grid">
@@ -55,8 +55,6 @@
       </tbody>
     </q-markup-table>
 
-
-
     <!-- <ul class="q-mb-xl">
       <div class="q-mb-xl">{{ outdefencearr }}</div>
       <li class="q-mb-sm" v-for="(item, index) in outdefencearr" :key="index">
@@ -78,9 +76,30 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { collection, getDocs, onSnapshot, getDoc, addDoc, doc, deleteField, deleteDoc, serverTimestamp, setDoc, updateDoc, arrayUnion, FieldValue, arrayRemove, } from "firebase/firestore";
+import { ref, watch, onBeforeMount } from "vue";
+import { collection, getDocs, onSnapshot, getDoc, doc, updateDoc } from "firebase/firestore";
+import { useGlobalVariables } from 'src/stores/GlobalVariables';
 import { db } from '../firebase';
+import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
+$q.loading.show()
+
+
+const router = useRouter()
+const GlobalVariables = useGlobalVariables();
+
+const interval = setInterval(() => {
+  if (GlobalVariables.curr_user_role == 'admin') {
+    clearInterval(interval)
+    $q.loading.hide()
+  }
+  if (GlobalVariables.curr_user_role == 'user') {
+    clearInterval(interval)
+    router.push('/')
+  }
+}, 100);
 
 // player_name
 const player_name = ref(null)
@@ -124,7 +143,6 @@ const opponent_club = ref()
 watch(player_name, (modeldata) => {
 
   if (modeldata) {
-    console.log('yes => ' + modeldata.uid);
     outdefencearr.value = []
     getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
       opponent_club.value = opponent_data.data().opponent_club
@@ -146,7 +164,6 @@ watch(player_name, (modeldata) => {
     })
 
   } else {
-    console.log('no');
     outdefencearr.value = []
   }
 
@@ -161,17 +178,10 @@ getDocs(collection(db, 'users_data')).then(data => {
     custom_user_data.push({ uid, label })
   });
   player_name_arr.value = custom_user_data
-  console.log(player_name_arr.value);
 })
 
 // form submit
 const assign_race = () => {
-
-  // if (main_category.value == null || race_no.value) {
-  //   console.log('cant submit');
-  // }
-  // console.log(main_category.value, race_no.value, available_cars.value, recommended_car.value, reftime.value);
-
   outdefencearr.value.push({
     category: main_category.value,
     race_no: race_no.value,
@@ -198,7 +208,7 @@ const savechanges = () => {
     [opponent_club.value]: { defence: outdefencearr.value, attack: outattackarr.value }
   })
 }
-console.log(outdefencearr.value.length);
+
 </script>
 <style lang="scss" scoped>
 .cols-2-grid {

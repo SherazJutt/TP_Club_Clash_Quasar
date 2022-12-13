@@ -1,29 +1,31 @@
-<script setup>
-import { ref, watch } from 'vue'
-const props = defineProps(['custom_user_data', 'clash_info', 'local_data'])
-
-
-const question = ref('')
-const answer = ref('Questions usually contain a question mark. ;-)')
-
-// watch works directly on a ref
-watch(question, async (newQuestion, oldQuestion) => {
-  if (newQuestion.indexOf('?') > -1) {
-    answer.value = 'Thinking...'
-    try {
-      const res = await fetch('https://yesno.wtf/api')
-      answer.value = (await res.json()).answer
-    } catch (error) {
-      answer.value = 'Error! Could not reach the API. ' + error
-    }
-  }
-})
-</script>
-
 <template>
-  <p>
-    Ask a yes/no question:
-    <input v-model="question" />
-  </p>
-  <p>{{ answer }}</p>
+  <div v-if="store.curr_user_role == 'admin'">
+    <div>{{ store.curr_user_role }}</div>
+    <q-btn @click="store.increment()">+</q-btn>
+  </div>
+  <div v-else-if="store.curr_user_role == 'user'">
+    <h3>NOt Admin</h3>
+  </div>
 </template>
+
+<script setup>
+import { onBeforeMount } from "vue";
+import { useGlobalVariables } from 'src/stores/GlobalVariables';
+
+const store = useGlobalVariables();
+
+const interval = setInterval(() => {
+  console.log(store.curr_user_role);
+
+  if (store.curr_user_role == 'admin') {
+    console.log('yes');
+    clearInterval(interval)
+  }
+}, 1000);
+
+onBeforeMount(() => {
+  store.setUser()
+})
+
+
+</script>

@@ -28,13 +28,8 @@ import { db, auth } from '../firebase'
 import { signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from 'vue-router'
-import { ref } from "vue";
-
 
 const router = useRouter()
-
-// let login_btn = ref(true)
-// let next_button = ref(false)
 
 const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
@@ -51,7 +46,6 @@ const SignInWithGoogle = () => {
         datetime: new Date(),
       });
       // set opponent club array
-      console.log(data.user.uid);
       getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
         let opponent_club = opponent_data.data().opponent_club
         setDoc(doc(db, "user_races", data.user.uid), {
@@ -63,9 +57,6 @@ const SignInWithGoogle = () => {
     router.push("/")
   })
 }
-// setTimeout(function () {
-//   next_button.value = true
-// }, 3000);
 </script>
 
 <style lang="scss" scoped>
