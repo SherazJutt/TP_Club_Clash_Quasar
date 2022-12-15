@@ -28,6 +28,12 @@ import { db, auth } from '../firebase'
 import { signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from 'vue-router'
+import { useGlobalVariables } from 'src/stores/GlobalVariables';
+
+const GlobalVariables = useGlobalVariables();
+
+
+
 
 const router = useRouter()
 
@@ -35,6 +41,8 @@ const SignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider).then((data) => {
     const isNewUser = getAdditionalUserInfo(data).isNewUser
+    let name = data.user.displayName
+    let uid = data.user.uid
     if (isNewUser == true) {
       // add user details in user_data collection
       setDoc(doc(db, "users_data", data.user.uid), {
@@ -47,10 +55,12 @@ const SignInWithGoogle = () => {
       });
       // set opponent club array
       getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-        let opponent_club = opponent_data.data().opponent_club
+        let opponent_club = opponent_data.data().opponent_club.ClubWithRandomID
         setDoc(doc(db, "user_races", data.user.uid), {
+          name: name,
+          user_id: uid,
           [opponent_club]: { defence: [], attack: [] }
-        });
+        })
       })
     }
     localStorage.setItem('access_token', data.user.uid)

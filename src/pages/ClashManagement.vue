@@ -34,7 +34,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { db } from '../firebase';
-import { onSnapshot, doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { onSnapshot, doc, getDoc, updateDoc, arrayUnion, getDocs, collection } from "firebase/firestore";
 import { useGlobalVariables } from 'src/stores/GlobalVariables';
 import { useQuasar } from 'quasar'
 
@@ -64,39 +64,41 @@ const interval = setInterval(() => {
   }
 }, 100);
 
-const clubs_data = ref([])
-
-onMounted(() => {
-  // getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-  //   // opponent_clubs_arr.value = opponent_data.data().opponent_clubs
-  //   console.log(opponent_data.data().opponent_club.club_name + opponent_data.data().opponent_club.club_id);
-  // })
+onMounted(async () => {
   getDoc(doc(db, 'management_data', 'opponents')).then(opponent_data => {
     opponent_clubs_arr.value = opponent_data.data().opponent_clubs
-    // console.log(opponent_clubs_arr.value[0].uid);
   })
 })
 
-
 const AddOpponent = (async () => {
-
   AddOpponentLoading.value = true
-
-  let ClubTitle = OpponentClubNameField.value.replace(' ', '_').toLocaleLowerCase()
-  // let NewClubTitle = ClubTitle.
-  let ClubWithRandomID = ClubTitle + '_' + Math.random().toString(36).slice(2)
-  console.log(ClubWithRandomID);
+  const DocIDS = []
+  let ClubTitle = OpponentClubNameField.value + '_' + OpponentClubIdField.value
+  let ClubWithRandomID = ClubTitle.replace(/ /g, "_").toLocaleLowerCase() + '_' + Math.random().toString(36).slice(2)
 
   await updateDoc(doc(db, 'management_data', 'opponents'), {
     opponent_clubs: arrayUnion({
+      datetime: new Date(),
       label: OpponentClubNameField.value,
       uid: OpponentClubIdField.value,
       ClubWithRandomID: ClubWithRandomID
     })
-  }).then(() => {
+  }).then(async () => {
+    const querySnapshot = await getDocs(collection(db, "user_races"));
+    querySnapshot.forEach((doc) => {
+      DocIDS.push(doc.id)
+    });
+
+    DocIDS.forEach(async (dt) => {
+      await updateDoc(doc(db, 'user_races', dt), {
+        [ClubWithRandomID]: { defence: [], attack: [] }
+      })
+    })
+
     OpponentClubNameField.value = ''
     OpponentClubIdField.value = ''
     AddOpponentLoading.value = false
+
   })
 
 })
@@ -105,6 +107,7 @@ const UpdateOpponent = (async () => {
   await updateDoc(doc(db, 'management_data', 'clash_information'),
     {
       opponent_club: {
+        club_name: opponent_club.value.datetime,
         club_name: opponent_club.value.label,
         club_id: opponent_club.value.uid,
         ClubWithRandomID: opponent_club.value.ClubWithRandomID

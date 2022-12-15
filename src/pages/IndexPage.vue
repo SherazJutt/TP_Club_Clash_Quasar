@@ -41,7 +41,21 @@
 
       <q-tab-panel name="Attack">
 
-        <h3 class="text-center">not started</h3>
+        <q-markup-table v-if="attack_data_arr">
+          <thead>
+            <tr>
+              <th class="text-center" v-for="(column, index) in attack_columns" :key="index">{{ column }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-center" v-for="(attack, index) in attack_data_arr" :key="index">
+              <td class="text-center">{{ index + 1 }}</td>
+              <td class="text-center">{{ attack.category }}</td>
+              <td class="text-center">{{ attack.street_no }}</td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+        <h3 class="text-center" v-else>not started</h3>
 
       </q-tab-panel>
 
@@ -60,11 +74,12 @@ const GlobalVariables = useGlobalVariables();
 const $q = useQuasar()
 const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Available Cars', 'Reference Time'])
 const attack = ref([])
-const attack_columns = ref(['Category', 'Street No', 'Difficulty'])
+const attack_columns = ref(['#', 'Category', 'Street No', 'Difficulty'])
 const tab = ref()
 
 // const user_data = ref()
 const race_data_arr = ref()
+const attack_data_arr = ref()
 
 let user_id = localStorage.getItem('access_token');
 let collection_name = 'user_races'
@@ -76,16 +91,23 @@ let all_races = ref(false)
 
 onMounted(() => {
   getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-    let opponent_club = opponent_data.data().opponent_club.club_name
+    let opponent_club = opponent_data.data().opponent_club.ClubWithRandomID
+
     onSnapshot(doc(db, collection_name, user_id), (data) => {
       let defence_arr = [];
+      let attack_arr = [];
       if (data.data()[opponent_club].defence.length > 0) {
         let defence = data.data()[opponent_club].defence;
+        let attack = data.data()[opponent_club].attack;
         all_races.value = true
         defence.forEach((data) => {
           defence_arr.push(data)
         });
+        attack.forEach((data) => {
+          attack_arr.push(data)
+        });
         race_data_arr.value = defence_arr
+        attack_data_arr.value = attack_arr
       } else {
         no_race.value = true
       }
