@@ -1,31 +1,16 @@
 <template>
-  <div v-if="store.curr_user_role == 'admin'">
-    <div>{{ store.curr_user_role }}</div>
-    <q-btn @click="store.increment()">+</q-btn>
-  </div>
-  <div v-else-if="store.curr_user_role == 'user'">
-    <h3>NOt Admin</h3>
+  <div class="q-pa-md q-gutter-sm">
+    <q-btn @click="simulateProgress(0)" label="Button" />
+
   </div>
 </template>
 
 <script setup>
-import { onBeforeMount } from "vue";
-import { useGlobalVariables } from 'src/stores/GlobalVariables';
+import { ref } from 'vue'
 
-const store = useGlobalVariables();
-
-const interval = setInterval(() => {
-  console.log(store.curr_user_role);
-
-  if (store.curr_user_role == 'admin') {
-    console.log('yes');
-    clearInterval(interval)
-  }
-}, 1000);
-
-onBeforeMount(() => {
-  store.setUser()
-})
+function simulateProgress() {
+  console.log(Math.random().toString(36).slice(2));
+}
 
 
 </script>

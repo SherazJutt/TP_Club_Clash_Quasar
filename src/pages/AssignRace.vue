@@ -73,6 +73,7 @@
       </li>
     </ul> -->
     <!-- <q-btn color="primary" label="Save changes" class="q-ml-xl" @click="savechanges" /> -->
+    <q-btn color="primary" label="Add" class="q-ml-xl" @click="savechanges" />
   </div>
 </template>
 <script setup>
@@ -141,11 +142,10 @@ let collection_name = 'user_races'
 const opponent_club = ref()
 
 watch(player_name, (modeldata) => {
-
   if (modeldata) {
     outdefencearr.value = []
     getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-      opponent_club.value = opponent_data.data().opponent_club
+      opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
       onSnapshot(doc(db, collection_name, modeldata.uid), (data) => {
         let defencearr = [];
         let attackarr = [];
@@ -180,7 +180,7 @@ getDocs(collection(db, 'users_data')).then(data => {
   player_name_arr.value = custom_user_data
 })
 
-// form submit
+// assign race
 const assign_race = () => {
   outdefencearr.value.push({
     category: main_category.value,
@@ -205,7 +205,7 @@ const deletePosition = (index) => {
 }
 const savechanges = () => {
   updateDoc(doc(db, collection_name, player_name.value.uid), {
-    [opponent_club.value]: { defence: outdefencearr.value, attack: outattackarr.value }
+    opponent_club: { defence: outdefencearr.value, attack: outattackarr.value }
   })
 }
 

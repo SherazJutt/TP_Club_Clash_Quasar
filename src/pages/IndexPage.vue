@@ -54,12 +54,14 @@ import { ref, onMounted } from "vue";
 import { useQuasar } from 'quasar'
 import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from '../firebase';
+import { useGlobalVariables } from 'src/stores/GlobalVariables';
+const GlobalVariables = useGlobalVariables();
 
 const $q = useQuasar()
 const defence_columns = ref(['Category', 'Race No', 'Recommended Car', 'Available Cars', 'Reference Time'])
 const attack = ref([])
 const attack_columns = ref(['Category', 'Street No', 'Difficulty'])
-const tab = ref('Defence')
+const tab = ref()
 
 // const user_data = ref()
 const race_data_arr = ref()
@@ -74,7 +76,7 @@ let all_races = ref(false)
 
 onMounted(() => {
   getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-    let opponent_club = opponent_data.data().opponent_club
+    let opponent_club = opponent_data.data().opponent_club.club_name
     onSnapshot(doc(db, collection_name, user_id), (data) => {
       let defence_arr = [];
       if (data.data()[opponent_club].defence.length > 0) {
@@ -87,6 +89,7 @@ onMounted(() => {
       } else {
         no_race.value = true
       }
+      tab.value = GlobalVariables.current_clash
       $q.loading.hide()
     });
   })
