@@ -28,6 +28,8 @@
               </div>
               <q-menu auto-close max-width="false">
                 <q-list dense style="min-width: 120px">
+                  <q-item clickable to="/clashmanagement" class="text-black items-center">Clash Management</q-item>
+                  <q-separator color="gray" />
                   <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
                   <q-separator color="gray" />
                   <q-item clickable>New Car</q-item>
@@ -75,7 +77,6 @@ import { useGlobalVariables } from 'src/stores/GlobalVariables';
 import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
-$q.loading.show()
 
 const GlobalVariables = useGlobalVariables();
 
@@ -116,7 +117,7 @@ onAuthStateChanged(auth, (user) => {
   }
 })
 onBeforeMount(() => {
-  GlobalVariables.setUser()
+  GlobalVariables.setDataVariables()
 })
 
 </script>

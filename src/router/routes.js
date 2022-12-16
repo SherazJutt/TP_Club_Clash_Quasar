@@ -11,8 +11,9 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: '/garage', component: () => import('pages/Garage.vue') },
-      { path: '/profile', component: () => import('src/pages/Profile.vue') },
-      { path: '/assignraces', component: () => import('src/pages/AssignRace.vue') },
+      { path: '/profile', component: () => import('pages/Profile.vue') },
+      { path: '/assignraces', component: () => import('pages/AssignRace.vue') },
+      { path: '/clashmanagement', component: () => import('pages/ClashManagement.vue') },
       { path: '/test', component: () => import('pages/test.vue') },
     ],
   },
