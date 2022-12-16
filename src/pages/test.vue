@@ -1,61 +1,39 @@
 <template>
   <div class="q-pa-md q-gutter-sm">
-    <q-btn @click="simulateProgress(0)" label="Button" />
-    <q-btn label="Confirm" color="primary" @click="confirm" />
+    <q-btn label="With QToolbar" color="primary" @click="toolbar = true" />
 
+
+
+    <q-dialog v-model="toolbar">
+      <q-card>
+        <q-toolbar>
+          <q-avatar>
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg">
+          </q-avatar>
+
+          <q-toolbar-title><span class="text-weight-bold">Quasar</span> Framework</q-toolbar-title>
+
+          <q-btn flat round dense icon="close" v-close-popup />
+        </q-toolbar>
+
+        <q-card-section>
+          <q-input v-model="min" type="text" label="Minutes" />
+          <q-input v-model="sec" type="text" label="Seconds" />
+          <q-input v-model="milisec" type="text" label="MiliSeconds" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { db } from '../firebase';
-import { onSnapshot, doc, getDoc, updateDoc, arrayUnion, getDocs, collection } from "firebase/firestore";
-import { useGlobalVariables } from 'src/stores/GlobalVariables';
-import { useQuasar } from 'quasar'
-import { async } from '@firebase/util';
-const $q = useQuasar()
+<script>
+import { ref } from 'vue'
 
-
-
-
-const confirm = (() => {
-  $q.dialog({
-    title: 'Delete',
-    // message: 'Would you like to turn on the wifi?',
-    cancel: true,
-    persistent: true
-  }).onOk(() => {
-    console.log('>>>> OK')
-  })
-})
-
-
-
-
-
-
-
-
-
-
-
-
-const simulateProgress = (async () => {
-  const DocIDS = []
-  const querySnapshot = await getDocs(collection(db, "user_races"));
-  querySnapshot.forEach((doc) => {
-    DocIDS.push(doc.id)
-  });
-  console.log(DocIDS);
-})
-
-
-
-
-// let time = data.data().datetime
-
-// const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
-// const date = fireBaseTime.toDateString();
-// const atTime = fireBaseTime.toLocaleTimeString();
-// console.log(date, atTime);
+export default {
+  setup() {
+    return {
+      toolbar: ref(false)
+    }
+  }
+}
 </script>

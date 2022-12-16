@@ -16,31 +16,28 @@
 
             <div class="cols-2-grid">
               <q-select label="Race No" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
-              <q-select filled v-model="available_cars" multiple :options="available_cars_arr" transition-hide="jump-up" use-chips stack-label label="Available Cars" />
-            </div>
-          </div>
-
-          <div>
-            <div class="recommended_cars">
-              <q-select filled class="mt-30px" :model-value="recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
+              <q-select filled :model-value="recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">add cars to show</q-item-section>
                   </q-item>
                 </template>
               </q-select>
-              <div class="reftime-main">
-                <div><span class="text-blue-9">Reference time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
-                <div class="reftime q-mt-sm" hint="yes">
-                  <q-select transition-hide="jump-up" clearable filled v-model="reftime.min" :options="min" label="Minutes" />
-                  <q-select transition-hide="jump-up" clearable filled v-model="reftime.sec" :options="sec" label="Seconds" />
-                  <q-input filled type="number" clearable v-model="reftime.milisec" label="Miliseconds" />
-                </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="reftime-main">
+              <div><span class="text-blue-9">Reference time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
+              <div class="reftime q-mt-sm" hint="yes">
+                <q-select transition-hide="jump-up" clearable filled v-model="reftime.min" :options="min" label="Minutes" />
+                <q-select transition-hide="jump-up" clearable filled v-model="reftime.sec" :options="sec" label="Seconds" />
+                <q-input filled type="number" clearable v-model="reftime.milisec" label="Miliseconds" />
               </div>
             </div>
           </div>
 
-          <q-btn color="primary" type="submit" v-if="player_name && race_no && main_territory && available_cars && recommended_car">Assign race no<span class="q-ml-xs"> {{ race_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
+          <q-btn color="primary" type="submit" v-if="player_name && race_no && main_territory && recommended_car">Assign race no<span class="q-ml-xs"> {{ race_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
         </q-form>
 
         <q-markup-table class="q-mt-xl" v-if="outdefencearr.length > 0">
@@ -61,6 +58,9 @@
             </tr>
           </tbody>
         </q-markup-table>
+        <div v-else="outdefencearr.length = 0">
+          <h3 v-if="player_name">No Races assigned to {{ player_name.label }}</h3>
+        </div>
       </q-tab-panel>
 
       <!-- attack -->
@@ -86,7 +86,6 @@
         <q-markup-table class="q-mt-xl" v-if="outattackarr.length > 0">
           <thead>
             <tr>
-              <th class="text-center">#</th>
               <th class="text-center">Territory</th>
               <th class="text-center">Street No</th>
               <th class="text-center">Action</th>
@@ -94,7 +93,6 @@
           </thead>
           <tbody>
             <tr v-for="(attack, index) in outattackarr" :key="index">
-              <td class="text-center">{{ index + 1 }}</td>
               <td class="text-center">{{ attack.territory }}</td>
               <td class="text-center">{{ attack.street_no }}</td>
               <td class="text-center"><q-btn flat class="text-blue-9" icon="delete" @click="deleteAttackStreet(index)" /></td>
@@ -125,7 +123,6 @@ const tab = ref()
 const router = useRouter()
 const GlobalVariables = useGlobalVariables();
 
-
 const interval = setInterval(() => {
   if (GlobalVariables.curr_user_role == 'admin') {
     clearInterval(interval)
@@ -142,19 +139,19 @@ const player_name = ref(null)
 const player_name_arr = ref()
 // main_territory
 const main_territory = ref(null)
-const main_territory_arr = ['gold hills', 'back kitchen', 'Sub Urbs', 'high village', 'down village']
+const main_territory_arr = ['gold hills', 'back kitchen', 'Sub Urbs', 'high village', 'down village', 'up town', 'river park', 'under pass', 'financial district', 'east valley']
 // race_no
 const race_no = ref(null)
-const race_no_arr = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+const race_no_arr = []
+for (let i = 1; i <= 23; i++) {
+  race_no_arr.push(i)
+}
 // street_no
 const street_no = ref(null)
 const street_no_arr = ['1', '2', '3', '4']
 // difficulty
 const difficulty = ref(null)
 const difficulty_arr = ['Easy', 'Medium', 'Hard']
-// available_cars
-const available_cars = ref(null)
-const available_cars_arr = ['d', 'c', 'b', 'a', 's']
 // recommended_car
 const recommended_cars_arr = ['tvr', 'ssc', 'venom', 'jesko', 'imola']
 const recommended_car = ref(null)
@@ -170,15 +167,16 @@ function setreccar(val) {
 }
 // refrence_time
 const reftime = ref({ min: '', sec: '', milisec: '' })
-const min = ['1', '2']
-const sec = ['1', '2', '3', '4', '5', '5', '7', '8', '9']
-
+const min = ['0', '1', '2', '3']
+const sec = ['00']
+for (let i = 1; i <= 59; i++) {
+  sec.push(i)
+}
 // database functions
 const outdefencearr = ref([])
 const outattackarr = ref([])
 
 // variables
-let user_id = localStorage.getItem('access_token')
 let collection_name = 'user_races'
 const opponent_club = ref()
 
@@ -201,13 +199,10 @@ watch(player_name, (modeldata) => {
         outdefencearr.value = defencearr
         outattackarr.value = attackarr
       });
-
     })
-
   } else {
     outdefencearr.value = []
   }
-
 })
 
 //custom user data
@@ -227,9 +222,9 @@ const assign_race = () => {
   outdefencearr.value.push({
     territory: main_territory.value,
     race_no: race_no.value,
-    available_cars: available_cars.value,
     recommended_car: recommended_car.value,
     reftime: reftime.value,
+    completed: false,
   })
   updateDoc(doc(db, collection_name, player_name.value.uid), {
     [opponent_club.value]: { defence: outdefencearr.value, attack: outattackarr.value }
@@ -237,7 +232,6 @@ const assign_race = () => {
   // reset field values
   main_territory.value = ''
   race_no.value = ''
-  available_cars.value = null
   recommended_car.value = ''
   reftime.value = { min: '', sec: '', milisec: '' }
 }
@@ -256,15 +250,16 @@ const assign_attack = () => {
   race_no.value = ''
   street_no.value = ''
   difficulty.value = ''
-  available_cars.value = null
   recommended_car.value = ''
   reftime.value = { min: '', sec: '', milisec: '' }
 }
 
-
 const deleteDefenceRace = ((index) => {
+  let title = 'Confirm To Delete Race #'
+  let indextitle = index + 1
+  let CurrentRaceWithTitle = title + indextitle
   $q.dialog({
-    title: 'Confirm To Delete Race # ',
+    title: CurrentRaceWithTitle,
     // message: 'Would you like to turn on the wifi?',
     cancel: true,
     persistent: true
@@ -281,8 +276,11 @@ const deleteDefenceRace = ((index) => {
   })
 })
 const deleteAttackStreet = (async (index) => {
+  let title = 'Confirm To Delete Street #'
+  let indextitle = index + 1
+  let CurrentstreetWithTitle = title + indextitle
   $q.dialog({
-    title: 'Confirm To Delete Street # ',
+    title: CurrentstreetWithTitle,
     // message: 'Would you like to turn on the wifi?',
     cancel: true,
     persistent: true
@@ -297,14 +295,6 @@ const deleteAttackStreet = (async (index) => {
     })
 
   })
-
-
-
-
-
-
-
-
 })
 
 </script>
