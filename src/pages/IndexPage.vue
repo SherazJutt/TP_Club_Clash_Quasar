@@ -14,8 +14,9 @@
             </template>
             <q-markup-table>
               <thead>
-                <tr>
-                  <th class="text-center" v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
+                <tr class="text-center">
+                  <th v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
+                  <th v-if="race.completed == true">Your Time</th>
                   <th style="width: 110px;" v-if="race.completed == false">Mark As Completed</th>
                 </tr>
               </thead>
@@ -26,6 +27,7 @@
                   <td>{{ race.recommended_car }}</td>
                   <td>{{ race.reftime.min }} : {{ race.reftime.sec }} : {{ race.reftime.milisec }}</td>
                   <td><span v-if="race.completed == true">Completed</span><span v-else>Pending</span></td>
+                  <td v-if="race.completed == true">{{ race.finaltime.min }} : {{ race.finaltime.sec }} : {{ race.finaltime.milisec }}</td>
                   <td v-if="race.completed == false"><q-btn flat round color="primary" icon="check" @click="markcompleted(index)" /></td>
                 </tr>
               </tbody>
@@ -60,21 +62,19 @@
 
     </q-tab-panels>
 
-    <q-dialog v-model="toolbar">
+    <q-dialog persistent v-model="toolbar">
       <q-card>
-        <q-toolbar class="bg-blue-8 text-white">
-
-          <q-toolbar-title>Enter Your Final Lap time</q-toolbar-title>
-
-          <!-- <q-btn flat round dense icon="close" v-close-popup /> -->
+        <q-toolbar class="bg-green text-white flex justify-between">
+          <div>Your Final Lap time</div>
+          <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
 
-        <q-card-section>
+        <q-card-section class="q-pa-sm" style="width: 300px;">
           <div>
-            <q-select class="q-mb-md" transition-hide="jump-up" clearable filled v-model="finaltime.min" :options="min" label="Minutes" />
-            <q-select class="q-mb-md" transition-hide="jump-up" clearable filled v-model="finaltime.sec" :options="sec" label="Seconds" />
-            <q-input filled type="number" clearable v-model="finaltime.milisec" label="Miliseconds" />
-            <q-btn color="primary" label="Mark As Completed" v-close-popup />
+            <q-select class="q-mb-xs border" transition-hide="jump-up" clearable filled v-model="finaltime.min" :options="min" label="Minutes" />
+            <q-select class="q-mb-xs border" transition-hide="jump-up" clearable filled v-model="finaltime.sec" :options="sec" label="Seconds" />
+            <q-input filled class="border q-mb-sm" type="number" clearable v-model="finaltime.milisec" label="Miliseconds" />
+            <q-btn color="green" class="w-100" label="Mark As Completed" v-if="finaltime.min && finaltime.sec && finaltime.milisec" @click="clicktwo" v-close-popup />
           </div>
         </q-card-section>
       </q-card>
@@ -147,35 +147,35 @@ onMounted(() => {
     });
   })
 })
+const current_index = ref()
 
 const markcompleted = (async (index) => {
+  current_index.value = index
+  toolbar.value = true
+})
+const clicktwo = (async (index) => {
   let newdata = {
     completed: true,
-    race_no: race_data_arr.value[index].race_no,
-    recommended_car: race_data_arr.value[index].recommended_car,
-    reftime: race_data_arr.value[index].reftime,
-    territory: race_data_arr.value[index].territory
+    finaltime: finaltime.value,
+    race_no: race_data_arr.value[current_index.value].race_no,
+    recommended_car: race_data_arr.value[current_index.value].recommended_car,
+    reftime: race_data_arr.value[current_index.value].reftime,
+    territory: race_data_arr.value[current_index.value].territory
   }
 
-  race_data_arr.value.splice(index, 1);
+  race_data_arr.value.splice(current_index.value, 1);
 
   race_data_arr.value.push(newdata)
 
-  // await updateDoc(doc(db, collection_name, user_id), {
-  //   [opponent_club.value]: { defence: race_data_arr.value, attack: attack_data_arr.value }
-  // }).then(() => {
-  //   console.log('succesfully deleted');
-  // }).catch((error) => {
-  //   console.log('error', error);
-  // })
-
+  await updateDoc(doc(db, collection_name, user_id), {
+    [opponent_club.value]: { defence: race_data_arr.value, attack: attack_data_arr.value }
+  }).then(() => {
+    // reset final time fields
+    finaltime.value = { min: '', sec: '', milisec: '' }
+  }).catch((error) => {
+    console.log('error', error);
+  })
 })
-
-
-
-
-
-
 </script>
 <style lang="scss" scoped>
 .c-h-main-h {
