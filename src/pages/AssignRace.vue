@@ -1,6 +1,5 @@
 <template>
   <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1000px">
-
     <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
       <q-tab class="text-red" name="Attack" label="Attack" />
@@ -205,17 +204,16 @@ watch(player_name, (modeldata) => {
   }
 })
 
-//custom user data
-getDocs(collection(db, 'users_data')).then(data => {
+onSnapshot(collection(db, 'users_data'), (data) => {
   let custom_user_data = []
-  data.forEach((data) => {
+  data.forEach(data => {
     let uid = data.data().user_id
     let label = data.data().name
     custom_user_data.push({ uid, label })
   });
   player_name_arr.value = custom_user_data
   tab.value = GlobalVariables.current_clash
-})
+});
 
 // assign race
 const assign_race = () => {
