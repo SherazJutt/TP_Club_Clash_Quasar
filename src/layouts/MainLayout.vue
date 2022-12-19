@@ -14,7 +14,6 @@
         <div class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
           <router-link class="text-white" to="/">Home</router-link>
           <router-link class="text-white" to="/garage">Garage</router-link>
-
         </div>
 
         <q-space />
@@ -30,6 +29,8 @@
                 <q-list dense style="min-width: 120px">
                   <q-item clickable to="/clashmanagement" class="text-black items-center">Clash Management</q-item>
                   <q-separator color="gray" />
+                  <q-item clickable to="/Users" class="text-black items-center">Users</q-item>
+                  <q-separator color="gray" />
                   <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
                   <q-separator color="gray" />
                   <q-item clickable>New Car</q-item>
@@ -39,13 +40,13 @@
           </div>
           <q-btn dense flat>
             <q-avatar circle size="30px">
-              <img v-if="profile_picture" :src="profile_picture">
-              <img v-else src="~assets/account_cowboy_hat.svg">
+              <q-img v-if="user_data.profileImg" :src="user_data.profileImg" spinner-color="white" spinner-size="10px" />
+              <q-img v-else src="~assets/account_cowboy_hat.svg" />
             </q-avatar>
             <q-menu auto-close color="red">
               <q-list dense>
                 <q-item class="text-black text-center justify-center">
-                  <div>Signed in as <br> <strong>{{ user_data.displayName }}</strong></div>
+                  <div>Signed in as <br> <strong>{{ user_data.name }}</strong></div>
                 </q-item>
                 <q-separator color="gray" />
                 <q-item to="/profile" class="text-black items-center">Profile</q-item>
@@ -65,13 +66,14 @@
     </q-page-container>
 
   </q-layout>
+
 </template>
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import { db, auth } from '../firebase'
 import { useRouter } from 'vue-router'
 import { signOut } from "firebase/auth";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 import { useGlobalVariables } from 'src/stores/GlobalVariables';
 import { useQuasar } from 'quasar'
@@ -81,22 +83,21 @@ const $q = useQuasar()
 const GlobalVariables = useGlobalVariables();
 
 const router = useRouter()
-// all user data
-const user_data = ref([])
-const profile_picture = ref([])
 
 // locally stored user data
 let user_id = localStorage.getItem('access_token');
 const local_data = ref({ user_id: user_id })
 
 //custom user data
-const custom_user_data_arr = ref()
+const user_data = ref([])
 const role = ref()
-getDoc(doc(db, 'users_data', user_id)).then(custom_user_data => {
-  custom_user_data_arr.value = custom_user_data.data()
-  role.value = custom_user_data.data().role
-})
 
+onSnapshot(doc(db, 'users_data', user_id), (data) => {
+  user_data.value = data.data()
+  role.value = data.data().role
+});
+
+// logout
 function logout() {
   signOut(auth).then(() => {
     localStorage.removeItem('access_token')
@@ -105,10 +106,7 @@ function logout() {
 }
 
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    user_data.value = user
-    profile_picture.value = user.photoURL
-  } else {
+  if (!user) {
     signOut(auth).then(() => {
       localStorage.removeItem('access_token')
       $q.loading.hide()
