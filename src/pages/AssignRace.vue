@@ -9,7 +9,15 @@
         <q-form @submit="assign_race" class="q-gutter-md">
           <div class="main-selects">
             <div class="cols-2-grid">
-              <q-select label="Player Name" class="text-capitalize" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr" />
+
+              <q-select label="Player Name" class="text-capitalize" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">Add members to team1</q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+
               <q-select label="Territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
             </div>
 
@@ -112,7 +120,6 @@ import { useGlobalVariables } from 'src/stores/GlobalVariables';
 import { db } from '../firebase';
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { async } from "@firebase/util";
 
 const $q = useQuasar()
 $q.loading.show()
@@ -209,7 +216,9 @@ onSnapshot(collection(db, 'users_data'), (data) => {
   data.forEach(data => {
     let uid = data.data().user_id
     let label = data.data().name
-    custom_user_data.push({ uid, label })
+    if (data.data().member_of == 'team1') {
+      custom_user_data.push({ uid, label })
+    }
   });
   player_name_arr.value = custom_user_data
   tab.value = GlobalVariables.current_clash
@@ -279,7 +288,6 @@ const deleteAttackStreet = (async (index) => {
   let CurrentstreetWithTitle = title + indextitle
   $q.dialog({
     title: CurrentstreetWithTitle,
-    // message: 'Would you like to turn on the wifi?',
     cancel: true,
     persistent: true
   }).onOk(async () => {

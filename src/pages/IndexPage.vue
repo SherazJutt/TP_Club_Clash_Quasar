@@ -95,11 +95,6 @@
             </q-stepper-navigation>
           </q-step>
         </q-stepper>
-
-
-
-
-
       </q-tab-panel>
 
     </q-tab-panels>
@@ -146,7 +141,6 @@ for (let i = 1; i <= 59; i++) {
 }
 
 const step = ref(1)
-
 
 // const user_data = ref()
 const race_data_arr = ref()

@@ -47,9 +47,11 @@ const SignInWithGoogle = () => {
       // add user details in user_data collection
       setDoc(doc(db, "users_data", data.user.uid), {
         user_id: data.user.uid,
+        profileImg: data.user.photoURL,
         name: data.user.displayName,
         email: data.user.email,
         role: 'user',
+        member_of: 'none',
         status: 'enabled',
         datetime: new Date(),
       });
@@ -71,7 +73,6 @@ const SignInWithGoogle = () => {
 
 <style lang="scss" scoped>
 .main-page {
-  // background-color: red;
   max-width: 500px;
   max-height: 500px;
 }

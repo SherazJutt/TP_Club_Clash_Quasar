@@ -14,6 +14,8 @@ const routes = [
       { path: '/profile', component: () => import('pages/Profile.vue') },
       { path: '/assignraces', component: () => import('pages/AssignRace.vue') },
       { path: '/clashmanagement', component: () => import('pages/ClashManagement.vue') },
+      { path: '/users', component: () => import('pages/Users.vue') },
+      { path: '/cars', component: () => import('pages/Cars.vue') },
       { path: '/test', component: () => import('pages/test.vue') },
     ],
   },
