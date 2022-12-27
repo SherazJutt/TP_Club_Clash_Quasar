@@ -15,11 +15,11 @@ const routes = [
       { path: '/assignraces', component: () => import('pages/AssignRace.vue') },
       { path: '/clashmanagement', component: () => import('pages/ClashManagement.vue') },
       { path: '/users', component: () => import('pages/Users.vue') },
-      { path: '/cars', component: () => import('pages/Cars.vue') },
-      { path: '/test', component: () => import('pages/test.vue') },
+      { path: '/managecars', component: () => import('pages/managecars.vue') },
+      { path: '/manageterritories', component: () => import('pages/manageterritories.vue') },
     ],
   },
-
+  { path: '/test', component: () => import('pages/test.vue') },
   {
     path: '/auth',
     component: () => import('layouts/NoLayout.vue'),

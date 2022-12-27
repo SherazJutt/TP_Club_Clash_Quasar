@@ -1,72 +1,87 @@
 <template>
-  <q-layout class="bg-grey-1">
-    <q-header reveal elevated class="text-white bg-blue-9" height-hint="61.59">
-      <q-toolbar class="q-py-sm q-px-md">
-        <q-avatar square size="42px">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="-75 -40 120 80">
-            <path fill="#fff" d="M-75-40H45v80H-75z" />
-            <path fill="#01411C" d="M-45-40h90v80h-90z" />
-            <circle r="24" fill="#fff" />
-            <circle r="22" cx="-7" cy="-40" fill="#01411C" transform="rotate(-41.634 45 -40)" />
-            <path fill="#fff" d="M8.751-17.959l10.11 11.373L3.997-9.844l13.94-6.1-7.692 13.129z" />
-          </svg>
-        </q-avatar>
-        <div class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-medium row items-center no-wrap full-width justify-center">
-          <router-link class="text-white" to="/">Home</router-link>
-          <router-link class="text-white" to="/garage">Garage</router-link>
+  <q-layout view="lHh Lpr lff" container style="height: 100vh">
+    <q-header elevated class="">
+      <q-toolbar class="justify-between">
+        <q-btn class="toggle" flat @click="drawer = !drawer" round dense icon="menu" />
+        <div class="flex mobile-links">
+          <q-btn color="primary" to="/" label="Home" />
+          <q-btn color="primary" to="/garage" label="garage" />
         </div>
-
-        <q-space />
-
-        <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
-          <q-btn dense flat round size="sm" icon="notifications" />
-          <div v-if="(role === 'admin')">
-            <q-btn dense flat>
-              <div class="row items-center no-wrap">
-                <q-icon name="add" size="20px" />
-              </div>
-              <q-menu auto-close max-width="false">
-                <q-list dense style="min-width: 120px">
-                  <q-item clickable to="/clashmanagement" class="text-black items-center">Clash Management</q-item>
-                  <q-separator color="gray" />
-                  <q-item clickable to="/Users" class="text-black items-center">Users</q-item>
-                  <q-separator color="gray" />
-                  <q-item clickable to="/assignraces" class="text-black items-center">Assign Races</q-item>
-                  <q-separator color="gray" />
-                  <q-item clickable>New Car</q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
-          </div>
-          <q-btn dense flat>
-            <q-avatar circle size="30px">
-              <q-img v-if="user_data.profileImg" :src="user_data.profileImg" spinner-color="white" spinner-size="10px" />
-              <q-img v-else src="~assets/account_cowboy_hat.svg" />
-            </q-avatar>
-            <q-menu auto-close color="red">
-              <q-list dense>
-                <q-item class="text-black text-center justify-center">
-                  <div>Signed in as <br> <strong>{{ user_data.name }}</strong></div>
-                </q-item>
-                <q-separator color="gray" />
-                <q-item to="/profile" class="text-black items-center">Profile</q-item>
-                <q-separator color="gray" />
-                <q-item @click="logout" clickable class="items-center">Sign out</q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-
-
-        </div>
+        <q-btn round to="/profile">
+          <q-avatar size="28px">
+            <img :src="user_data.profileImg" />
+          </q-avatar>
+        </q-btn>
       </q-toolbar>
     </q-header>
+
+    <q-drawer elevated class="bg-primary" v-model="drawer" show-if-above :width="250" :breakpoint="1280">
+      <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px;">
+        <q-list padding class="text-white">
+
+          <q-item clickable to="/" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="home" /></q-item-section>
+            <q-item-section>home</q-item-section>
+          </q-item>
+
+          <q-item clickable to="/garage" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="garage" /></q-item-section>
+            <q-item-section>Garage</q-item-section>
+          </q-item>
+
+          <q-item clickable to="/profile" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="account_circle" /></q-item-section>
+            <q-item-section>profile</q-item-section>
+          </q-item>
+
+          <q-item clickable v-if="(role === 'admin')" to="/assignraces" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="assignment_add" /></q-item-section>
+            <q-item-section>Assign races</q-item-section>
+          </q-item>
+
+          <q-item clickable v-if="(role === 'admin')" to="/users" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="group" /></q-item-section>
+            <q-item-section>users</q-item-section>
+          </q-item>
+          <!-- manage cars -->
+          <q-item clickable v-if="(role === 'admin')" to="/managecars" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="directions_car" /></q-item-section>
+            <q-item-section>Manage Cars</q-item-section>
+          </q-item>
+          <!-- manage manageterritories -->
+          <q-item clickable v-if="(role === 'admin')" to="/manageterritories" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="dataset" /></q-item-section>
+            <q-item-section>Manage Territories</q-item-section>
+          </q-item>
+
+          <q-item clickable v-if="(role === 'admin')" to="/clashmanagement" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="settings" /></q-item-section>
+            <q-item-section>clash management</q-item-section>
+          </q-item>
+
+        </q-list>
+
+        <q-btn class="text-black logout" style="position: absolute; bottom: 10px; left: 10px; right: 10px;" icon="logout" label="logout" @click="logout" />
+
+      </q-scroll-area>
+
+      <q-img class="absolute-top" src="~assets/A9_Club.png" style="height: 150px;">
+        <div class="absolute-bottom" style="height: 150px;">
+          <q-avatar size="56px" class="q-mb-sm">
+            <q-img v-if="user_data.profileImg" :src="user_data.profileImg" spinner-color="white" spinner-size="30px" />
+            <q-img v-else src="~assets/account_cowboy_hat.svg" />
+          </q-avatar>
+          <div class="text-weight-bold">{{ user_data.name }}</div>
+          <div>{{ user_data.email }}</div>
+        </div>
+      </q-img>
+    </q-drawer>
 
     <q-page-container>
       <router-view :local_data="local_data" />
     </q-page-container>
 
   </q-layout>
-
 </template>
 <script setup>
 import { ref, onBeforeMount } from "vue";
@@ -83,6 +98,8 @@ const $q = useQuasar()
 const GlobalVariables = useGlobalVariables();
 
 const router = useRouter()
+
+const drawer = ref(false)
 
 // locally stored user data
 let user_id = localStorage.getItem('access_token');
@@ -119,6 +136,27 @@ onBeforeMount(() => {
 })
 
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.q-scrollarea__container {
+  background: rgba(0, 0, 0, 0.4)
+}
 
+.logout {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white !important;
+  border: 1px solid grey;
+}
+
+@media screen and (min-width:1281px) {
+  .mobile-links {
+    display: none;
+  }
+}
 </style>
+
+
+
+
+
+
+

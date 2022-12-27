@@ -1,12 +1,21 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-gutter-xs">
-      <q-chip removable v-model="icecream" @remove="log('Icecream')" color="primary" text-color="white" icon="cake">
-        Ice cream
-      </q-chip>
-    </div>
+  <div class="q-pa-md" style="max-width: 300px">
+    <div class="q-gutter-md">
+      <q-badge color="secondary" multi-line>
+        Model: "{{ model }}"
+      </q-badge>
 
-    <q-btn color="primary" label="Reset" @click="onResetClick" class="q-mt-sm" />
+      <q-select filled v-model="model" :options="options" label="Standard" color="teal" clearable options-selected-class="text-deep-orange">
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section>
+              <q-item-label>new {{ scope.opt.value }}</q-item-label>
+              <q-item-label caption>{{ scope.opt.description }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+    </div>
   </div>
 </template>
 
@@ -15,27 +24,42 @@ import { ref } from 'vue'
 
 export default {
   setup() {
-    const icecream = ref(true)
-    const eclair = ref(true)
-    const cupcake = ref(true)
-    const gingerbread = ref(true)
-
     return {
-      icecream,
-      eclair,
-      cupcake,
-      gingerbread,
+      model: ref(null),
 
-      onResetClick() {
-        icecream.value = true
-        eclair.value = true
-        cupcake.value = true
-        gingerbread.value = true
-      },
-
-      log(desert) {
-        // console.log(`${desert} has been removed`)
-      }
+      options: [
+        {
+          label: 'Google',
+          value: 'Google',
+          description: 'Search engine',
+          icon: 'mail'
+        },
+        {
+          label: 'Facebook',
+          value: 'Facebook',
+          description: 'Social media',
+          icon: 'bluetooth'
+        },
+        {
+          label: 'Twitter',
+          value: 'Twitter',
+          description: 'Quick updates',
+          icon: 'map'
+        },
+        {
+          label: 'Apple',
+          value: 'Apple',
+          description: 'iStuff',
+          icon: 'golf_course'
+        },
+        {
+          label: 'Oracle',
+          value: 'Oracle',
+          disable: true,
+          description: 'Databases',
+          icon: 'casino'
+        }
+      ]
     }
   }
 }

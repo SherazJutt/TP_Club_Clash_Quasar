@@ -5,9 +5,12 @@
   "productName": "TP_Club_Clash",
   "author": "Sheraz Jutt <sherazarshad419@gmail.com>",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "jsondb": "json-server --watch db.json"
+  },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "axios": "^1.2.1",
     "firebase": "^9.14.0",
     "pinia": "^2.0.28",
     "quasar": "^2.6.0",

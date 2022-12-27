@@ -1,10 +1,10 @@
 <template>
-  <div class="q-pa-md q-mx-auto" style="max-width: 1000px">
-    <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
+  <div class="q-px-md q-mx-auto" style="max-width: 1000px">
+    <q-tabs v-model="tab" class="q-px-md q-mt-md" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
       <q-tab class="text-red" name="Attack" label="Attack" />
     </q-tabs>
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" class="bg-transparent" animated>
       <q-tab-panel name="Defence">
         <div class="border q-mb-sm" v-if="all_races" v-for="(race, index) in race_data_arr" :key="index">
           <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup" :header-class="(race.completed == true) ? 'bg-green text-white q-py-md justify-between' : 'bg-blue-8 bg-blue-8 text-white q-py-md justify-between'">
@@ -28,7 +28,7 @@
                   <td>{{ race.reftime.min }} : {{ race.reftime.sec }} : {{ race.reftime.milisec }}</td>
                   <td><span v-if="race.completed == true">Completed</span><span v-else>Pending</span></td>
                   <td v-if="race.completed == true">{{ race.finaltime.min }} : {{ race.finaltime.sec }} : {{ race.finaltime.milisec }}</td>
-                  <td v-if="race.completed == false"><q-btn flat round color="primary" icon="check" @click="markcompleted(index)" /></td>
+                  <td v-if="race.completed == false"><q-btn flat round color="green" icon="check" @click="markcompleted(index)" /></td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -57,44 +57,6 @@
           </tbody>
         </q-markup-table>
         <h3 class="text-center" v-else>not started</h3>
-
-
-
-        <q-stepper v-model="step" vertical color="primary" animated>
-          <q-step :name="1" title="Select campaign settings" icon="settings" :done="step > 1">
-            For each ad campaign that you create, you can control how much you're willing to
-            spend on clicks and conversions, which networks and geographical locations you want
-            your ads to show on, and more.
-
-            <q-stepper-navigation>
-              <q-btn @click="step = 2" color="primary" label="Continue" />
-            </q-stepper-navigation>
-          </q-step>
-
-          <q-step :name="2" title="Create an ad group" caption="Optional" icon="create_new_folder" :done="step > 2">
-            An ad group contains one or more ads which target a shared set of keywords.
-
-            <q-stepper-navigation>
-              <q-btn @click="step = 4" color="primary" label="Continue" />
-              <q-btn flat @click="step = 1" color="primary" label="Back" class="q-ml-sm" />
-            </q-stepper-navigation>
-          </q-step>
-
-          <q-step :name="3" title="Ad template" icon="assignment" disable>
-            This step won't show up because it is disabled.
-          </q-step>
-
-          <q-step :name="4" title="Create an ad" icon="add_comment">
-            Try out different ad text to see what brings in the most customers, and learn how to
-            enhance your ads using features like ad extensions. If you run into any problems with
-            your ads, find out how to tell if they're running and how to resolve approval issues.
-
-            <q-stepper-navigation>
-              <q-btn color="primary" label="Finish" />
-              <q-btn flat @click="step = 2" color="primary" label="Back" class="q-ml-sm" />
-            </q-stepper-navigation>
-          </q-step>
-        </q-stepper>
       </q-tab-panel>
 
     </q-tab-panels>
@@ -139,8 +101,6 @@ const sec = ['00']
 for (let i = 1; i <= 59; i++) {
   sec.push(i)
 }
-
-const step = ref(1)
 
 // const user_data = ref()
 const race_data_arr = ref()

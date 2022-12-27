@@ -159,7 +159,7 @@ const street_no_arr = ['1', '2', '3', '4']
 const difficulty = ref(null)
 const difficulty_arr = ['Easy', 'Medium', 'Hard']
 // recommended_car
-const recommended_cars_arr = ['tvr', 'ssc', 'venom', 'jesko', 'imola']
+let recommended_cars_arr = []
 const recommended_car = ref(null)
 const recommended_cars = ref(recommended_cars_arr)
 function filterFn(val, update, abort) {
@@ -171,6 +171,9 @@ function filterFn(val, update, abort) {
 function setreccar(val) {
   recommended_car.value = val
 }
+setInterval(() => {
+  recommended_cars_arr = GlobalVariables.Global_AllCarsArr
+}, 250);
 // refrence_time
 const reftime = ref({ min: '', sec: '', milisec: '' })
 const min = ['0', '1', '2', '3']
@@ -267,7 +270,6 @@ const deleteDefenceRace = ((index) => {
   let CurrentRaceWithTitle = title + indextitle
   $q.dialog({
     title: CurrentRaceWithTitle,
-    // message: 'Would you like to turn on the wifi?',
     cancel: true,
     persistent: true
   }).onOk(async () => {
