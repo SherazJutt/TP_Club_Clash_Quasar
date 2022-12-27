@@ -1,5 +1,31 @@
 <template>
-  <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1000px">
+  <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1200px">
+    <q-btn color="primary" label="Add New Territory" @click="AddTerritoryDialog = true" />
+
+    <q-dialog persistent v-model="AddTerritoryDialog">
+      <q-card>
+        <q-toolbar class="bg-primary text-white flex q-pa-none justify-between">
+          <q-space />
+          <q-btn flat round icon="close" v-close-popup />
+        </q-toolbar>
+
+        <q-card-section class="q-pa-sm" style="width: 300px;">
+          <q-form @submit="addterritory" class="">
+            <q-input filled type="text" clearable v-model="NewTerritoryName" label="Territory name" />
+            <q-btn color="primary" type="submit" class="q-py-sm q-mt-sm w-100" :disable="!NewTerritoryName" :loading="loading[1]">Add Territory</q-btn>
+          </q-form>
+          <!-- show all territories -->
+          <q-list v-if="AllTerritoryNames" class="q-mt-sm" bordered separator>
+            <q-item v-for="(item, index) in AllTerritoryNames" :key="index">
+              <q-item-section>
+                <q-item-label class="flex justify-between items-center">{{ item.name }} <q-btn style="width: 30px;" flat icon="close" @click="RemoveCategory(index)" /></q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
     <q-form @submit="addtoterritory" class="q-gutter-md q-mt-lg">
       <div class="main-selects">
         <div class="cols-2-grid">
@@ -194,6 +220,42 @@ watch(main_territory, (modeldata) => {
     territory_data.value = null
   }
 })
+
+const AddTerritoryDialog = ref(false)
+const NewTerritoryName = ref()
+
+const addterritory = (() => {
+  loading.value[1] = true
+  let territoryid = NewTerritoryName.value.replace(/ /g, "-") + '-' + self.crypto.randomUUID();
+  let NewTerData = {
+    name: NewTerritoryName.value,
+    id: territoryid
+  }
+  updateDoc(doc(db, 'management_data', 'TerritoryManagement'),
+    {
+      TerritoryNames: arrayUnion(NewTerData)
+    }).then(res => {
+      NewTerritoryName.value = '', console.log('added');
+      loading.value[1] = false
+    })
+})
+
+// all territories
+const AllTerritoryNames = ref()
+onSnapshot(doc(db, 'management_data', 'TerritoryManagement'), (data) => {
+  let TerName = data.data().TerritoryNames
+  let TerNameArr = []
+  TerName.forEach(element => {
+    TerNameArr.push(element)
+  });
+  AllTerritoryNames.value = TerNameArr
+});
+
+const RemoveCategory = ((index) => {
+  AllTerritoryNames.value.splice(index, 1)
+})
+
+
 
 
 </script>
