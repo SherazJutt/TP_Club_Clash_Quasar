@@ -1,12 +1,7 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-gutter-xs">
-      <q-chip removable v-model="icecream" @remove="log('Icecream')" color="primary" text-color="white" icon="cake">
-        Ice cream
-      </q-chip>
-    </div>
+  <div class="q-pa-md q-gutter-sm">
+    <q-btn :loading="loading[0]" color="secondary" @click="simulateProgress" label="Button" />
 
-    <q-btn color="primary" label="Reset" @click="onResetClick" class="q-mt-sm" />
   </div>
 </template>
 
@@ -15,27 +10,25 @@ import { ref } from 'vue'
 
 export default {
   setup() {
-    const icecream = ref(true)
-    const eclair = ref(true)
-    const cupcake = ref(true)
-    const gingerbread = ref(true)
+    const loading = ref([false])
+
+    const progress = ref(false)
+
+    function simulateProgress(number) {
+      // we set loading state
+      loading.value[0] = true
+
+      // simulate a delay
+      setTimeout(() => {
+        // we're done, we reset loading state
+        loading.value[number] = false
+      }, 3000)
+    }
 
     return {
-      icecream,
-      eclair,
-      cupcake,
-      gingerbread,
-
-      onResetClick() {
-        icecream.value = true
-        eclair.value = true
-        cupcake.value = true
-        gingerbread.value = true
-      },
-
-      log(desert) {
-        // console.log(`${desert} has been removed`)
-      }
+      loading,
+      progress,
+      simulateProgress
     }
   }
 }
