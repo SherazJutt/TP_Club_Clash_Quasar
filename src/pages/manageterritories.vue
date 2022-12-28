@@ -231,13 +231,12 @@ const addterritory = (() => {
     name: NewTerritoryName.value,
     id: territoryid
   }
-  updateDoc(doc(db, 'management_data', 'TerritoryManagement'),
-    {
-      TerritoryNames: arrayUnion(NewTerData)
-    }).then(res => {
-      NewTerritoryName.value = '', console.log('added');
-      loading.value[1] = false
-    })
+  updateDoc(doc(db, 'management_data', 'TerritoryManagement'), {
+    TerritoryNames: arrayUnion(NewTerData)
+  }).then(res => {
+    NewTerritoryName.value = '', console.log('added');
+    loading.value[1] = false
+  })
 })
 
 // all territories
