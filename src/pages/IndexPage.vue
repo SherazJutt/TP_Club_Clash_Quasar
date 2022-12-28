@@ -25,7 +25,7 @@
                   <td>{{ race.territory }}</td>
                   <td>{{ race.race_no }}</td>
                   <td>{{ race.recommended_car }}</td>
-                  <td>{{ race.reftime.min }} : {{ race.reftime.sec }} : {{ race.reftime.milisec }}</td>
+                  <!-- <td>{{ race.reftime.min }} : {{ race.reftime.sec }} : {{ race.reftime.milisec }}</td> -->
                   <td><span v-if="race.completed == true">Completed</span><span v-else>Pending</span></td>
                   <td v-if="race.completed == true">{{ race.finaltime.min }} : {{ race.finaltime.sec }} : {{ race.finaltime.milisec }}</td>
                   <td v-if="race.completed == false"><q-btn flat round color="green" icon="check" @click="markcompleted(index)" /></td>
@@ -90,7 +90,7 @@ import { useGlobalVariables } from 'src/stores/GlobalVariables';
 const GlobalVariables = useGlobalVariables();
 
 const $q = useQuasar()
-const defence_columns = ref(['Territory', 'Race No', 'Recommended Car', 'Reference Time', 'Status'])
+const defence_columns = ref(['Territory', 'Race No', 'Recommended Car', 'Status'])
 const attack_columns = ref(['Street No', 'Territory', 'Difficulty'])
 const tab = ref()
 const toolbar = ref(false)

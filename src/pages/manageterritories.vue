@@ -15,7 +15,7 @@
             <q-btn color="primary" type="submit" class="q-py-sm q-mt-sm w-100" :disable="!NewTerritoryName" :loading="loading[1]">Add Territory</q-btn>
           </q-form>
           <!-- show all territories -->
-          <q-list v-if="AllTerritoryNames" class="q-mt-sm" bordered separator>
+          <q-list v-if="AllTerritoryNames" class="q-mt-sm" bordered separator style="width: 283px;">
             <q-item v-for="(item, index) in AllTerritoryNames" :key="index">
               <q-item-section>
                 <q-item-label class="flex justify-between items-center">{{ item.name }} <q-btn style="width: 30px;" flat icon="close" @click="RemoveCategory(index)" /></q-item-label>
@@ -29,7 +29,7 @@
     <q-form @submit="addtoterritory" class="q-gutter-md q-mt-lg">
       <div class="main-selects">
         <div class="cols-2-grid">
-          <q-select label="Territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
+          <q-select label="Territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" option-label="name" option-value="id" :options="main_territory_arr" />
           <q-select label="Race No" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
         </div>
         <div class="cols-2-grid">
@@ -131,7 +131,11 @@ const interval = setInterval(() => {
 const OpponentName = ref(null)
 // main_territory
 const main_territory = ref(null)
-const main_territory_arr = ['Gold Hills', 'Back Kitchen', 'Sub Urbs', 'High Village', 'Down Village', 'Up Town', 'River Park', 'Under Pass', 'Financial District', 'East Valley']
+const main_territory_arr = ref()
+setInterval(() => {
+  main_territory_arr.value = GlobalVariables.AllCategoriesNameWithId
+}, 1000);
+
 const Track = ref()
 const OpponentClubName = ref()
 const opponent_clubs_arr = ref()
@@ -210,8 +214,10 @@ let territory_data = ref()
 // show updated dropdown territory data
 watch(main_territory, (modeldata) => {
   if (modeldata) {
-    console.log(modeldata.replace(/ /g, ""));
-    let curr_territory = modeldata.replace(/ /g, "")
+    console.log(modeldata.name);
+    let ModelName = modeldata.name
+    let curr_territory = ModelName.replace(/ /g, "")
+    console.log(curr_territory);
     onSnapshot(doc(db, 'territories', curr_territory), (data) => {
       territory_data.value = data.data()
       console.log(territory_data.value);

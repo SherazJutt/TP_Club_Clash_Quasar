@@ -1,0 +1,771 @@
+{
+    "aukland": [
+        {
+            "time": "90",
+            "location": "Auckland",
+            "track": "Auckland Track"
+        },
+        {
+            "time": "90",
+            "location": "Auckland",
+            "track": "Industrial Run"
+        },
+        {
+            "time": "90",
+            "location": "Auckland",
+            "track": "Out of Bounds"
+        },
+        {
+            "time": "120",
+            "location": "Auckland",
+            "track": "Reverse Circuit"
+        },
+        {
+            "time": "60",
+            "location": "Auckland",
+            "track": "Side View"
+        },
+        {
+            "time": "90",
+            "location": "Auckland",
+            "track": "Starting Grid"
+        },
+        {
+            "time": "30",
+            "location": "Auckland",
+            "track": "Straight Sprint"
+        },
+        {
+            "time": "90",
+            "location": "Auckland",
+            "track": "Straights & Hairpins"
+        },
+        {
+            "time": "120",
+            "location": "Auckland",
+            "track": "The Circuit"
+        },
+        {
+            "time": "60",
+            "location": "Auckland",
+            "track": "Top Run"
+        },
+        {
+            "time": "90",
+            "location": "Auckland",
+            "track": "Under Construction"
+        }
+    ]
+}
+
+
+
+
+
+[
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Big Passions"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Crosstown Rivals"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Football & Politics"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Harbor Run"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "New City"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Old City"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Purple Boulevard"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Stadium Lap"
+    },
+    {
+        "time": "90",
+        "location": "Buenos Aires",
+        "track": "Through the Park"
+    },
+    {
+        "time": "30",
+        "location": "Cairo",
+        "track": "A Kings Revival"
+    },
+    {
+        "time": "90",
+        "location": "Cairo",
+        "track": "Ancient Wonders"
+    },
+    {
+        "time": "90",
+        "location": "Cairo",
+        "track": "Backburner"
+    },
+    {
+        "time": "60",
+        "location": "Cairo",
+        "track": "Cairo Tower Finish"
+    },
+    {
+        "time": "60",
+        "location": "Cairo",
+        "track": "Egyptian Wonder"
+    },
+    {
+        "time": "30",
+        "location": "Cairo",
+        "track": "Gezira Island"
+    },
+    {
+        "time": "90",
+        "location": "Cairo",
+        "track": "Nile River"
+    },
+    {
+        "time": "120",
+        "location": "Cairo",
+        "track": "Pharaoh Games"
+    },
+    {
+        "time": "120",
+        "location": "Cairo",
+        "track": "Scenic Route"
+    },
+    {
+        "time": "60",
+        "location": "Cairo",
+        "track": "Subterranean Dash"
+    },
+    {
+        "time": "90",
+        "location": "Cairo",
+        "track": "Thousand Minarets"
+    },
+    {
+        "time": "90",
+        "location": "Cairo",
+        "track": "Urban Blaze"
+    },
+    {
+        "time": "90",
+        "location": "Greenland",
+        "track": "Coastal Ice"
+    },
+    {
+        "time": "120",
+        "location": "Greenland",
+        "track": "Coastal Loop"
+    },
+    {
+        "time": "90",
+        "location": "Greenland",
+        "track": "Fire & Ice"
+    },
+    {
+        "time": "90",
+        "location": "Greenland",
+        "track": "Ice Road Circuit"
+    },
+    {
+        "time": "120",
+        "location": "Greenland",
+        "track": "Icebergs & Lava"
+    },
+    {
+        "time": "90",
+        "location": "Greenland",
+        "track": "Icy Loop"
+    },
+    {
+        "time": "90",
+        "location": "Greenland",
+        "track": "Slippery when Icy"
+    },
+    {
+        "time": "90",
+        "location": "Greenland",
+        "track": "Volcano Run"
+    },
+    {
+        "time": "120",
+        "location": "Himalayas",
+        "track": "Asphalt Cave"
+    },
+    {
+        "time": "90",
+        "location": "Himalayas",
+        "track": "Cave Heat"
+    },
+    {
+        "time": "90",
+        "location": "Himalayas",
+        "track": "Cliffhanger"
+    },
+    {
+        "time": "90",
+        "location": "Himalayas",
+        "track": "Dipping Down"
+    },
+    {
+        "time": "90",
+        "location": "Himalayas",
+        "track": "Downhill Run"
+    },
+    {
+        "time": "30",
+        "location": "Himalayas",
+        "track": "Freefall"
+    },
+    {
+        "time": "90",
+        "location": "Himalayas",
+        "track": "Frozen Route"
+    },
+    {
+        "time": "60",
+        "location": "Himalayas",
+        "track": "Landslide"
+    },
+    {
+        "time": "30",
+        "location": "Himalayas",
+        "track": "Leap of Faith"
+    },
+    {
+        "time": "90",
+        "location": "Himalayas",
+        "track": "Mountain Poles"
+    },
+    {
+        "time": "60",
+        "location": "Himalayas",
+        "track": "Snow Vault"
+    },
+    {
+        "time": "120",
+        "location": "Himalayas",
+        "track": "The Land of Snow"
+    },
+    {
+        "time": "30",
+        "location": "Nevada",
+        "track": "Bridge to Bridge"
+    },
+    {
+        "time": "90",
+        "location": "Nevada",
+        "track": "Dam Buster"
+    },
+    {
+        "time": "90",
+        "location": "Nevada",
+        "track": "Desert Drift"
+    },
+    {
+        "time": "90",
+        "location": "Nevada",
+        "track": "Desert Life"
+    },
+    {
+        "time": "90",
+        "location": "Nevada",
+        "track": "Desert Run"
+    },
+    {
+        "time": "60",
+        "location": "Nevada",
+        "track": "Hairpin Sprint"
+    },
+    {
+        "time": "90",
+        "location": "Nevada",
+        "track": "Long Run"
+    },
+    {
+        "time": "120",
+        "location": "Nevada",
+        "track": "Sprint Finish"
+    },
+    {
+        "time": "90",
+        "location": "Nevada",
+        "track": "The Curve"
+    },
+    {
+        "time": "120",
+        "location": "Nevada",
+        "track": "The Narrows"
+    },
+    {
+        "time": "60",
+        "location": "Nevada",
+        "track": "Winding Road"
+    },
+    {
+        "time": "30",
+        "location": "New York",
+        "track": "A Run in the Park"
+    },
+    {
+        "time": "90",
+        "location": "New York",
+        "track": "Airdropped"
+    },
+    {
+        "time": "30",
+        "location": "New York",
+        "track": "Friendly Neighborhood"
+    },
+    {
+        "time": "90",
+        "location": "New York",
+        "track": "Leaps & Bounds"
+    },
+    {
+        "time": "90",
+        "location": "New York",
+        "track": "Quantum Jumps"
+    },
+    {
+        "time": "120",
+        "location": "New York",
+        "track": "Sightseeing"
+    },
+    {
+        "time": "90",
+        "location": "New York",
+        "track": "Subway Surfing"
+    },
+    {
+        "time": "90",
+        "location": "New York",
+        "track": "The City that Never Sleeps"
+    },
+    {
+        "time": "90",
+        "location": "New York",
+        "track": "Uptown"
+    },
+    {
+        "time": "120",
+        "location": "New York",
+        "track": "Urban Exodus"
+    },
+    {
+        "time": "30",
+        "location": "New York",
+        "track": "Wall Street Ride"
+    },
+    {
+        "time": "60",
+        "location": "New York",
+        "track": "Zeppelin Race"
+    },
+    {
+        "time": "90",
+        "location": "Osaka",
+        "track": "Budding Start"
+    },
+    {
+        "time": "90",
+        "location": "Osaka",
+        "track": "Industrial Revolution"
+    },
+    {
+        "time": "90",
+        "location": "Osaka",
+        "track": "Kita Run"
+    },
+    {
+        "time": "120",
+        "location": "Osaka",
+        "track": "Large Hill"
+    },
+    {
+        "time": "30",
+        "location": "Osaka",
+        "track": "Meiji Rush"
+    },
+    {
+        "time": "90",
+        "location": "Osaka",
+        "track": "Moat Finale"
+    },
+    {
+        "time": "30",
+        "location": "Osaka",
+        "track": "Namba Park"
+    },
+    {
+        "time": "90",
+        "location": "Osaka",
+        "track": "Naniwa Tour"
+    },
+    {
+        "time": "60",
+        "location": "Osaka",
+        "track": "Rat Race"
+    },
+    {
+        "time": "90",
+        "location": "Osaka",
+        "track": "Refined Finish"
+    },
+    {
+        "time": "60",
+        "location": "Osaka",
+        "track": "Sakura Castle"
+    },
+    {
+        "time": "120",
+        "location": "Osaka",
+        "track": "Welcome to Osaka"
+    },
+    {
+        "time": "120",
+        "location": "Rome",
+        "track": "Alternate Route"
+    },
+    {
+        "time": "90",
+        "location": "Rome",
+        "track": "Ancient Rome"
+    },
+    {
+        "time": "60",
+        "location": "Rome",
+        "track": "Bread and Circuses"
+    },
+    {
+        "time": "90",
+        "location": "Rome",
+        "track": "Capital of the World"
+    },
+    {
+        "time": "120",
+        "location": "Rome",
+        "track": "Complete Tour"
+    },
+    {
+        "time": "90",
+        "location": "Rome",
+        "track": "The Eternal City"
+    },
+    {
+        "time": "90",
+        "location": "Rome",
+        "track": "Pantheon Split"
+    },
+    {
+        "time": "30",
+        "location": "Rome",
+        "track": "Roman Byroads"
+    },
+    {
+        "time": "30",
+        "location": "Rome",
+        "track": "Roman Tumble"
+    },
+    {
+        "time": "90",
+        "location": "Rome",
+        "track": "Saint Peter Kickoff"
+    },
+    {
+        "time": "60",
+        "location": "Rome",
+        "track": "Tiber Cross"
+    },
+    {
+        "time": "90",
+        "location": "Rome",
+        "track": "Tiber Stream"
+    },
+    {
+        "time": "120",
+        "location": "San Francisco",
+        "track": "Bridge Finale"
+    },
+    {
+        "time": "120",
+        "location": "San Francisco",
+        "track": "Bridge View"
+    },
+    {
+        "time": "90",
+        "location": "San Francisco",
+        "track": "The City by the Bay"
+    },
+    {
+        "time": "60",
+        "location": "San Francisco",
+        "track": "City Dash"
+    },
+    {
+        "time": "90",
+        "location": "San Francisco",
+        "track": "Downtown Rise"
+    },
+    {
+        "time": "30",
+        "location": "San Francisco",
+        "track": "Railroad Bustle"
+    },
+    {
+        "time": "90",
+        "location": "San Francisco",
+        "track": "Roller Coaster Ride"
+    },
+    {
+        "time": "90",
+        "location": "San Francisco",
+        "track": "Rush Minute"
+    },
+    {
+        "time": "90",
+        "location": "San Francisco",
+        "track": "Street of San Francisco"
+    },
+    {
+        "time": "30",
+        "location": "San Francisco",
+        "track": "The Tunnel"
+    },
+    {
+        "time": "90",
+        "location": "San Francisco",
+        "track": "Tunnel Jam"
+    },
+    {
+        "time": "60",
+        "location": "San Francisco",
+        "track": "Waterside"
+    },
+    {
+        "time": "90",
+        "location": "Scotland",
+        "track": "Ancient Ruins"
+    },
+    {
+        "time": "120",
+        "location": "Scotland",
+        "track": "The Freedom Route"
+    },
+    {
+        "time": "30",
+        "location": "Scotland",
+        "track": "Ghost Ships"
+    },
+    {
+        "time": "60",
+        "location": "Scotland",
+        "track": "Lighthouse"
+    },
+    {
+        "time": "90",
+        "location": "Scotland",
+        "track": "The Path of Wind"
+    },
+    {
+        "time": "30",
+        "location": "Scotland",
+        "track": "Rocky Valley"
+    },
+    {
+        "time": "90",
+        "location": "Scotland",
+        "track": "The Cave"
+    },
+    {
+        "time": "60",
+        "location": "Scotland",
+        "track": "The Enchanted Island"
+    },
+    {
+        "time": "90",
+        "location": "Scotland",
+        "track": "Wildlands"
+    },
+    {
+        "time": "120",
+        "location": "Scotland",
+        "track": "The Windmills"
+    },
+    {
+        "time": "30",
+        "location": "Shanghai",
+        "track": "Double Roundabout"
+    },
+    {
+        "time": "60",
+        "location": "Shanghai",
+        "track": "Future Road"
+    },
+    {
+        "time": "90",
+        "location": "Shanghai",
+        "track": "Nanjing Stroll"
+    },
+    {
+        "time": "30",
+        "location": "Shanghai",
+        "track": "Paris of the East"
+    },
+    {
+        "time": "90",
+        "location": "Shanghai",
+        "track": "The Pearl of Orient"
+    },
+    {
+        "time": "120",
+        "location": "Shanghai",
+        "track": "People Square Dash"
+    },
+    {
+        "time": "90",
+        "location": "Shanghai",
+        "track": "Pudong Rise"
+    },
+    {
+        "time": "60",
+        "location": "Shanghai",
+        "track": "Reach for the Sky"
+    },
+    {
+        "time": "90",
+        "location": "Shanghai",
+        "track": "Shen City"
+    },
+    {
+        "time": "120",
+        "location": "Shanghai",
+        "track": "Shopping Spree"
+    },
+    {
+        "time": "120",
+        "location": "The Caribbean",
+        "track": "All-Inclusive"
+    },
+    {
+        "time": "90",
+        "location": "The Caribbean",
+        "track": "Beach Landing"
+    },
+    {
+        "time": "30",
+        "location": "The Caribbean",
+        "track": "Hell Vale"
+    },
+    {
+        "time": "60",
+        "location": "The Caribbean",
+        "track": "Hotel Road"
+    },
+    {
+        "time": "120",
+        "location": "The Caribbean",
+        "track": "Island Tour"
+    },
+    {
+        "time": "30",
+        "location": "The Caribbean",
+        "track": "Islet Race"
+    },
+    {
+        "time": "90",
+        "location": "The Caribbean",
+        "track": "Paradise Resort"
+    },
+    {
+        "time": "90",
+        "location": "The Caribbean",
+        "track": "Pier Pressure"
+    },
+    {
+        "time": "30",
+        "location": "The Caribbean",
+        "track": "Resort Dash"
+    },
+    {
+        "time": "90",
+        "location": "The Caribbean",
+        "track": "Thundering Start"
+    },
+    {
+        "time": "90",
+        "location": "US Midwest",
+        "track": "Canyon Launch"
+    },
+    {
+        "time": "90",
+        "location": "US Midwest",
+        "track": "Covered Bridge"
+    },
+    {
+        "time": "90",
+        "location": "US Midwest",
+        "track": "Gold Rush"
+    },
+    {
+        "time": "30",
+        "location": "US Midwest",
+        "track": "Its a Twister"
+    },
+    {
+        "time": "120",
+        "location": "US Midwest",
+        "track": "Navajo Nation"
+    },
+    {
+        "time": "60",
+        "location": "US Midwest",
+        "track": "Rolling Motorway"
+    },
+    {
+        "time": "60",
+        "location": "US Midwest",
+        "track": "Time Travel"
+    },
+    {
+        "time": "30",
+        "location": "US Midwest",
+        "track": "Trainspotter"
+    },
+    {
+        "time": "90",
+        "location": "US Midwest",
+        "track": "Transcontinental Race"
+    },
+    {
+        "time": "120",
+        "location": "US Midwest",
+        "track": "US Wilderness"
+    },
+    {
+        "time": "90",
+        "location": "US Midwest",
+        "track": "Whirlwind Curve"
+    }
+]

@@ -8,7 +8,8 @@ export const useGlobalVariables = defineStore('GlobalVariables', {
     curr_user_role: null,
     curr_user_data: null,
     current_clash: null,
-    Global_AllCarsArr: []
+    Global_AllCarsArr: [],
+    AllCategoriesNameWithId: []
   }),
   actions: {
     setDataVariables() {
@@ -44,6 +45,10 @@ export const useGlobalVariables = defineStore('GlobalVariables', {
           this.Global_AllCarsArr.push(element)
         });
         // console.log(this.Global_AllCarsArr);
+      });
+      // get all territories
+      onSnapshot(doc(db, 'management_data', 'TerritoryManagement'), (data) => {
+        this.AllCategoriesNameWithId = data.data().TerritoryNames
       });
     },
   },

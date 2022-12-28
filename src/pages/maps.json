@@ -2,18 +2,6 @@
   {
     "BlueTerritory": "Back Kitchen",
     "RedTerritory": "Financial District",
-    "No.": "18",
-    "Track": "Buenos ",
-    "variant": "Aires:Purple Boulevard",
-    "OpponentClub": "UERK",
-    "OpponentPlayers": "Akuma Chan",
-    "Class": "A",
-    "Car": "GT-R Nismo",
-    "Time": "00.40.915"
-  },
-  {
-    "BlueTerritory": "Back Kitchen",
-    "RedTerritory": "Financial District",
     "No.": "19",
     "Track": "The ",
     "variant": "Caribbean:Beach Landing",
@@ -338,18 +326,6 @@
   {
     "BlueTerritory": "High Village",
     "RedTerritory": "East Valley",
-    "No.": "13",
-    "Track": "Buenos ",
-    "variant": "Aires:Harbor Run",
-    "OpponentClub": "UERK",
-    "OpponentPlayers": "Gioni",
-    "Class": "B",
-    "Car": "Apex AP-0",
-    "Time": "00.40.975"
-  },
-  {
-    "BlueTerritory": "High Village",
-    "RedTerritory": "East Valley",
     "No.": "14",
     "Track": "Auckland:",
     "variant": "Straights & Hairpins",
@@ -394,18 +370,6 @@
     "Class": "A",
     "Car": "McLaren Senna GT",
     "Time": "1.53.985"
-  },
-  {
-    "BlueTerritory": "High Village",
-    "RedTerritory": "East Valley",
-    "No.": "19",
-    "Track": "Buenos ",
-    "variant": "Aires:Round the City",
-    "OpponentClub": "UERK",
-    "OpponentPlayers": "Night fury",
-    "Class": "A",
-    "Car": "918 Spyder",
-    "Time": "1.30.450"
   },
   {
     "BlueTerritory": "High Village",
@@ -458,18 +422,6 @@
   {
     "BlueTerritory": "Sub Urbs",
     "RedTerritory": "River Park",
-    "No.": "2",
-    "Track": "Buenos ",
-    "variant": "Aires:Football & Politics",
-    "OpponentClub": "UERK",
-    "OpponentPlayers": "Knight",
-    "Class": "C",
-    "Car": "Ferrari 599xx",
-    "Time": "00.43.856"
-  },
-  {
-    "BlueTerritory": "Sub Urbs",
-    "RedTerritory": "River Park",
     "No.": "3",
     "Track": "San ",
     "variant": "Frans:City by the Bay",
@@ -502,18 +454,6 @@
     "Class": "B",
     "Car": "Vanda",
     "Time": "00.19.492"
-  },
-  {
-    "BlueTerritory": "Sub Urbs",
-    "RedTerritory": "River Park",
-    "No.": "18",
-    "Track": "Buenos ",
-    "variant": "Aires:Big Passions",
-    "OpponentClub": "UERK",
-    "OpponentPlayers": "JF05",
-    "Class": "A",
-    "Car": "Lamborghini AV J",
-    "Time": "00.43.531"
   },
   {
     "BlueTerritory": "Sub Urbs",

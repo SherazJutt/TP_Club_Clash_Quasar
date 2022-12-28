@@ -35,6 +35,14 @@
 
           <div>
             <div class="reftime-main">
+              <div>{{ reflocation }}</div>
+              <div class="reference q-mt-sm" hint="yes">
+                <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Refrence" />
+              </div>
+            </div>
+          </div>
+          <!-- <div>
+            <div class="reftime-main">
               <div><span class="text-blue-9">Reference time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
               <div class="reftime q-mt-sm" hint="yes">
                 <q-select transition-hide="jump-up" clearable filled v-model="reftime.min" :options="min" label="Minutes" />
@@ -42,7 +50,7 @@
                 <q-input filled type="number" clearable v-model="reftime.milisec" label="Miliseconds" />
               </div>
             </div>
-          </div>
+          </div> -->
 
           <q-btn color="primary" type="submit" v-if="player_name && race_no && main_territory && recommended_car">Assign race no<span class="q-ml-xs"> {{ race_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
         </q-form>
@@ -145,7 +153,17 @@ const player_name = ref(null)
 const player_name_arr = ref()
 // main_territory
 const main_territory = ref(null)
-const main_territory_arr = ['gold hills', 'back kitchen', 'Sub Urbs', 'high village', 'down village', 'up town', 'river park', 'under pass', 'financial district', 'east valley']
+const main_territory_arr = ref([])
+const intervalone = setInterval(() => {
+  if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
+    clearInterval(intervalone)
+    let Names = GlobalVariables.AllCategoriesNameWithId
+    Names.forEach(element => {
+      main_territory_arr.value.push(element.name)
+    });
+  }
+}, 1000);
+
 // race_no
 const race_no = ref(null)
 const race_no_arr = []
@@ -174,13 +192,34 @@ function setreccar(val) {
 setInterval(() => {
   recommended_cars_arr = GlobalVariables.Global_AllCarsArr
 }, 250);
+
+// locations
+const reflocation = ref()
+let Locations = ref([])
+getDoc(doc(db, 'management_data', 'maps_management')).then((data) => {
+  // console.log(data.data().Locations);
+  Locations.value = data.data().Locations
+  console.log(Locations.value);
+})
+
+// getDoc(doc(db, 'management_data', 'maps_management')).then((data) => {
+//   // console.log(data.data().Locations);
+//   Locations.value = data.data().Locations
+//   console.log(Locations.value);
+// })
+
+console.log(Math.random().toString(36).slice(2));
+
+// =================>
 // refrence_time
-const reftime = ref({ min: '', sec: '', milisec: '' })
-const min = ['0', '1', '2', '3']
-const sec = ['00']
-for (let i = 1; i <= 59; i++) {
-  sec.push(i)
-}
+// const reftime = ref({ min: '', sec: '', milisec: '' })
+// const min = ['0', '1', '2', '3']
+// const sec = ['00']
+// for (let i = 1; i <= 59; i++) {
+//   sec.push(i)
+// }
+// =================>
+
 // database functions
 const outdefencearr = ref([])
 const outattackarr = ref([])
@@ -233,7 +272,7 @@ const assign_race = () => {
     territory: main_territory.value,
     race_no: race_no.value,
     recommended_car: recommended_car.value,
-    reftime: reftime.value,
+    // reftime: reftime.value,
     completed: false,
   })
   updateDoc(doc(db, collection_name, player_name.value.uid), {
@@ -243,7 +282,7 @@ const assign_race = () => {
   main_territory.value = ''
   race_no.value = ''
   recommended_car.value = ''
-  reftime.value = { min: '', sec: '', milisec: '' }
+  // reftime.value = { min: '', sec: '', milisec: '' }
 }
 // assign attack
 const assign_attack = () => {

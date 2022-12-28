@@ -914,17 +914,74 @@ const Nevada = [
     "OpponentTime": "1.12.684"
   }
 ]
+const BuenosAires = [
+  {
+    "BlueTerritory": "Back Kitchen",
+    "RedTerritory": "Financial District",
+    "No.": "18",
+    "Track": "Buenos Aires",
+    "variant": "Purple Boulevard",
+    "OpponentClub": "UERK",
+    "OpponentPlayers": "Akuma Chan",
+    "Class": "A",
+    "Car": "GT-R Nismo",
+    "Time": "00.40.915"
+  },
+  {
+    "BlueTerritory": "High Village",
+    "RedTerritory": "East Valley",
+    "No.": "13",
+    "Track": "Buenos Aires",
+    "variant": "Harbor Run",
+    "OpponentClub": "UERK",
+    "OpponentPlayers": "Gioni",
+    "Class": "B",
+    "Car": "Apex AP-0",
+    "Time": "00.40.975"
+  },
+  {
+    "BlueTerritory": "High Village",
+    "RedTerritory": "East Valley",
+    "No.": "19",
+    "Track": "Buenos Aires",
+    "variant": "Round the City",
+    "OpponentClub": "UERK",
+    "OpponentPlayers": "Night fury",
+    "Class": "A",
+    "Car": "918 Spyder",
+    "Time": "1.30.450"
+  },
+  {
+    "BlueTerritory": "Sub Urbs",
+    "RedTerritory": "River Park",
+    "No.": "2",
+    "Track": "Buenos Aires",
+    "variant": "Football & Politics",
+    "OpponentClub": "UERK",
+    "OpponentPlayers": "Knight",
+    "Class": "C",
+    "Car": "Ferrari 599xx",
+    "Time": "00.43.856"
+  },
+  {
+    "BlueTerritory": "Sub Urbs",
+    "RedTerritory": "River Park",
+    "No.": "18",
+    "Track": "Buenos Aires",
+    "variant": "Big Passions",
+    "OpponentClub": "UERK",
+    "OpponentPlayers": "JF05",
+    "Class": "A",
+    "Car": "Lamborghini AV J",
+    "Time": "00.43.531"
+  }
+]
 
 const addtrackdata = (() => {
-  updateDoc(doc(db, 'management_data', 'Tracks'), {
-    Shanghai: Shanghai,
-    Scotland: Scotland,
-    Rome: Rome,
-    Himalayas: Himalayas,
-    Cairo: Cairo,
-    NewYork: NewYork,
-    UsMidwest: UsMidwest,
-    Nevada: Nevada
+  updateDoc(doc(db, 'management_data', 'maps_management'), {
+    Variants: {
+      Shanghai_u8uusna84fp: Shanghai
+    }
   }).then(res => {
     console.log('added');
   })
