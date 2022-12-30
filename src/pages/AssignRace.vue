@@ -37,10 +37,29 @@
             <div class="reftime-main">
               <div>{{ reflocation }}</div>
               <div class="reference q-mt-sm" hint="yes">
-                <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Refrence" />
+                <!-- <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Location" /> -->
               </div>
             </div>
           </div>
+          <q-btn color="primary" label="Refrence" @click="addref = true" />
+          <q-dialog persistent v-model="addref">
+            <q-card>
+              <q-toolbar class="bg-primary text-white flex q-pa-none justify-between">
+                <q-space />
+                <q-btn flat round icon="close" v-close-popup />
+              </q-toolbar>
+
+              <q-card-section class="q-pa-sm" style="width: 300px;">
+                <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Location" />
+                <q-select v-if="reflocation" transition-hide="jump-up" clearable filled v-model="variant" option-label="track" option-value="data_id" :options="variants" label="Variant" />
+
+              </q-card-section>
+
+            </q-card>
+          </q-dialog>
+          <div>{{ variant }}</div>
+          <pre>{{ variants }}</pre>
+
           <!-- <div>
             <div class="reftime-main">
               <div><span class="text-blue-9">Reference time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
@@ -189,17 +208,41 @@ function filterFn(val, update, abort) {
 function setreccar(val) {
   recommended_car.value = val
 }
-setInterval(() => {
-  recommended_cars_arr = GlobalVariables.Global_AllCarsArr
+
+const interval2 = setInterval(() => {
+  if (GlobalVariables.Global_AllCarsArr.length > 0) {
+    let allcars = GlobalVariables.Global_AllCarsArr
+    allcars.forEach(element => {
+      recommended_cars_arr.push(element.Car)
+    });
+    clearInterval(interval2)
+  }
 }, 250);
 
-// locations
+// reference locations
 const reflocation = ref()
+
+const variant = ref()
+const variants = ref([])
+
+const addref = ref(false)
+
+
 let Locations = ref([])
-getDoc(doc(db, 'management_data', 'maps_management')).then((data) => {
-  // console.log(data.data().Locations);
-  Locations.value = data.data().Locations
-  console.log(Locations.value);
+getDoc(doc(db, 'maps_data', 'locations')).then((data) => {
+  Locations.value = data.data().locations
+})
+
+watch(reflocation, (location) => {
+  if (location) {
+    getDoc(doc(db, 'maps_data', 'variants')).then(res => {
+      variants.value = []
+      let data = res.data()[location.id]
+      data.forEach(element => {
+        variants.value.push(element)
+      });
+    })
+  }
 })
 
 // getDoc(doc(db, 'management_data', 'maps_management')).then((data) => {
@@ -283,6 +326,7 @@ const assign_race = () => {
   race_no.value = ''
   recommended_car.value = ''
   // reftime.value = { min: '', sec: '', milisec: '' }
+  addref.value = false
 }
 // assign attack
 const assign_attack = () => {

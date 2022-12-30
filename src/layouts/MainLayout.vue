@@ -43,6 +43,11 @@
             <q-item-section avatar><q-icon name="group" /></q-item-section>
             <q-item-section>users</q-item-section>
           </q-item>
+          <!-- manage maps -->
+          <q-item clickable v-if="(role === 'admin')" to="/mapsmanagement" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="map" /></q-item-section>
+            <q-item-section>Maps Management</q-item-section>
+          </q-item>
           <!-- manage cars -->
           <q-item clickable v-if="(role === 'admin')" to="/managecars" style="color: white;" v-ripple>
             <q-item-section avatar><q-icon name="directions_car" /></q-item-section>

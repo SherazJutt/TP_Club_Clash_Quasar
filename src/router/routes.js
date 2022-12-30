@@ -17,6 +17,7 @@ const routes = [
       { path: '/users', component: () => import('pages/Users.vue') },
       { path: '/managecars', component: () => import('pages/managecars.vue') },
       { path: '/manageterritories', component: () => import('pages/manageterritories.vue') },
+      { path: '/mapsmanagement', component: () => import('pages/mapsmanagement.vue') }
     ],
   },
   { path: '/test', component: () => import('pages/test.vue') },
