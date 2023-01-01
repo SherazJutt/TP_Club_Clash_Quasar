@@ -8,7 +8,8 @@ export const useGlobalVariables = defineStore('GlobalVariables', {
     curr_user_role: null,
     curr_user_data: null,
     current_clash: null,
-    Global_AllCarsArr: []
+    Global_AllCarsArr: [],
+    AllCategoriesNameWithId: []
   }),
   actions: {
     setDataVariables() {
@@ -22,28 +23,15 @@ export const useGlobalVariables = defineStore('GlobalVariables', {
         this.current_clash = data.data().current_clash
       });
       // get all cars
-      onSnapshot(doc(db, 'management_data', 'cars'), (data) => {
-        let d = data.data().d
-        let c = data.data().c
-        let b = data.data().b
-        let a = data.data().a
-        let s = data.data().s
-        d.forEach(element => {
+      onSnapshot(doc(db, 'global_data', 'cars_data'), (data) => {
+        let cars = data.data().cars
+        cars.forEach(element => {
           this.Global_AllCarsArr.push(element)
         });
-        c.forEach(element => {
-          this.Global_AllCarsArr.push(element)
-        });
-        b.forEach(element => {
-          this.Global_AllCarsArr.push(element)
-        });
-        a.forEach(element => {
-          this.Global_AllCarsArr.push(element)
-        });
-        s.forEach(element => {
-          this.Global_AllCarsArr.push(element)
-        });
-        // console.log(this.Global_AllCarsArr);
+      });
+      // get all territories
+      onSnapshot(doc(db, 'management_data', 'TerritoryManagement'), (data) => {
+        this.AllCategoriesNameWithId = data.data().TerritoryNames
       });
     },
   },

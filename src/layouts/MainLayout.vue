@@ -4,8 +4,8 @@
       <q-toolbar class="justify-between">
         <q-btn class="toggle" flat @click="drawer = !drawer" round dense icon="menu" />
         <div class="flex mobile-links">
-          <q-btn color="primary" to="/" label="Home" />
-          <q-btn color="primary" to="/garage" label="garage" />
+          <q-btn color="primary" to="/" label="TP Club Clash" />
+          <!-- <q-btn color="primary" to="/garage" label="garage" /> -->
         </div>
         <q-btn round to="/profile">
           <q-avatar size="28px">
@@ -42,6 +42,11 @@
           <q-item clickable v-if="(role === 'admin')" to="/users" style="color: white;" v-ripple>
             <q-item-section avatar><q-icon name="group" /></q-item-section>
             <q-item-section>users</q-item-section>
+          </q-item>
+          <!-- manage maps -->
+          <q-item clickable v-if="(role === 'admin')" to="/mapsmanagement" style="color: white;" v-ripple>
+            <q-item-section avatar><q-icon name="map" /></q-item-section>
+            <q-item-section>Maps Management</q-item-section>
           </q-item>
           <!-- manage cars -->
           <q-item clickable v-if="(role === 'admin')" to="/managecars" style="color: white;" v-ripple>
