@@ -4,8 +4,8 @@
       <q-toolbar class="justify-between">
         <q-btn class="toggle" flat @click="drawer = !drawer" round dense icon="menu" />
         <div class="flex mobile-links">
-          <q-btn color="primary" to="/" label="Home" />
-          <q-btn color="primary" to="/garage" label="garage" />
+          <q-btn color="primary" to="/" label="TP Club Clash" />
+          <!-- <q-btn color="primary" to="/garage" label="garage" /> -->
         </div>
         <q-btn round to="/profile">
           <q-avatar size="28px">

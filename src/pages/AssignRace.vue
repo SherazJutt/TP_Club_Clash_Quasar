@@ -1,77 +1,56 @@
 <template>
-  <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1000px">
-    <q-tabs v-model="tab" class="bg-grey-1 q-px-md" align="justify">
+  <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-mx-auto q-pa-sm" style="max-width: 1000px">
+    <q-tabs v-model="tab" class="bg-grey-1" align="justify">
       <q-tab class="text-cyan" name="Defence" label="Defence" />
       <q-tab class="text-red" name="Attack" label="Attack" />
     </q-tabs>
-    <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="Defence">
-        <q-form @submit="assign_race" class="q-gutter-md">
-          <div class="main-selects">
-            <div class="cols-2-grid">
+    <q-tab-panels v-model="tab" animated class="q-mt-sm">
+      <q-tab-panel name="Defence" class="q-pa-none">
+        <q-form @submit="assign_race">
+          <div class="main-selects row q-col-gutter-sm">
 
-              <q-select label="Player Name" class="text-capitalize" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">Add members to team1</q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+            <q-select label="Player Name" class="text-capitalize col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">Add members to team1</q-item-section>
+                </q-item>
+              </template>
+            </q-select>
 
-              <q-select label="Territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
+            <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
+
+            <q-select label="Race No" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
+            <q-select filled :model-value="recommended_car" class="col-xs-12 col-sm-6 col-md-4" clearable @clear="clear_recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">add cars to show</q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <q-btn class="q-py-md w-100 text-grey-7 bg-grey-2" :disable="!recommended_car" unelevated label="Refrence" @click="addref = true" />
+              <q-dialog persistent v-model="addref">
+                <q-card>
+                  <q-toolbar class="bg-primary text-white flex q-pa-none justify-between">
+                    <span v-if="variant" class="q-ml-md">{{ variant.data_id }}</span>
+                    <q-space />
+                    <q-btn flat round icon="close" v-close-popup />
+                  </q-toolbar>
+
+                  <q-card-section class="q-pa-sm" id="ref-time">
+                    <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Location" />
+                    <q-select class="q-mt-sm" v-if="reflocation" transition-hide="jump-up" clearable filled v-model="variant" option-label="track" option-value="data_id" :options="variants" label="Variant" />
+
+                  </q-card-section>
+
+                </q-card>
+              </q-dialog>
             </div>
-
-            <div class="cols-2-grid">
-              <q-select label="Race No" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
-              <q-select filled :model-value="recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">add cars to show</q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <q-btn class="q-py-md w-100 h-100" style="font-size: 12px;" color="primary" type="submit" :disable="!player_name && !race_no && !main_territory && !recommended_car">Assign race no<span class="q-ml-xs"> {{ race_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
             </div>
           </div>
-
-          <div>
-            <div class="reftime-main">
-              <div>{{ reflocation }}</div>
-              <div class="reference q-mt-sm" hint="yes">
-                <!-- <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Location" /> -->
-              </div>
-            </div>
-          </div>
-          <q-btn color="primary" label="Refrence" @click="addref = true" />
-          <q-dialog persistent v-model="addref">
-            <q-card>
-              <q-toolbar class="bg-primary text-white flex q-pa-none justify-between">
-                <q-space />
-                <q-btn flat round icon="close" v-close-popup />
-              </q-toolbar>
-
-              <q-card-section class="q-pa-sm" style="width: 300px;">
-                <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Location" />
-                <q-select v-if="reflocation" transition-hide="jump-up" clearable filled v-model="variant" option-label="track" option-value="data_id" :options="variants" label="Variant" />
-
-              </q-card-section>
-
-            </q-card>
-          </q-dialog>
-          <div>{{ variant }}</div>
-          <pre>{{ variants }}</pre>
-
-          <!-- <div>
-            <div class="reftime-main">
-              <div><span class="text-blue-9">Reference time: </span> <small v-if="reftime.min">{{ reftime.min }} Minutes </small><small v-if="reftime.sec">{{ reftime.sec }} Seconds </small><small v-if="reftime.milisec">{{ reftime.milisec }} Miliseconds</small></div>
-              <div class="reftime q-mt-sm" hint="yes">
-                <q-select transition-hide="jump-up" clearable filled v-model="reftime.min" :options="min" label="Minutes" />
-                <q-select transition-hide="jump-up" clearable filled v-model="reftime.sec" :options="sec" label="Seconds" />
-                <q-input filled type="number" clearable v-model="reftime.milisec" label="Miliseconds" />
-              </div>
-            </div>
-          </div> -->
-
-          <q-btn color="primary" type="submit" v-if="player_name && race_no && main_territory && recommended_car">Assign race no<span class="q-ml-xs"> {{ race_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
         </q-form>
 
         <q-markup-table class="q-mt-xl" v-if="outdefencearr.length > 0">
@@ -96,28 +75,24 @@
           <h3 v-if="player_name">No Races assigned to {{ player_name.label }}</h3>
         </div>
       </q-tab-panel>
-
       <!-- attack -->
+      <q-tab-panel name="Attack" class="q-pa-none">
+        <q-form @submit="assign_attack" class="q-mb-sm">
+          <div class="main-selects row q-col-gutter-sm">
+            <q-select label="Player Name" class="text-capitalize col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr" />
+            <q-select label="territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
 
-      <q-tab-panel name="Attack">
-
-        <q-form @submit="assign_attack" class="q-gutter-md">
-          <div class="main-selects">
-            <div class="cols-2-grid">
-              <q-select label="Player Name" class="text-capitalize" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr" />
-              <q-select label="territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
-            </div>
-
-            <div class="cols-2-grid">
-              <q-select label="Stret No" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="street_no" :options="street_no_arr" />
-              <q-select label="Difficulty" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="difficulty" :options="difficulty_arr" />
+            <q-select label="Stret No" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="street_no" :options="street_no_arr" />
+            <q-select label="Difficulty" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="difficulty" :options="difficulty_arr" />
+            <div class="col-xs-12 col-sm-8">
+              <q-btn class="q-py-md w-100 h-100" color="primary" type="submit" :disable="(street_no == null)">Assign Street no<span class="q-ml-xs"> {{ street_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
             </div>
           </div>
-
-          <q-btn color="primary" type="submit" v-if="player_name && main_territory && street_no">Assign Street no<span class="q-ml-xs"> {{ street_no }}</span><span class="q-ml-xs" v-if="player_name">to {{ player_name.label }}</span></q-btn>
         </q-form>
 
-        <q-markup-table class="q-mt-xl" v-if="outattackarr.length > 0">
+        <q-separator class="q-my-md" />
+
+        <q-markup-table class="q-ma-xs" v-if="outattackarr.length > 0">
           <thead>
             <tr>
               <th class="text-center">Territory</th>
@@ -186,7 +161,7 @@ const intervalone = setInterval(() => {
 // race_no
 const race_no = ref(null)
 const race_no_arr = []
-for (let i = 1; i <= 23; i++) {
+for (let i = 1; i <= 16; i++) {
   race_no_arr.push(i)
 }
 // street_no
@@ -218,6 +193,10 @@ const interval2 = setInterval(() => {
     clearInterval(interval2)
   }
 }, 250);
+
+const clear_recommended_car = (() => {
+  recommended_car.value = null
+})
 
 // reference locations
 const reflocation = ref()
@@ -251,7 +230,7 @@ watch(reflocation, (location) => {
 //   console.log(Locations.value);
 // })
 
-console.log(Math.random().toString(36).slice(2));
+// console.log(Math.random().toString(36).slice(2));
 
 // =================>
 // refrence_time
@@ -390,35 +369,22 @@ const deleteAttackStreet = (async (index) => {
 
 </script>
 <style lang="scss" scoped>
-.cols-2-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
 .main-selects {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+
+  // >label,
+  // button {
+  //   margin-top: 10px;
+  // }
 }
 
-.reftime-main {
-  grid-column: 2/5;
+#ref-time {
+  width: 270px;
 }
 
-.reftime {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
+@media screen and (min-width:350px) {
 
-.recommended_cars {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.mt-30px {
-  margin-top: 30px;
+  #ref-time {
+    width: 300px;
+  }
 }
 </style>
