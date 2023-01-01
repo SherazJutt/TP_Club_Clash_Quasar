@@ -37,13 +37,10 @@
                     <q-space />
                     <q-btn flat round icon="close" v-close-popup />
                   </q-toolbar>
-
                   <q-card-section class="q-pa-sm" id="ref-time">
                     <q-select transition-hide="jump-up" clearable filled v-model="reflocation" option-label="name" option-value="id" :options="Locations" label="Location" />
                     <q-select class="q-mt-sm" v-if="reflocation" transition-hide="jump-up" clearable filled v-model="variant" option-label="track" option-value="data_id" :options="variants" label="Variant" />
-
                   </q-card-section>
-
                 </q-card>
               </q-dialog>
             </div>
