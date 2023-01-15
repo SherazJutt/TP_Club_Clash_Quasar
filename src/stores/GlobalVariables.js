@@ -8,6 +8,7 @@ export const useGlobalVariables = defineStore('GlobalVariables', {
     curr_user_role: null,
     curr_user_data: null,
     current_clash: null,
+    current_clash_opponent: [],
     Global_AllCarsArr: [],
     AllCategoriesNameWithId: []
   }),
@@ -21,6 +22,7 @@ export const useGlobalVariables = defineStore('GlobalVariables', {
       // get management data
       onSnapshot(doc(db, 'management_data', 'clash_information'), (data) => {
         this.current_clash = data.data().current_clash
+        this.current_clash_opponent = data.data().opponent_club.ClubWithRandomID
       });
       // get all cars
       onSnapshot(doc(db, 'global_data', 'cars_data'), (data) => {
