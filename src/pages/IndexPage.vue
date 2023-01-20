@@ -16,6 +16,8 @@
               <thead>
                 <tr class="text-center">
                   <th v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
+                  <th v-if="race.reftime">Reference</th>
+                  <th>Status</th>
                   <th v-if="race.completed == true">Your Time</th>
                   <th style="width: 110px;" v-if="race.completed == false">Mark As Completed</th>
                 </tr>
@@ -25,7 +27,19 @@
                   <td>{{ race.territory }}</td>
                   <td>{{ race.race_no }}</td>
                   <td>{{ race.recommended_car }}</td>
-                  <!-- <td>{{ race.reftime.min }} : {{ race.reftime.sec }} : {{ race.reftime.milisec }}</td> -->
+                  <td v-if="race.reftime" class="flex items-center justify-center no-wrap">{{ race.reftime.OpponentTime }}
+                    <q-btn dense flat icon="list" style="max-width: 300px !important;">
+                      <q-tooltip :offset="[10, 10]">
+                        <div>Name : {{ race.reftime.OpponentName }}</div>
+                        <div>Club : {{ race.reftime.OpponentClub }}</div>
+                        <div>Car : {{ race.reftime.OpponentCar }}</div>
+                        <div>{{ race.reftime.OpponentName }}'s Time : {{ race.reftime.OpponentTime }}</div>
+                        <div>Location : {{ race.reftime.location }}</div>
+                        <div>Track : {{ race.reftime.track }}</div>
+                        <div>Time : {{ race.reftime.time }}</div>
+                      </q-tooltip>
+                    </q-btn>
+                  </td>
                   <td><span v-if="race.completed == true">Completed</span><span v-else>Pending</span></td>
                   <td v-if="race.completed == true">{{ race.finaltime.min }} : {{ race.finaltime.sec }} : {{ race.finaltime.milisec }}</td>
                   <td v-if="race.completed == false"><q-btn flat round color="green" icon="check" @click="markcompleted(index)" /></td>
@@ -41,7 +55,34 @@
       </q-tab-panel>
 
       <q-tab-panel name="Attack">
+        <div>{{ out_streets_arr }}</div>
+        <ul>
+          <li v-for="(item, index) in out_streets_arr" :key="index">{{ item.main_territory_name }}</li>
+        </ul>
 
+        <!-- <div v-if="out_attack_arr">{{ out_attack_arr }}</div> -->
+        <div v-for="(mainitem, mainindex) in out_streets_arr" :key="mainindex">
+          <h5 class="text-center">{{ mainitem.main_territory_name }}</h5>
+          <div>{{ mainitem.main_territory_id }}</div>
+
+          <div v-for="(item, index) in out_attack_arr" :key="index"><span v-if="item.assigned_territory_id == mainitem.main_territory_id">yes{{ item.length }}</span></div>
+
+          <q-stepper v-model="steps[mainindex]" vertical color="primary" class="" animated>
+            <q-step v-for="(item, index) in out_attack_arr" :key="index" :name="index + 1" :title="'Race No ' + item.race" :caption="mainitem.main_territory_name" icon="check">
+              <div>{{ item.description }}</div>
+              <q-stepper-navigation>
+                <q-btn :label="item == 5 ? 'Complete' : 'Continue'" @click="item == 5 ? AttackTerritoryCompleted() : steps[mainindex] = item + 1" color="primary" />
+                <q-btn v-if="index > 0" flat @click="steps[mainindex] = item - 1" color="primary" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+          </q-stepper>
+
+        </div>
+
+
+
+        <hr>
+        <div>{{ attack_data_arr }}</div>
         <q-markup-table v-if="attack_data_arr">
           <thead>
             <tr>
@@ -65,7 +106,7 @@
       <q-card>
         <q-toolbar class="bg-green text-white flex justify-between">
           <div>Your Final Lap time</div>
-          <q-btn flat round dense icon="close" v-close-popup />
+          <q-btn flat round dense icon="close" v-clos e-popup />
         </q-toolbar>
 
         <q-card-section class="q-pa-sm" id="final-time">
@@ -90,7 +131,7 @@ import { useGlobalVariables } from 'src/stores/GlobalVariables';
 const GlobalVariables = useGlobalVariables();
 
 const $q = useQuasar()
-const defence_columns = ref(['Territory', 'Race No', 'Recommended Car', 'Status'])
+const defence_columns = ref(['Territory', 'Race No', 'Recommended Car'])
 const attack_columns = ref(['Street No', 'Territory', 'Difficulty'])
 const tab = ref()
 const toolbar = ref(false)
@@ -114,35 +155,33 @@ $q.loading.show()
 let no_race = ref(false)
 let all_races = ref(false)
 
-let opponent_club = ref()
+const opponent_club = ref()
 
-onMounted(() => {
-  getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-    // let opponent_club = opponent_data.data().opponent_club.ClubWithRandomID
-    opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
+getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
+  // let opponent_club = opponent_data.data().opponent_club.ClubWithRandomID
+  opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
 
-    onSnapshot(doc(db, collection_name, user_id), (data) => {
-      let defence_arr = [];
-      let attack_arr = [];
-      if (data.data()[opponent_club.value].defence.length > 0) {
-        let defence = data.data()[opponent_club.value].defence;
-        let attack = data.data()[opponent_club.value].attack;
-        all_races.value = true
-        defence.forEach((data) => {
-          defence_arr.push(data)
-        });
-        attack.forEach((data) => {
-          attack_arr.push(data)
-        });
-        race_data_arr.value = defence_arr
-        attack_data_arr.value = attack_arr
-      } else {
-        no_race.value = true
-      }
-      tab.value = GlobalVariables.current_clash
-      $q.loading.hide()
-    });
-  })
+  onSnapshot(doc(db, collection_name, user_id), (data) => {
+    let defence_arr = [];
+    let attack_arr = [];
+    if (data.data()[opponent_club.value].defence.length > 0) {
+      let defence = data.data()[opponent_club.value].defence;
+      let attack = data.data()[opponent_club.value].attack;
+      all_races.value = true
+      defence.forEach((data) => {
+        defence_arr.push(data)
+      });
+      attack.forEach((data) => {
+        attack_arr.push(data)
+      });
+      race_data_arr.value = defence_arr
+      attack_data_arr.value = attack_arr
+    } else {
+      no_race.value = true
+    }
+    tab.value = GlobalVariables.current_clash
+    $q.loading.hide()
+  });
 })
 const current_index = ref()
 
@@ -156,7 +195,7 @@ const clicktwo = (async (index) => {
     finaltime: finaltime.value,
     race_no: race_data_arr.value[current_index.value].race_no,
     recommended_car: race_data_arr.value[current_index.value].recommended_car,
-    // reftime: race_data_arr.value[current_index.value].reftime,
+    reftime: race_data_arr.value[current_index.value].reftime,
     territory: race_data_arr.value[current_index.value].territory
   }
 
@@ -173,6 +212,58 @@ const clicktwo = (async (index) => {
     console.log('error', error);
   })
 })
+
+// <=============attack============>
+
+const out_streets_arr = ref([])
+
+onSnapshot(doc(db, 'user_races', user_id), (data) => {
+  let internal_streets_arr = []
+  let streets = data.data()[opponent_club.value].AttackStreets
+  console.log(opponent_club.value);
+  streets.forEach(element => {
+    internal_streets_arr.push(element)
+  });
+  out_streets_arr.value = internal_streets_arr
+});
+
+const steps = ref([1, 1, 1, 1, 1])
+
+const out_attack_arr = ref([])
+
+onSnapshot(doc(db, 'user_races', user_id), (data) => {
+  let internal_out_attack_arr = []
+  let attack_races = data.data()[opponent_club.value].attack
+  attack_races.forEach(element => {
+    internal_out_attack_arr.push(element)
+  });
+  out_attack_arr.value = internal_out_attack_arr
+});
+
+
+const out_attack_arr1 = ref([])
+onSnapshot(doc(db, 'user_races', user_id), (data) => {
+  let internal_streets_arr = {}
+  let internal_out_attack_arr1 = []
+  let attackstreets = out_streets_arr.value
+  attackstreets.forEach(el => {
+    // console.log();
+    internal_streets_arr.push(el.main_territory_id = [el.main_territory_id])
+  })
+  // let attack_races1 = data.data()[opponent_club.value].attack
+  // attack_races1.forEach(element => {
+  // internal_out_attack_arr1.push(element.assigned_territory_id)
+  // });
+  // out_attack_arr1.value = internal_out_attack_arr1
+  // console.log(out_streets_arr.value1);
+
+});
+
+
+const AttackTerritoryCompleted = (() => {
+  console.log('completed');
+})
+
 </script>
 <style lang="scss" scoped>
 .c-h-main-h {

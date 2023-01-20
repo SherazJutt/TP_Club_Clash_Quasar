@@ -47,7 +47,7 @@
           <q-btn type="submit" color="primary" class="q-py-md w-100" :label="'Add ' + variantname + ' in ' + reflocation.name" />
         </div>
       </q-form>
-      <div class="q-my-md text-center">Total <span class="text-blue-9">{{ varsdata.length }}</span> Variants in <span class="text-blue-9">{{ reflocation.name }}</span></div>
+      <div class="q-my-md text-center" v-if="reflocation">Total <span class="text-blue-9">{{ varsdata.length }}</span> Variants in <span class="text-blue-9">{{ reflocation.name }}</span></div>
       <q-markup-table class="q-ma-xs" v-if="varsdata.length > 0">
         <thead>
           <tr>
@@ -89,6 +89,8 @@ import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
 // $q.loading.show()
+
+// add loading spiner whenever possible
 
 const router = useRouter()
 const GlobalVariables = useGlobalVariables();
@@ -169,6 +171,9 @@ const AddVariantSubmit = (() => {
     })
   }).then(() => {
     console.log('added');
+    reflocation.value = ''
+    variantname.value = ''
+    time.value = ''
   })
 })
 const varsdata = ref([])

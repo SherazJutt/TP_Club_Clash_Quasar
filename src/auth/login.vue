@@ -61,7 +61,7 @@ const SignInWithGoogle = () => {
         setDoc(doc(db, "user_races", data.user.uid), {
           name: name,
           user_id: uid,
-          [opponent_club]: { defence: [], attack: [] }
+          [opponent_club]: { AttackStreets: [], defence: [], attack: [] }
         })
       })
     }
