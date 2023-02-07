@@ -106,7 +106,7 @@
       <q-card>
         <q-toolbar class="bg-green text-white flex justify-between">
           <div>Your Final Lap time</div>
-          <q-btn flat round dense icon="close" v-clos e-popup />
+          <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
 
         <q-card-section class="q-pa-sm" id="final-time">
@@ -248,7 +248,7 @@ onSnapshot(doc(db, 'user_races', user_id), (data) => {
   let attackstreets = out_streets_arr.value
   attackstreets.forEach(el => {
     // console.log();
-    internal_streets_arr.push(el.main_territory_id = [el.main_territory_id])
+    // internal_streets_arr.push(el.main_territory_id = [el.main_territory_id])
   })
   // let attack_races1 = data.data()[opponent_club.value].attack
   // attack_races1.forEach(element => {

@@ -9,6 +9,9 @@
         </q-stepper-navigation>
       </q-step>
     </q-stepper>
+
+    <br v-for="item in 5">
+    <div>{{ opponent_club }}</div>
   </div>
 </template>
 
@@ -20,160 +23,45 @@ import { db } from '../firebase';
 
 const GlobalVariables = useGlobalVariables();
 
-// variables
-const opponent_club = ref()
-
-getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-  opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
-})
-
-
-
-
-
-const AssignStreets = ref(false)
-const AddGuide = ref(false)
-
+let user_id = localStorage.getItem('access_token');
 
 const step = ref(1)
 const markcompleted = (() => {
   console.log('completed');
 })
 
+// variables
+const opponent_club = ref()
 
-// player_name
-const player_name = ref(null)
-const player_name_arr = ref()
+getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
+  opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
+  console.log(opponent_club.value);
+})
 
-onSnapshot(collection(db, 'users_data'), (data) => {
-  let custom_user_data = []
-  data.forEach(data => {
-    let uid = data.data().user_id
-    let label = data.data().name
-    if (data.data().member_of == 'team1') {
-      custom_user_data.push({ uid, label })
-    }
+getDoc(doc(db, 'user_races', user_id)).then(res => {
+  let attacStreets = res.data()[opponent_club.value].AttackStreets
+  console.log(attacStreets);
+  attacStreets.forEach(element => {
+    console.log(element);
   });
-  player_name_arr.value = custom_user_data
-});
 
-// main_territory
-const main_territory = ref(null)
-const main_territory_arr = ref([])
-const intervalone = setInterval(() => {
-  if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
-    clearInterval(intervalone)
-    let Names = GlobalVariables.AllCategoriesNameWithId
-    Names.forEach(element => {
-      main_territory_arr.value.push({ label: element.name, id: element.id })
-    });
-  }
-}, 1000);
-
-const Description = ref()
-
-// street
-const Street = ref()
-let StreetNO = ref([1, 2, 3, 4])
-
-// race
-const Race = ref()
-let RaceNO = ref([])
-for (let index = 1; index <= 16; index++) {
-  RaceNO.value.push(index)
-}
-
-
-// recommended_car
-let recommended_cars_arr = []
-const recommended_car = ref(null)
-const recommended_cars = ref(recommended_cars_arr)
-function filterFn(val, update, abort) {
-  update(() => {
-    const needle = val.toLocaleLowerCase()
-    recommended_cars.value = recommended_cars_arr.filter(v => v.toLocaleLowerCase().indexOf(needle) > -1)
-  })
-}
-function setreccar(val) {
-  recommended_car.value = val
-}
-
-const interval2 = setInterval(() => {
-  if (GlobalVariables.Global_AllCarsArr.length > 0) {
-    let allcars = GlobalVariables.Global_AllCarsArr
-    allcars.forEach(element => {
-      recommended_cars_arr.push(element.Car)
-    });
-    clearInterval(interval2)
-  }
-}, 250);
-
-const clear_recommended_car = (() => {
-  recommended_car.value = null
-})
-
-
-
-const assignattack = (() => {
-  let AttackDataArr = {
-    player_name: player_name.value.label,
-    main_territory: main_territory.value,
-    // Description: Description.value.replace(/\s+/g, ' ').trim(),
-    Street: Street.value,
-    // recommended_car: recommended_car.value
-  }
-  // console.log(AttackDataArr);
-  updateDoc(doc(db, 'user_races', player_name.value.uid), {
-    [opponent_club.value]: {
-
-      AttackStreets: arrayUnion({
-        player_name: player_name.value.label,
-        player_id: player_name.value.uid,
-        main_territory_name: main_territory.value.label,
-        main_territory_id: main_territory.value.id,
-        Street: Street.value,
-      })
-
-    }
-
-  }).then((res) => {
-    console.log('completed');
-  })
-
-})
-
-const player_territory = ref()
-const player_territory_arr = ref([])
-// watch(player_name, (playerdata) => {
-//   if (playerdata) {
-//     console.log(playerdata.uid);
-//     onSnapshot(doc(db, 'user_races', playerdata.uid), (data) => {
-//       // console.log(data.data());
-//       let territory = data.data().AttackStreets;
-//       // console.log(territory);
-//       territory.forEach(element => {
-//         // territory.push(element)
-//         console.log(element.main_territory_name);
-//       });
-//       // player_territory_arr.value = territory
-//     })
-//     // console.log(player_territory_arr.value);
-//   }
-
-// })
-
-
-
-
-const AddGuideForm = (() => {
 
 
 })
 
-
-
-
-
+// getDoc(doc(db, 'user_races', user_id), (data) => {
+  // let custom_user_data = []
+  // console.log(data);
+  // data.forEach(data => {
+  //   let uid = data.data().user_id
+  //   let label = data.data().name
+  //   if (data.data().member_of == 'team1') {
+  //     custom_user_data.push({ uid, label })
+  //   }
+  // });
+  // player_name_arr.value = custom_user_data
+  // console.log(player_name_arr.value);
+// });
 
 </script>
 <style lang="scss">

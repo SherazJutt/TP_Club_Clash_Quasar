@@ -428,25 +428,6 @@ const deleteDefenceRace = ((index) => {
     })
   })
 })
-const deleteAttackStreet = (async (index) => {
-  let title = 'Confirm To Delete Street #'
-  let indextitle = index + 1
-  let CurrentstreetWithTitle = title + indextitle
-  $q.dialog({
-    title: CurrentstreetWithTitle,
-    cancel: true,
-    persistent: true
-  }).onOk(async () => {
-    outattackarr.value.splice(index, 1);
-    await updateDoc(doc(db, collection_name, player_name.value.uid), {
-      [opponent_club.value]: { defence: outdefencearr.value, attack: outattackarr.value, AttackStreets: outAttackStreetsarr.value, }
-    }).then(() => {
-      console.log('succesfully deleted');
-    }).catch((error) => {
-      console.log('error', error);
-    })
-  })
-})
 
 // <============================== ATTACK================================>
 
@@ -476,13 +457,10 @@ for (let index = 1; index <= 16; index++) {
 const assignattack = (() => {
 
   outAttackStreetsarr.value.push({
-    player_name: player_name.value.label,
-    player_id: player_name.value.uid,
     main_territory_name: main_territory.value.label,
     main_territory_id: main_territory.value.id,
-    Street: Street.value
+    Street_no: Street.value
   })
-  console.log(outAttackStreetsarr.value);
   updateDoc(doc(db, collection_name, player_name.value.uid), {
     [opponent_club.value]: { AttackStreets: outAttackStreetsarr.value, defence: outdefencearr.value, attack: outattackarr.value }
   })
@@ -504,6 +482,7 @@ watch(player_name, (playerdata) => {
       });
       out_attack_guide_arr.value = attack_guide_internal_arr
     });
+
     getDoc(doc(db, 'user_races', playerdata.uid)).then((data) => {
       let territorydata = []
       let territory = data.data()[opponent_club.value].AttackStreets;
@@ -523,10 +502,11 @@ const AddGuideForm = (() => {
     player_id: player_name.value.uid,
     assigned_territory_name: assigned_main_territory.value.label,
     assigned_territory_id: assigned_main_territory.value.id,
-    recommended_car: recommended_car.value,
     race: race_no.value,
+    recommended_car: recommended_car.value,
     description: Description.value
   })
+  console.log(outattackarr.value);
   updateDoc(doc(db, collection_name, player_name.value.uid), {
     [opponent_club.value]: { AttackStreets: outAttackStreetsarr.value, defence: outdefencearr.value, attack: outattackarr.value }
   }).then((res) => {
