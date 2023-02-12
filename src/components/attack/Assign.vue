@@ -101,6 +101,15 @@
       </q-tab-panel>
       <!-- attack -->
       <q-tab-panel name="Attack" class="q-pa-none">
+        <q-stepper v-model="step" vertical color="primary" class="hidden" animated>
+          <q-step v-for="(item, index) in 5" :key="index" :name="item" title="Create an ad group" caption="Optional" icon="check">
+            An ad group contains one or more ads which target a shared set of keywords.
+            <q-stepper-navigation>
+              <q-btn :label="item == 5 ? 'Complete' : 'Continue'" @click="item == 5 ? markcompleted() : step = item + 1" color="primary" />
+              <q-btn v-if="index > 0" flat @click="step = item - 1" color="primary" label="Back" class="q-ml-sm" />
+            </q-stepper-navigation>
+          </q-step>
+        </q-stepper>
 
         <div class="row q-col-gutter-xs">
           <div class="col-6">
@@ -111,7 +120,7 @@
           </div>
         </div>
 
-        <q-form @submit="AssignStreet" class="row q-col-gutter-xs q-mx-auto q-pr-xs q-pt-md" style="max-width: 1000px;" v-if="AssignStreets">
+        <q-form @submit="assignattack" class="row q-col-gutter-xs q-mx-auto q-pr-xs q-pt-md" style="max-width: 1000px;" v-if="AssignStreets">
           <q-select label="Player Name" class="text-capitalize col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
             <template v-slot:no-option>
               <q-item>
@@ -122,7 +131,7 @@
           <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
           <q-select v-model="Street" :options="StreetNO" label="Street No" clearable="" filled class="col-xs-12 col-sm-6 col-md-4" />
           <div class="col-xs-12 col-sm-6 q-mx-auto q-mt-sm">
-            <q-btn class="q-pa-none q-py-md w-100" color="primary" type="submit" :disable="!player_name || !main_territory || !Street">
+            <q-btn class="q-pa-none q-py-md w-100" color="primary" type="submit">
               <div>Assign <span class="text-blue-9" v-if="main_territory">{{ main_territory.label }}</span> street no <span class="text-blue-9" v-if="Street">{{ Street }}</span> To <span class="text-blue-9" v-if="player_name">{{ player_name.label }}</span></div>
             </q-btn>
           </div>
@@ -133,14 +142,12 @@
             <tr>
               <th class="text-center">Territory</th>
               <th class="text-center">Territory ID</th>
-              <th class="text-center">Street No</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in outAttackStreetsarr" :key="index">
-              <td class="text-center">{{ item.main_territory_name }}</td>
-              <td class="text-center">{{ item.main_territory_id }}</td>
-              <td class="text-center">{{ item.Street_no }}</td>
+            <tr v-for="(item, index) in assigned_main_territory_arr" :key="index">
+              <td class="text-center">{{ item.label }}</td>
+              <td class="text-center">{{ item.id }}</td>
               <td class="text-center"><q-btn flat class="text-blue-9" icon="delete" @click="RemoveStreet(index)" /></td>
             </tr>
           </tbody>
@@ -156,19 +163,7 @@
               </q-item>
             </template>
           </q-select>
-
-          <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-3" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="assigned_main_territory" :options="assigned_main_territory_arr">
-            <!-- <div>{{ assigned_main_territory_arr.label }}</div> -->
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps" style="border-bottom: 1px solid gray;">
-                <q-item-section>
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
-                  <q-item-label caption class="text-primary">Street No {{ scope.opt.Street_no }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-
+          <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-3" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="assigned_main_territory" :options="assigned_main_territory_arr" />
           <q-select label="Race No" class="col-xs-12 col-sm-6 col-md-2" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
           <q-select filled :model-value="recommended_car" class="col-xs-12 col-sm-6 col-md-4" clearable @clear="clear_recommended_car" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
             <template v-slot:no-option>
@@ -192,7 +187,6 @@
               <th class="text-center">Territory</th>
               <th class="text-center">Race No</th>
               <th class="text-center">Description</th>
-              <th class="text-center">Car</th>
               <th class="text-center">Action</th>
             </tr>
           </thead>
@@ -202,7 +196,6 @@
               <td class="text-center">{{ item.assigned_territory_name }}</td>
               <td class="text-center">{{ item.race }}</td>
               <td class="text-center">{{ item.description }}</td>
-              <td class="text-center">{{ item.recommended_car }}</td>
               <td class="text-center"><q-btn flat class="text-blue-9" icon="delete" @click="RemoveGuide(index)" /></td>
             </tr>
           </tbody>
@@ -217,7 +210,7 @@
 import { ref, watch, onBeforeMount, onMounted } from "vue";
 import { collection, getDocs, onSnapshot, getDoc, doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { useGlobalVariables } from 'src/stores/GlobalVariables';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 
@@ -245,6 +238,12 @@ const interval = setInterval(() => {
   }
 }, 100);
 
+// player_name
+const player_name = ref(null)
+const player_name_arr = ref()
+// main_territory
+const main_territory = ref(null)
+const main_territory_arr = ref([])
 const intervalone = setInterval(() => {
   if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
     clearInterval(intervalone)
@@ -254,21 +253,6 @@ const intervalone = setInterval(() => {
     });
   }
 }, 1000);
-// player_name
-const player_name = ref(null)
-const player_name_arr = ref()
-onSnapshot(collection(db, 'users_data'), (data) => {
-  let custom_user_data = []
-  data.forEach(data => {
-    let uid = data.data().user_id
-    let label = data.data().name
-    if (data.data().member_of == 'team1') {
-      custom_user_data.push({ uid, label })
-    }
-  });
-  player_name_arr.value = custom_user_data
-  tab.value = GlobalVariables.current_clash
-});
 
 // race_no
 const race_no = ref(null)
@@ -276,18 +260,14 @@ const race_no_arr = []
 for (let i = 1; i <= 16; i++) {
   race_no_arr.push(i)
 }
-// recommended cara
+// street_no
+const street_no = ref(null)
+const street_no_arr = ['1', '2', '3', '4']
+// difficulty
+const difficulty = ref(null)
+const difficulty_arr = ['Easy', 'Medium', 'Hard']
+// recommended_car
 let recommended_cars_arr = []
-const interval2 = setInterval(() => {
-  if (GlobalVariables.Global_AllCarsArr.length > 0) {
-    let allcars = GlobalVariables.Global_AllCarsArr
-    allcars.forEach(element => {
-      recommended_cars_arr.push(element.Car)
-    });
-    clearInterval(interval2)
-  }
-}, 250);
-
 const recommended_car = ref(null)
 const recommended_cars = ref(recommended_cars_arr)
 function filterFn(val, update, abort) {
@@ -300,20 +280,33 @@ function setreccar(val) {
   recommended_car.value = val
 }
 
+const interval2 = setInterval(() => {
+  if (GlobalVariables.Global_AllCarsArr.length > 0) {
+    let allcars = GlobalVariables.Global_AllCarsArr
+    allcars.forEach(element => {
+      recommended_cars_arr.push(element.Car)
+    });
+    clearInterval(interval2)
+  }
+}, 250);
+
 const clear_recommended_car = (() => {
   recommended_car.value = null
 })
 
 // reference locations
 const reflocation = ref()
+
 const variant = ref()
 const variants = ref([])
+
 const addref = ref(false)
 
 let Locations = ref([])
 getDoc(doc(db, 'maps_data', 'locations')).then((data) => {
   Locations.value = data.data().locations
 })
+
 
 watch(reflocation, (location) => {
   if (location) {
@@ -344,11 +337,6 @@ watch(variant, (variant) => {
     })
   }
 })
-
-// main_territory
-const main_territory = ref(null)
-const main_territory_arr = ref([])
-
 // database functions
 const outdefencearr = ref([])
 const outattackarr = ref([])
@@ -358,6 +346,7 @@ watch(player_name, (modeldata) => {
   if (modeldata) {
     outdefencearr.value = []
     getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
+      // opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
       onSnapshot(doc(db, collection_name, modeldata.uid), (data) => {
         let defencearr = [];
         let attackarr = [];
@@ -384,6 +373,19 @@ watch(player_name, (modeldata) => {
   }
 })
 
+onSnapshot(collection(db, 'users_data'), (data) => {
+  let custom_user_data = []
+  data.forEach(data => {
+    let uid = data.data().user_id
+    let label = data.data().name
+    if (data.data().member_of == 'team1') {
+      custom_user_data.push({ uid, label })
+    }
+  });
+  player_name_arr.value = custom_user_data
+  tab.value = GlobalVariables.current_clash
+});
+
 // assign race
 const assign_race = () => {
   outdefencearr.value.push({
@@ -403,19 +405,34 @@ const assign_race = () => {
   // reftime.value = { min: '', sec: '', milisec: '' }
   addref.value = false
 }
+// assign attack
+const assign_attack = () => {
+  outattackarr.value.push({
+    territory: main_territory.value.label,
+    street_no: street_no.value,
+    difficulty: difficulty.value,
+  })
+  updateDoc(doc(db, collection_name, player_name.value.uid), {
+    [opponent_club.value]: { defence: outdefencearr.value, attack: outattackarr.value, AttackStreets: outAttackStreetsarr.value, }
+  })
+  // reset field values
+  main_territory.value = ''
+  race_no.value = ''
+  street_no.value = ''
+  difficulty.value = ''
+  recommended_car.value = ''
+  reftime.value = { min: '', sec: '', milisec: '' }
+}
 
 const deleteDefenceRace = ((index) => {
-
   let title = 'Confirm To Delete Race #'
   let indextitle = index + 1
   let CurrentRaceWithTitle = title + indextitle
-
   $q.dialog({
     title: CurrentRaceWithTitle,
     cancel: true,
     persistent: true
   }).onOk(async () => {
-
     outdefencearr.value.splice(index, 1);
 
     await updateDoc(doc(db, collection_name, player_name.value.uid), {
@@ -425,16 +442,22 @@ const deleteDefenceRace = ((index) => {
     }).catch((error) => {
       console.log('error', error);
     })
-
   })
 })
 
 // <============================== ATTACK================================>
 
 const AssignStreets = ref(false)
-const Streetstable = ref(false)
 const AddGuide = ref(true)
+const Streetstable = ref(false)
 const Guidestable = ref(true)
+
+
+const step = ref(1)
+const markcompleted = (() => {
+  console.log('completed');
+})
+
 const Description = ref()
 
 // street
@@ -442,21 +465,23 @@ const Street = ref()
 let StreetNO = ref([1, 2, 3, 4])
 
 // race
+const Race = ref()
 let RaceNO = ref([])
 for (let index = 1; index <= 16; index++) {
   RaceNO.value.push(index)
 }
 
-const AssignStreet = (() => {
+const assignattack = (() => {
+
   outAttackStreetsarr.value.push({
     main_territory_name: main_territory.value.label,
     main_territory_id: main_territory.value.id,
-    Street_no: Street.value,
-    data_id: main_territory.value.id + '_street_no_' + Street.value
+    Street_no: Street.value
   })
   updateDoc(doc(db, collection_name, player_name.value.uid), {
     [opponent_club.value]: { AttackStreets: outAttackStreetsarr.value, defence: outdefencearr.value, attack: outattackarr.value }
   })
+
 })
 
 const assigned_main_territory = ref()
@@ -478,8 +503,9 @@ watch(player_name, (playerdata) => {
     getDoc(doc(db, 'user_races', playerdata.uid)).then((data) => {
       let territorydata = []
       let territory = data.data()[opponent_club.value].AttackStreets;
+      console.log(opponent_club.value)
       territory.forEach(element => {
-        territorydata.push({ label: element.main_territory_name, id: element.main_territory_id, Street_no: element.Street_no })
+        territorydata.push({ label: element.main_territory_name, id: element.main_territory_id })
       });
       assigned_main_territory_arr.value = territorydata
     })
@@ -493,7 +519,6 @@ const AddGuideForm = (() => {
     player_id: player_name.value.uid,
     assigned_territory_name: assigned_main_territory.value.label,
     assigned_territory_id: assigned_main_territory.value.id,
-    data_of: assigned_main_territory.value.id + '_street_no_' + assigned_main_territory.value.Street_no,
     race: race_no.value,
     recommended_car: recommended_car.value,
     description: Description.value
@@ -517,7 +542,7 @@ const RemoveStreet = ((index) => {
     cancel: true,
     persistent: true
   }).onOk(() => {
-    outAttackStreetsarr.value.splice(index, 1)
+    assigned_main_territory_arr.value.splice(index, 1)
     updateDoc(doc(db, collection_name, player_name.value.uid), {
       [opponent_club.value]: { AttackStreets: outAttackStreetsarr.value, defence: outdefencearr.value, attack: out_attack_guide_arr.value }
     }).then(() => {
