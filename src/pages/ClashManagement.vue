@@ -87,7 +87,7 @@ const AddOpponent = (async () => {
 
     DocIDS.forEach(async (dt) => {
       await updateDoc(doc(db, 'user_races', dt), {
-        [ClubWithRandomID]: { defence: [], attack: [] }
+        [ClubWithRandomID]: { defence: [], attack: [], AttackStreets: [] }
       })
     })
 

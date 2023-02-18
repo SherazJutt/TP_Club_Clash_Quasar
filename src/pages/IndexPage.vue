@@ -55,13 +55,68 @@
       </q-tab-panel>
 
       <q-tab-panel name="Attack">
+        <!--
+                    <div v-for="(item, index) in AttackStreets_arr" :key="index">
+                                        <h5>{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
 
-        <div v-for="(item, index) in AttackStreets_arr" :key="index">
+                                        <q-list bordered separator v-for="(attackdata, innerindex) in attack_data_arr" :key="innerindex">
+                                          <q-item clickable v-ripple class="non-selectable" v-if="item.data_id == attackdata.data_of">
+                                            <q-item-section>
+                                              <q-item-label>
+                                                <div>
+                                                  <q-chip class="" :label="'Race NO:' + attackdata.race" />
+                                                  <q-chip class="" :label="attackdata.recommended_car" />
+                                                </div>
+                                              </q-item-label>
+                                              <q-item-label caption>{{ attackdata.description }}</q-item-label>
+                                            </q-item-section>
+                                          </q-item>
+                                        </q-list>
+
+                                      </div>
+                                    -->
+
+
+
+        <div v-for="(item, mainindex) in AttackStreets_arr" :key="mainindex">
           <h5>{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
-          <ul v-for="(attackdata, index) in attack_data_arr" :key="index">
-            <li v-if="item.data_id == attackdata.data_of">{{ attackdata }}</li>
-          </ul>
+
+          <q-stepper v-model="steps[mainindex]" vertical color="primary" class="" animated>
+            <template v-for="(attackdata, innerindex) in attack_data_arr" :key="innerindex">
+              <q-step v-if="item.data_id == attackdata.data_of" :name="innerindex + 1" :title="'Race No ' + attackdata.race" :caption="attackdata.description" icon="check">
+                <div>{{ item.description }}</div>
+                <q-stepper-navigation>
+                  <q-btn label="Continue" @click="steps[mainindex] = innerindex + 2" color="primary" />
+                  <q-btn v-if="innerindex > 0" flat @click="steps[mainindex] = innerindex" color="primary" label="Back" class="q-ml-sm" />
+                </q-stepper-navigation>
+              </q-step>
+            </template>
+          </q-stepper>
+
+
+
+          <!-- <ul>
+                                          <template v-for="(attackdata, index) in attack_data_arr">
+                                            <li v-if="item.data_id == attackdata.data_of">
+                                              <p>{{ attackdata }}</p>
+                                            </li>
+                                          </template>
+                                        </ul> -->
         </div>
+
+
+
+        <!-- <div v-for="(item, index) in AttackStreets_arr" :key="index">
+                                        <h5>{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
+                                        <ul>
+                                          <template v-for="(attackdata, index) in attack_data_arr">
+                                            <li v-if="item.data_id == attackdata.data_of">
+                                              <p>{{ attackdata }}</p>
+                                            </li>
+                                          </template>
+                                        </ul>
+                                      </div> -->
+
       </q-tab-panel>
 
     </q-tab-panels>
@@ -106,6 +161,9 @@ const sec = ['00']
 for (let i = 1; i <= 59; i++) {
   sec.push(i)
 }
+
+
+const steps = ref([1, 1, 1, 1, 1, 1, 1])
 
 // const user_data = ref()
 const race_data_arr = ref()
@@ -173,7 +231,13 @@ const clicktwo = (async (index) => {
   })
 })
 
-
+const rendernow = ref(false)
+const dataissame = ((one, two) => {
+  // console.log(one, two);
+  if (one == two) {
+    return true
+  }
+})
 
 
 // let items = ref([1, 2, 3, 3, 4, 4, 5])
