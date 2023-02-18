@@ -57,23 +57,21 @@
     <q-tab-panel name="Attack">
 
       <div v-for="(item, mainindex) in AttackStreets_arr" :key="mainindex">
-        <h5>{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
-        <q-stepper v-model="steps[mainindex]" vertical color="primary" class="" animated>
-          <template v-if="check(item)">
-            <template v-for="(attackdata, innerindex) in finaldata" :key="innerindex">
-              <q-step :name="innerindex + 1" :title="'Race No ' + attackdata.race" icon="check">
-                <div>{{ attackdata.description }}</div>
-                <q-stepper-navigation>
-                  <q-btn label="Mark Completed" v-if="innerindex + 1 == finaldata.length" @click="StreetCompleted(item)" color="primary" />
-                  <q-btn label="Continue" v-if="innerindex + 1 < finaldata.length" @click="steps[mainindex] = innerindex + 2" color="primary" />
-                  <q-btn v-if="innerindex > 0" flat @click="steps[mainindex] = innerindex" color="primary" label="Back" class="q-ml-sm" />
-                </q-stepper-navigation>
-              </q-step>
-            </template>
+        <h5 class="q-my-md">{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
+        <q-stepper v-if="showele[mainindex]" v-model="steps[mainindex]" vertical animated class="shadow-1">
+          <template v-if="check(item, mainindex)">
+            <q-step v-for="(attackdata, innerindex) in finaldata" :key="innerindex" :name="innerindex + 1" :title="'Race No ' + attackdata.race" :caption="attackdata.recommended_car" icon="check">
+              <div>{{ attackdata.description }}<q-btn color="green" flat icon="check" @click="RaceCompleted(attackdata)" /></div>
+              <q-stepper-navigation>
+                <q-btn label="Mark Street Completed" v-if="innerindex + 1 == finaldata.length" @click="StreetCompleted(item)" color="primary" />
+                <q-btn label="Continue" v-if="innerindex + 1 < finaldata.length" @click="steps[mainindex] = innerindex + 2" color="primary" />
+                <q-btn v-if="innerindex > 0" flat @click="steps[mainindex] = innerindex" color="primary" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
           </template>
         </q-stepper>
-        <template v-if="check() == false">
-          <h5>No Races Assigned Yet</h5>
+        <template v-if="!showele[mainindex]">
+          <p>No Races Assigned Yet</p>
         </template>
       </div>
 
@@ -186,19 +184,27 @@ const clicktwo = (async (index) => {
   })
 })
 
+const showele = ref([true, true, true, true, true, true, true])
 let finaldata = []
-const check = ((item) => {
-  console.log(item);
-  return
+const check = ((item, mainindex) => {
   finaldata = []
   attack_data_arr.value.forEach(el => {
     if (item.data_id == el.data_of) {
       finaldata.push(el)
     }
   })
-  return finaldata.length > 0 ? true : false;
+  if (finaldata.length > 0) {
+    return true
+  } else {
+    showele.value[mainindex] = false
+    return false;
+  }
 })
 
+
+const RaceCompleted = ((item) => {
+  console.log(item);
+})
 
 const StreetCompleted = ((item) => {
   console.log(item);
