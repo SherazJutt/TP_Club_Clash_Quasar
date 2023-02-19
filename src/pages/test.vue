@@ -1,75 +1,45 @@
 <template>
-  <div class="q-pa-xs q-mt-sm">
-    <q-stepper v-model="step" vertical color="primary" class="" animated>
-      <q-step v-for="(item, index) in 5" :key="index" :name="item" title="Create an ad group" caption="Optional" icon="check">
-        An ad group contains one or more ads which target a shared set of keywords.
-        <q-stepper-navigation>
-          <q-btn :label="item == 5 ? 'Complete' : 'Continue'" @click="item == 5 ? markcompleted() : step = item + 1" color="primary" />
-          <q-btn v-if="index > 0" flat @click="step = item - 1" color="primary" label="Back" class="q-ml-sm" />
-        </q-stepper-navigation>
-      </q-step>
-    </q-stepper>
+<div class="q-pa-md">
+  <q-stepper v-model="step" vertical color="primary" animated>
+    <q-step :name="1" title="Select campaign settings" icon="settings" :done="step > 1">
+      For each ad campaign that you create, you can control how much you're willing to
+      spend on clicks and conversions, which networks and geographical locations you want
+      your ads to show on, and more.
 
-    <br v-for="item in 5">
-    <div>{{ opponent_club }}</div>
-  </div>
+      <q-stepper-navigation>
+        <q-btn @click="step = 2" color="primary" label="Continue" />
+      </q-stepper-navigation>
+    </q-step>
+
+    <q-step :name="2" title="Create an ad group" caption="Optional" icon="create_new_folder" :done="step > 2">
+      An ad group contains one or more ads which target a shared set of keywords.
+
+      <q-stepper-navigation>
+        <q-btn @click="step = 4" color="primary" label="Continue" />
+        <q-btn flat @click="step = 1" color="primary" label="Back" class="q-ml-sm" />
+      </q-stepper-navigation>
+    </q-step>
+
+    <q-step :name="3" title="Ad template" icon="assignment" disable>
+      This step won't show up because it is disabled.
+    </q-step>
+
+    <q-step :name="4" title="Create an ad" icon="add_comment">
+      Try out different ad text to see what brings in the most customers, and learn how to
+      enhance your ads using features like ad extensions. If you run into any problems with
+      your ads, find out how to tell if they're running and how to resolve approval issues.
+
+      <q-stepper-navigation>
+        <q-btn color="primary" label="Finish" />
+        <q-btn flat @click="step = 2" color="primary" label="Back" class="q-ml-sm" />
+      </q-stepper-navigation>
+    </q-step>
+  </q-stepper>
+</div>
 </template>
 
-<script setup>
-import { ref, watch } from 'vue'
-import { useGlobalVariables } from 'src/stores/GlobalVariables';
-import { collection, getDocs, onSnapshot, getDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
-import { db } from '../firebase';
-
-const GlobalVariables = useGlobalVariables();
-
-let user_id = localStorage.getItem('access_token');
+<script setup >
+import { ref } from 'vue'
 
 const step = ref(1)
-const markcompleted = (() => {
-  console.log('completed');
-})
-
-// variables
-const opponent_club = ref()
-
-getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
-  opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
-  console.log(opponent_club.value);
-})
-
-getDoc(doc(db, 'user_races', user_id)).then(res => {
-  let attacStreets = res.data()[opponent_club.value].AttackStreets
-  console.log(attacStreets);
-  attacStreets.forEach(element => {
-    console.log(element);
-  });
-
-
-
-})
-
-// getDoc(doc(db, 'user_races', user_id), (data) => {
-  // let custom_user_data = []
-  // console.log(data);
-  // data.forEach(data => {
-  //   let uid = data.data().user_id
-  //   let label = data.data().name
-  //   if (data.data().member_of == 'team1') {
-  //     custom_user_data.push({ uid, label })
-  //   }
-  // });
-  // player_name_arr.value = custom_user_data
-  // console.log(player_name_arr.value);
-// });
-
 </script>
-<style lang="scss">
-.textarea {
-  >.q-field__inner {
-    >.q-field__control {
-      min-height: 200px;
-    }
-  }
-}
-</style>

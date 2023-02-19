@@ -1,90 +1,103 @@
 <template>
-  <div class="q-mx-auto" style="max-width: 1000px">
-    <q-tabs v-model="tab" class="q-pa-xs" align="justify">
-      <q-tab class="text-cyan" name="Defence" label="Defence" />
-      <q-tab class="text-red" name="Attack" label="Attack" />
-    </q-tabs>
-    <q-tab-panels v-model="tab" class="bg-transparen" animated>
-      <q-tab-panel name="Defence" class="q-pa-xs">
-        <div class="border q-mb-xs" v-if="all_races" v-for="(race, index) in race_data_arr" :key="index">
-          <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup" :header-class="(race.completed == true) ? 'bg-green text-white q-py-md justify-between' : 'bg-blue-8 bg-blue-8 text-white q-py-md justify-between'">
-            <template v-slot:header>
-              <div class="c-h-main-h">Race # {{ (index + 1) }}</div>
-              <span class="text-bold text-capitalize c-h-main-h q-pr-lg">{{ race.territory }}</span>
-            </template>
-            <q-markup-table>
-              <thead>
-                <tr class="text-center">
-                  <th v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
-                  <th v-if="race.reftime">Reference</th>
-                  <th>Status</th>
-                  <th v-if="race.completed == true">Your Time</th>
-                  <th style="width: 110px;" v-if="race.completed == false">Mark As Completed</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="text-center text-capitalize">
-                  <td>{{ race.territory }}</td>
-                  <td>{{ race.race_no }}</td>
-                  <td>{{ race.recommended_car }}</td>
-                  <td v-if="race.reftime" class="flex items-center justify-center no-wrap">{{ race.reftime.OpponentTime }}
-                    <q-btn dense flat icon="list" style="max-width: 300px !important;">
-                      <q-tooltip :offset="[10, 10]">
-                        <div>Name : {{ race.reftime.OpponentName }}</div>
-                        <div>Club : {{ race.reftime.OpponentClub }}</div>
-                        <div>Car : {{ race.reftime.OpponentCar }}</div>
-                        <div>{{ race.reftime.OpponentName }}'s Time : {{ race.reftime.OpponentTime }}</div>
-                        <div>Location : {{ race.reftime.location }}</div>
-                        <div>Track : {{ race.reftime.track }}</div>
-                        <div>Time : {{ race.reftime.time }}</div>
-                      </q-tooltip>
-                    </q-btn>
-                  </td>
-                  <td><span v-if="race.completed == true">Completed</span><span v-else>Pending</span></td>
-                  <td v-if="race.completed == true">{{ race.finaltime.min }} : {{ race.finaltime.sec }} : {{ race.finaltime.milisec }}</td>
-                  <td v-if="race.completed == false"><q-btn flat round color="green" icon="check" @click="markcompleted(index)" /></td>
-                </tr>
-              </tbody>
-            </q-markup-table>
-          </q-expansion-item>
+<div class="q-mx-auto" style="max-width: 1000px">
+  <q-tabs v-model="tab" class="q-pa-xs" align="justify">
+    <q-tab class="text-cyan" name="Defence" label="Defence" />
+    <q-tab class="text-red" name="Attack" label="Attack" />
+  </q-tabs>
+  <q-tab-panels v-model="tab" class="bg-transparen" animated>
+    <q-tab-panel name="Defence" class="q-pa-xs">
+      <div class="border q-mb-xs" v-if="all_races" v-for="(race, index) in race_data_arr" :key="index">
+        <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup" :header-class="(race.completed == true) ? 'bg-green text-white q-py-md justify-between' : 'bg-blue-8 bg-blue-8 text-white q-py-md justify-between'">
+          <template v-slot:header>
+            <div class="c-h-main-h">Race # {{ (index + 1) }}</div>
+            <span class="text-bold text-capitalize c-h-main-h q-pr-lg">{{ race.territory }}</span>
+          </template>
+          <q-markup-table>
+            <thead>
+              <tr class="text-center">
+                <th v-for="(column, index) in defence_columns" :key="index">{{ column }}</th>
+                <th v-if="race.reftime">Reference</th>
+                <th>Status</th>
+                <th v-if="race.completed == true">Your Time</th>
+                <th style="width: 110px;" v-if="race.completed == false">Mark As Completed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-center text-capitalize">
+                <td>{{ race.territory }}</td>
+                <td>{{ race.race_no }}</td>
+                <td>{{ race.recommended_car }}</td>
+                <td v-if="race.reftime" class="flex items-center justify-center no-wrap">{{ race.reftime.OpponentTime }}
+                  <q-btn dense flat icon="list" style="max-width: 300px !important;">
+                    <q-tooltip :offset="[10, 10]">
+                      <div>Name : {{ race.reftime.OpponentName }}</div>
+                      <div>Club : {{ race.reftime.OpponentClub }}</div>
+                      <div>Car : {{ race.reftime.OpponentCar }}</div>
+                      <div>{{ race.reftime.OpponentName }}'s Time : {{ race.reftime.OpponentTime }}</div>
+                      <div>Location : {{ race.reftime.location }}</div>
+                      <div>Track : {{ race.reftime.track }}</div>
+                      <div>Time : {{ race.reftime.time }}</div>
+                    </q-tooltip>
+                  </q-btn>
+                </td>
+                <td><span v-if="race.completed == true">Completed</span><span v-else>Pending</span></td>
+                <td v-if="race.completed == true">{{ race.finaltime.min }} : {{ race.finaltime.sec }} : {{ race.finaltime.milisec }}</td>
+                <td v-if="race.completed == false"><q-btn flat round color="green" icon="check" @click="markcompleted(index)" /></td>
+              </tr>
+            </tbody>
+          </q-markup-table>
+        </q-expansion-item>
+      </div>
+      <div v-else>
+        <h3 class="text-capitalize text-center">NO races assigned</h3>
+      </div>
+
+    </q-tab-panel>
+
+    <q-tab-panel name="Attack">
+
+      <div v-for="(item, mainindex) in AttackStreets_arr" :key="mainindex">
+        <h5 class="q-my-md">{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
+        <q-stepper v-if="showele[mainindex]" v-model="steps[mainindex]" vertical animated class="shadow-1">
+          <template v-if="check(item, mainindex)">
+            <q-step v-for="(attackdata, innerindex) in finaldata" :key="innerindex" :name="innerindex + 1" :title="'Race No ' + attackdata.race" :caption="attackdata.recommended_car" icon="check">
+              <div>{{ attackdata.description }}<q-btn color="green" flat icon="check" @click="RaceCompleted(attackdata)" /></div>
+              <q-stepper-navigation>
+                <q-btn label="Mark Street Completed" v-if="innerindex + 1 == finaldata.length" @click="StreetCompleted(item)" color="primary" />
+                <q-btn label="Continue" v-if="innerindex + 1 < finaldata.length" @click="steps[mainindex] = innerindex + 2" color="primary" />
+                <q-btn v-if="innerindex > 0" flat @click="steps[mainindex] = innerindex" color="primary" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+          </template>
+        </q-stepper>
+        <template v-if="!showele[mainindex]">
+          <p>No Races Assigned Yet</p>
+        </template>
+      </div>
+
+    </q-tab-panel>
+
+  </q-tab-panels>
+
+  <q-dialog persistent v-model="toolbar">
+    <q-card>
+      <q-toolbar class="bg-green text-white flex justify-between">
+        <div>Your Final Lap time</div>
+        <q-btn flat round dense icon="close" v-close-popup />
+      </q-toolbar>
+
+      <q-card-section class="q-pa-sm" id="final-time">
+        <div>
+          <q-select class="q-mb-xs border" transition-hide="jump-up" clearable filled v-model="finaltime.min" :options="min" label="Minutes" />
+          <q-select class="q-mb-xs border" transition-hide="jump-up" clearable filled v-model="finaltime.sec" :options="sec" label="Seconds" />
+          <q-input filled class="border q-mb-sm" type="number" clearable v-model="finaltime.milisec" label="Miliseconds" />
+          <q-btn color="green" class="w-100" label="Mark As Completed" v-if="finaltime.min && finaltime.sec && finaltime.milisec" @click="clicktwo" v-close-popup />
         </div>
-        <div v-else>
-          <h3 class="text-capitalize text-center">NO races assigned</h3>
-        </div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 
-      </q-tab-panel>
-
-      <q-tab-panel name="Attack">
-
-        <div v-for="(item, index) in AttackStreets_arr" :key="index">
-          <h5>{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
-          <ul v-for="(attackdata, index) in attack_data_arr" :key="index">
-            <li v-if="item.data_id == attackdata.data_of">{{ attackdata }}</li>
-          </ul>
-        </div>
-      </q-tab-panel>
-
-    </q-tab-panels>
-
-    <q-dialog persistent v-model="toolbar">
-      <q-card>
-        <q-toolbar class="bg-green text-white flex justify-between">
-          <div>Your Final Lap time</div>
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
-
-        <q-card-section class="q-pa-sm" id="final-time">
-          <div>
-            <q-select class="q-mb-xs border" transition-hide="jump-up" clearable filled v-model="finaltime.min" :options="min" label="Minutes" />
-            <q-select class="q-mb-xs border" transition-hide="jump-up" clearable filled v-model="finaltime.sec" :options="sec" label="Seconds" />
-            <q-input filled class="border q-mb-sm" type="number" clearable v-model="finaltime.milisec" label="Miliseconds" />
-            <q-btn color="green" class="w-100" label="Mark As Completed" v-if="finaltime.min && finaltime.sec && finaltime.milisec" @click="clicktwo" v-close-popup />
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-  </div>
+</div>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
@@ -106,6 +119,9 @@ const sec = ['00']
 for (let i = 1; i <= 59; i++) {
   sec.push(i)
 }
+
+
+const steps = ref([1, 1, 1, 1, 1, 1, 1])
 
 // const user_data = ref()
 const race_data_arr = ref()
@@ -131,11 +147,6 @@ getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
       race_data_arr.value = data.data()[opponent_club.value].defence;
       attack_data_arr.value = data.data()[opponent_club.value].attack;
       AttackStreets_arr.value = data.data()[opponent_club.value].AttackStreets;
-
-      // AttackStreets_arr.value = AttackStreets.filter((item, index, self) => {
-      //   return self.map(i => i.main_territory_id).indexOf(item.main_territory_id) === index;
-      // });
-
     } else {
       no_race.value = true
     }
@@ -173,70 +184,32 @@ const clicktwo = (async (index) => {
   })
 })
 
-
-
-
-// let items = ref([1, 2, 3, 3, 4, 4, 5])
-const removeDuplicates = ((key) => {
-
-  // AttackStreets_arr.value = AttackStreets_arr.value.filter((item, index, self) => {
-  //   return self.map(i => i.main_territory_id).indexOf(item.main_territory_id) === index;
-  // });
-
-  // console.log(AttackStreets_arr.value);
+const showele = ref([true, true, true, true, true, true, true])
+let finaldata = []
+const check = ((item, mainindex) => {
+  finaldata = []
+  attack_data_arr.value.forEach(el => {
+    if (item.data_id == el.data_of) {
+      finaldata.push(el)
+    }
+  })
+  if (finaldata.length > 0) {
+    return true
+  } else {
+    showele.value[mainindex] = false
+    return false;
+  }
 })
 
 
-// <=============attack============>
+const RaceCompleted = ((item) => {
+  console.log(item);
+})
 
-// const out_streets_arr = ref([])
+const StreetCompleted = ((item) => {
+  console.log(item);
+})
 
-// onSnapshot(doc(db, 'user_races', user_id), (data) => {
-//   let internal_streets_arr = []
-//   let streets = data.data()[opponent_club.value].AttackStreets
-//   console.log(opponent_club.value);
-//   streets.forEach(element => {
-//     internal_streets_arr.push(element)
-//   });
-//   out_streets_arr.value = internal_streets_arr
-// });
-
-// const steps = ref([1, 1, 1, 1, 1])
-
-// const out_attack_arr = ref([])
-
-// onSnapshot(doc(db, 'user_races', user_id), (data) => {
-//   let internal_out_attack_arr = []
-//   let attack_races = data.data()[opponent_club.value].attack
-//   attack_races.forEach(element => {
-//     internal_out_attack_arr.push(element)
-//   });
-//   out_attack_arr.value = internal_out_attack_arr
-// });
-
-
-// const out_attack_arr1 = ref([])
-// onSnapshot(doc(db, 'user_races', user_id), (data) => {
-//   let internal_streets_arr = {}
-//   let internal_out_attack_arr1 = []
-//   let attackstreets = out_streets_arr.value
-//   attackstreets.forEach(el => {
-//     // console.log();
-//     // internal_streets_arr.push(el.main_territory_id = [el.main_territory_id])
-//   })
-//   // let attack_races1 = data.data()[opponent_club.value].attack
-//   // attack_races1.forEach(element => {
-//   // internal_out_attack_arr1.push(element.assigned_territory_id)
-//   // });
-//   // out_attack_arr1.value = internal_out_attack_arr1
-//   // console.log(out_streets_arr.value1);
-
-// });
-
-
-// const AttackTerritoryCompleted = (() => {
-//   console.log('completed');
-// })
 
 </script>
 <style lang="scss" scoped>
