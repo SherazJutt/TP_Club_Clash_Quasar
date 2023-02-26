@@ -1,106 +1,106 @@
 <template>
-  <div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1200px">
-    <q-btn color="primary" label="Add New Territory" @click="AddTerritoryDialog = true" />
+<div v-if="GlobalVariables.curr_user_role == 'admin'" class="q-pa-md q-mx-auto" style="max-width: 1200px">
+  <q-btn color="primary" label="Add New Territory" @click="AddTerritoryDialog = true" />
 
-    <q-dialog persistent v-model="AddTerritoryDialog">
-      <q-card>
-        <q-toolbar class="bg-primary text-white flex q-pa-none justify-between">
-          <q-space />
-          <q-btn flat round icon="close" v-close-popup />
-        </q-toolbar>
+  <q-dialog persistent v-model="AddTerritoryDialog">
+    <q-card>
+      <q-toolbar class="bg-primary text-white flex q-pa-none justify-between">
+        <q-space />
+        <q-btn flat round icon="close" v-close-popup />
+      </q-toolbar>
 
-        <q-card-section class="q-pa-sm" style="width: 300px;">
-          <q-form @submit="addterritory" class="">
-            <q-input filled type="text" clearable v-model="NewTerritoryName" label="Territory name" />
-            <q-btn color="primary" type="submit" class="q-py-sm q-mt-sm w-100" :disable="!NewTerritoryName" :loading="loading[1]">Add Territory</q-btn>
-          </q-form>
-          <!-- show all territories -->
-          <q-list v-if="AllTerritoryNames" class="q-mt-sm" bordered separator style="width: 283px;">
-            <q-item v-for="(item, index) in AllTerritoryNames" :key="index">
-              <q-item-section>
-                <q-item-label class="flex justify-between items-center">{{ item.name }} <q-btn style="width: 30px;" flat icon="close" @click="RemoveCategory(index)" /></q-item-label>
+      <q-card-section class="q-pa-sm" style="width: 300px;">
+        <q-form @submit="addterritory" class="">
+          <q-input filled type="text" clearable v-model="NewTerritoryName" label="Territory name" />
+          <q-btn color="primary" type="submit" class="q-py-sm q-mt-sm w-100" :disable="!NewTerritoryName" :loading="loading[1]">Add Territory</q-btn>
+        </q-form>
+        <!-- show all territories -->
+        <q-list v-if="AllTerritoryNames" class="q-mt-sm" bordered separator style="width: 283px;">
+          <q-item v-for="(item, index) in AllTerritoryNames" :key="index">
+            <q-item-section>
+              <q-item-label class="flex justify-between items-center">{{ item.name }} <q-btn style="width: 30px;" flat icon="close" @click="RemoveCategory(index)" /></q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+  <q-form @submit="addtoterritory" class="q-gutter-md q-mt-lg">
+    <div class="main-selects">
+      <div class="cols-2-grid">
+        <q-select label="Territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" option-label="name" option-value="id" :options="main_territory_arr" />
+        <q-select label="Race No" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
+      </div>
+      <div class="cols-2-grid">
+        <q-select label="Opponent Club" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="OpponentClubName" :options="opponent_clubs_arr" />
+        <q-input filled type="text" clearable v-model="Track" label="Track" />
+      </div>
+      <div class="cols-2-grid">
+        <q-input filled type="text" clearable v-model="OpponentName" label="Opponent Name" />
+
+        <q-select filled :model-value="OpponentCar" label="Opponent Car" use-input hide-selected fill-input input-debounce="0" :options="AllCars" @filter="filterFn" @input-value="setreccar">
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">add cars to show</q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="cols-2-grid">
+        <q-select filled v-model="CarClass" label="Car Class" style="width: 140px;" :options="classoptions" clearable class="text-capitalize fullwidthform" behavior="menu">
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                No results
               </q-item-section>
             </q-item>
-          </q-list>
-
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-    <q-form @submit="addtoterritory" class="q-gutter-md q-mt-lg">
-      <div class="main-selects">
-        <div class="cols-2-grid">
-          <q-select label="Territory" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" option-label="name" option-value="id" :options="main_territory_arr" />
-          <q-select label="Race No" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="race_no" :options="race_no_arr" />
-        </div>
-        <div class="cols-2-grid">
-          <q-select label="Opponent Club" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="OpponentClubName" :options="opponent_clubs_arr" />
-          <q-input filled type="text" clearable v-model="Track" label="Track" />
-        </div>
-        <div class="cols-2-grid">
-          <q-input filled type="text" clearable v-model="OpponentName" label="Opponent Name" />
-
-          <q-select filled :model-value="OpponentCar" label="Opponent Car" use-input hide-selected fill-input input-debounce="0" :options="AllCars" @filter="filterFn" @input-value="setreccar">
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">add cars to show</q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="cols-2-grid">
-          <q-select filled v-model="CarClass" label="Car Class" style="width: 140px;" :options="classoptions" clearable class="text-capitalize fullwidthform" behavior="menu">
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No results
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
+          </template>
+        </q-select>
+      </div>
+    </div>
+    <div>
+      <div class="Opponenttime-main">
+        <div><span class="text-blue-9">Opponent time: </span> <small v-if="Opponenttime.min">{{ Opponenttime.min }} Minutes </small><small v-if="Opponenttime.sec">{{ Opponenttime.sec }} Seconds </small><small v-if="Opponenttime.milisec">{{ Opponenttime.milisec }} Miliseconds</small></div>
+        <div class="Opponenttime q-mt-sm" hint="yes">
+          <q-select transition-hide="jump-up" clearable filled v-model="Opponenttime.min" :options="min" label="Minutes" />
+          <q-select transition-hide="jump-up" clearable filled v-model="Opponenttime.sec" :options="sec" label="Seconds" />
+          <q-input filled type="number" clearable v-model="Opponenttime.milisec" label="Miliseconds" />
         </div>
       </div>
-      <div>
-        <div class="Opponenttime-main">
-          <div><span class="text-blue-9">Opponent time: </span> <small v-if="Opponenttime.min">{{ Opponenttime.min }} Minutes </small><small v-if="Opponenttime.sec">{{ Opponenttime.sec }} Seconds </small><small v-if="Opponenttime.milisec">{{ Opponenttime.milisec }} Miliseconds</small></div>
-          <div class="Opponenttime q-mt-sm" hint="yes">
-            <q-select transition-hide="jump-up" clearable filled v-model="Opponenttime.min" :options="min" label="Minutes" />
-            <q-select transition-hide="jump-up" clearable filled v-model="Opponenttime.sec" :options="sec" label="Seconds" />
-            <q-input filled type="number" clearable v-model="Opponenttime.milisec" label="Miliseconds" />
-          </div>
-        </div>
-      </div>
-      <q-btn color="primary" type="submit" :loading="loading[0]" v-if="OpponentName && race_no && main_territory && OpponentCar">Add</q-btn>
+    </div>
+    <q-btn color="primary" type="submit" :loading="loading[0]" v-if="OpponentName && race_no && main_territory && OpponentCar">Add</q-btn>
 
-    </q-form>
+  </q-form>
 
-    <q-markup-table class="q-mt-lg" v-if="territory_data">
-      <thead>
-        <tr class="text-capitalize">
-          <th class="text-center">Race No</th>
-          <th class="text-center">Territory</th>
-          <th class="text-center">Track</th>
-          <th class="text-center">Opponent Club</th>
-          <th class="text-center">Opponent time</th>
-          <th class="text-center">Opponent Name</th>
-          <th class="text-center">Opponent Car</th>
-          <th class="text-center">Class</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="text-capitalize" v-for="(item, index) in territory_data" :key="index">
-          <td class="text-center">{{ item.race_no }}</td>
-          <td class="text-center">{{ item.territory }}</td>
-          <td class="text-center">{{ item.Track }}</td>
-          <td class="text-center">{{ item.OpponentClubName.label }}</td>
-          <td class="text-center">{{ item.Opponenttime.min }} : {{ item.Opponenttime.sec }} : {{ item.Opponenttime.milisec }}</td>
-          <td class="text-center">{{ item.OpponentName }}</td>
-          <td class="text-center">{{ item.OpponentCar }}</td>
-          <td class="text-center">{{ item.CarClass }}</td>
-          <!-- <td class="text-center"><q-btn flat class="text-blue-9" icon="delete" @click="deleteDefenceRace(index)" /></td> -->
-        </tr>
-      </tbody>
-    </q-markup-table>
-  </div>
+  <q-markup-table class="q-mt-lg" v-if="territory_data">
+    <thead>
+      <tr class="text-capitalize">
+        <th class="text-center">Race No</th>
+        <th class="text-center">Territory</th>
+        <th class="text-center">Track</th>
+        <th class="text-center">Opponent Club</th>
+        <th class="text-center">Opponent time</th>
+        <th class="text-center">Opponent Name</th>
+        <th class="text-center">Opponent Car</th>
+        <th class="text-center">Class</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-capitalize" v-for="(item, index) in territory_data" :key="index">
+        <td class="text-center">{{ item.race_no }}</td>
+        <td class="text-center">{{ item.territory }}</td>
+        <td class="text-center">{{ item.Track }}</td>
+        <td class="text-center">{{ item.OpponentClubName.label }}</td>
+        <td class="text-center">{{ item.Opponenttime.min }} : {{ item.Opponenttime.sec }} : {{ item.Opponenttime.milisec }}</td>
+        <td class="text-center">{{ item.OpponentName }}</td>
+        <td class="text-center">{{ item.OpponentCar }}</td>
+        <td class="text-center">{{ item.CarClass }}</td>
+        <!-- <td class="text-center"><q-btn flat class="text-blue-9" icon="delete" @click="deleteDefenceRace(index)" /></td> -->
+      </tr>
+    </tbody>
+  </q-markup-table>
+</div>
 </template>
 <script setup>
 import { ref, watch, onBeforeMount, onMounted } from "vue";
@@ -232,7 +232,7 @@ const NewTerritoryName = ref()
 
 const addterritory = (() => {
   loading.value[1] = true
-  let territoryid = NewTerritoryName.value.replace(/ /g, "-") + '-' + self.crypto.randomUUID();
+  let territoryid = NewTerritoryName.value.replace(/ /g, "_") + '_' + Math.random().toString(36).slice(2);
   let NewTerData = {
     name: NewTerritoryName.value,
     id: territoryid
