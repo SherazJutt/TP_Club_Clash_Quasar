@@ -6,7 +6,54 @@
   </q-tabs>
   <q-tab-panels v-model="tab" animated class="q-mt-sm">
     <q-tab-panel name="Defence" class="q-pa-none">
+
+
+      <div class="territory-cards" v-if="main_territories">
+        <div class="territory-card flex justify-center items-center border" v-for="(territory, index) in main_territory_arr" :key="index" @click="selected_territory(territory.id), races = true">{{ territory.label }}</div>
+      </div>
+      <q-btn v-if="races" color="primary" label="back" @click="main_territories = true, races = false" />
+      <div class="races q-mt-md" v-if="races">
+        <!-- <div class="race_main q-pa-md flex justify-center items-center border rounded-borders" v-for="(race, index) in main_races" :key="index" :class="{ active_main: activeRace === index }" @click="activeRace = index">{{ race }}</div> -->
+        <div class="main_row_one relative-position">
+          <div class="row_one">
+            <q-btn color="primary" class="one" label="1" />
+            <q-btn color="primary" class="five" label="5" />
+            <q-btn color="primary" class="nine" label="9" />
+          </div>
+          <div class="row_two">
+            <q-btn color="primary" class="two" label="2" />
+            <q-btn color="primary" class="six" label="6" />
+            <q-btn color="primary" class="ten" label="10" />
+          </div>
+          <q-btn color="primary" label="13" class="absolute thirteen" />
+          <q-btn color="primary" label="15" class="absolute fifteen" />
+        </div>
+        <div class="main_row_two relative-position">
+          <div class="row_three">
+            <q-btn color="primary" class="three" label="3" />
+            <q-btn color="primary" class="seven" label="7" />
+            <q-btn color="primary" class="eleven" label="11" />
+          </div>
+          <div class="row_four">
+            <q-btn color="primary" class="four" label="4" />
+            <q-btn color="primary" class="eight" label="8" />
+            <q-btn color="primary" class="twelve" label="12" />
+          </div>
+          <q-btn color="primary" label="14" class="absolute fourteen" />
+          <q-btn color="primary" label="16" class="absolute sixteen" />
+        </div>
+
+      </div>
+
+
+
+      <br v-for="item in 10">
+
+
       <q-form @submit="assign_race">
+        <div>{{ main_territory }}</div>
+        <div>{{ race_no }}</div>
+        <div>{{ street_no }}</div>
         <div class="main-selects row q-col-gutter-sm">
 
           <q-select label="Player Name" class="text-capitalize col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
@@ -19,7 +66,8 @@
 
           <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!player_name" v-model="main_territory" :options="main_territory_arr" />
 
-          <q-select label="Race No" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!main_territory" v-model="race_no" :options="race_no_arr" />
+          <q-select label="Street No" class="col-xs-5 col-sm-3 col-md-2" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!main_territory" v-model="street_no" :options="street_no_arr" />
+          <q-select label="Race No" class="col-xs-5 col-sm-3 col-md-2" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!main_territory" v-model="race_no" :options="race_no_arr" />
 
           <q-select filled :model-value="recommended_car" class="col-xs-12 col-sm-6 col-md-4" clearable @clear="clear_recommended_car" :disable="!race_no" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
             <template v-slot:no-option>
@@ -259,15 +307,16 @@ const interval = setInterval(() => {
   }
 }, 100);
 
-const intervalone = setInterval(() => {
-  if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
-    clearInterval(intervalone)
-    let Names = GlobalVariables.AllCategoriesNameWithId
-    Names.forEach(element => {
-      main_territory_arr.value.push({ label: element.name, id: element.id })
-    });
-  }
-}, 1000);
+// const intervalone = setInterval(() => {
+//   if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
+//     clearInterval(intervalone)
+//     let Names = GlobalVariables.AllCategoriesNameWithId
+//     Names.forEach(element => {
+//       main_territory_arr.value.push({ label: element.name, id: element.id })
+//     });
+//   }
+// }, 1000);
+
 // player_name
 const player_name = ref(null)
 const player_name_arr = ref()
@@ -284,12 +333,6 @@ onSnapshot(collection(db, 'users_data'), (data) => {
   tab.value = GlobalVariables.current_clash
 });
 
-// race_no
-const race_no = ref(null)
-const race_no_arr = []
-for (let i = 1; i <= 16; i++) {
-  race_no_arr.push(i)
-}
 // recommended cara
 let recommended_cars_arr = []
 const interval2 = setInterval(() => {
@@ -381,9 +424,57 @@ watch(variant, (variant) => {
   }
 })
 
+
+const intervalone = setInterval(() => {
+  if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
+    clearInterval(intervalone)
+    let Names = GlobalVariables.AllCategoriesNameWithId
+    Names.forEach(element => {
+      main_territory_arr.value.push({ label: element.name, id: element.id })
+    });
+  }
+}, 1000);
+
+const selected_territory = ((territory_id) => {
+  main_territories.value = false
+  console.log(territory_id);
+})
+
+const activeRace = ref(-1);
+const main_races = ref([1, 2, 3, 4])
+
+
+
+// race_no
+const street_no_arr = [1, 2, 3, 4]
+const street_no = ref(null)
+const race_no_arr = []
+const race_no = ref(null)
+// for (let i = 1; i <= 16; i++) {
+//   race_no_arr.push(i)
+// }
+
 // main_territory
-const main_territory = ref(null)
+const main_territories = ref(true)
+const races = ref(false)
 const main_territory_arr = ref([])
+const main_territory = ref(null)
+// const territories_list = ref(['Gold Hills', 'Back Kitchen', 'The Valley', 'Sub Urbs', 'High Village'])
+
+
+watch(main_territory, (territory) => {
+  if (territory) {
+    console.log(territory);
+    getDoc(doc(db, 'management_data', 'TerritoryManagement')).then((data) => {
+      let data_arr = data.data()[territory.id]
+      console.log(data_arr);
+      // data_arr.forEach(element => {
+      //   console.log(element);
+      // });
+    })
+  }
+})
+
 
 // database functions
 const outdefencearr = ref([])
@@ -585,14 +676,6 @@ const RemoveGuide = ((index) => {
 
 </script>
 <style lang="scss" scoped>
-.main-selects {
-
-  // >label,
-  // button {
-  //   margin-top: 10px;
-  // }
-}
-
 #ref-time {
   width: 270px;
 }
@@ -602,5 +685,88 @@ const RemoveGuide = ((index) => {
   #ref-time {
     width: 300px;
   }
+}
+
+
+
+.races {
+
+  div .q-btn {
+    width: 75px;
+    height: 75px;
+    border-radius: 100px;
+    margin-right: 50px;
+    margin-top: 33px;
+  }
+
+  .thirteen {
+    top: 30%;
+    left: 375px;
+    width: 120px !important;
+    height: 120px !important;
+    margin: 0 !important;
+  }
+
+  .fourteen {
+    top: 30%;
+    left: 375px;
+    width: 120px !important;
+    height: 120px !important;
+    margin: 0 !important;
+  }
+
+  .fifteen {
+    top: 30%;
+    left: 550px;
+    width: 120px !important;
+    height: 120px !important;
+    margin: 0 !important;
+  }
+
+  .sixteen {
+    top: 30%;
+    left: 550px;
+    width: 120px !important;
+    height: 120px !important;
+    margin: 0 !important;
+  }
+
+  .race_main {
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    font-size: 40px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: green;
+      transition: 300ms;
+      cursor: pointer;
+      color: white;
+    }
+  }
+}
+
+.territory-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+
+  .territory-card {
+    min-height: 200px;
+    background-color: gray;
+    border-radius: 25px;
+    color: white;
+
+    &:hover {
+      transition: 300ms;
+      cursor: pointer;
+      background-color: green;
+    }
+  }
+}
+
+.active_main {
+  background-color: green;
 }
 </style>
