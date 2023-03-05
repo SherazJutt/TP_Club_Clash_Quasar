@@ -1,45 +1,112 @@
 <template>
 <div class="q-pa-md">
-  <q-stepper v-model="step" vertical color="primary" animated>
-    <q-step :name="1" title="Select campaign settings" icon="settings" :done="step > 1">
-      For each ad campaign that you create, you can control how much you're willing to
-      spend on clicks and conversions, which networks and geographical locations you want
-      your ads to show on, and more.
-
-      <q-stepper-navigation>
-        <q-btn @click="step = 2" color="primary" label="Continue" />
-      </q-stepper-navigation>
-    </q-step>
-
-    <q-step :name="2" title="Create an ad group" caption="Optional" icon="create_new_folder" :done="step > 2">
-      An ad group contains one or more ads which target a shared set of keywords.
-
-      <q-stepper-navigation>
-        <q-btn @click="step = 4" color="primary" label="Continue" />
-        <q-btn flat @click="step = 1" color="primary" label="Back" class="q-ml-sm" />
-      </q-stepper-navigation>
-    </q-step>
-
-    <q-step :name="3" title="Ad template" icon="assignment" disable>
-      This step won't show up because it is disabled.
-    </q-step>
-
-    <q-step :name="4" title="Create an ad" icon="add_comment">
-      Try out different ad text to see what brings in the most customers, and learn how to
-      enhance your ads using features like ad extensions. If you run into any problems with
-      your ads, find out how to tell if they're running and how to resolve approval issues.
-
-      <q-stepper-navigation>
-        <q-btn color="primary" label="Finish" />
-        <q-btn flat @click="step = 2" color="primary" label="Back" class="q-ml-sm" />
-      </q-stepper-navigation>
-    </q-step>
-  </q-stepper>
+  <div class="territory-cards" v-if="main_territories">
+    <div class="territory-card flex justify-center items-center border" v-for="(territory, index) in main_territory_arr" :key="index" @click="selected_territory(territory.id)">{{ territory.label }}</div>
+  </div>
+  <div class="races">
+    <div class="race_main q-pa-md flex justify-center items-center border rounded-borders" v-for="(race, index) in main_races" :key="index" :class="{ active_main: activeRace === index }" @click="activeRace = index">{{ race }}</div>
+  </div>
 </div>
 </template>
 
 <script setup >
-import { ref } from 'vue'
+import { ref } from "vue";
+import { collection, getDocs, onSnapshot, getDoc, doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { useGlobalVariables } from 'src/stores/GlobalVariables';
+import { db } from '../firebase';
+import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
-const step = ref(1)
+const $q = useQuasar()
+// $q.loading.show()
+
+const router = useRouter()
+const GlobalVariables = useGlobalVariables();
+
+// variables
+let collection_name = 'user_races'
+const opponent_club = ref()
+
+const interval = setInterval(() => {
+  if (GlobalVariables.curr_user_role == 'admin') {
+    clearInterval(interval)
+    opponent_club.value = GlobalVariables.current_clash_opponent
+    $q.loading.hide()
+  }
+  if (GlobalVariables.curr_user_role == 'user') {
+    clearInterval(interval)
+    router.push('/')
+  }
+}, 100);
+
+const intervalone = setInterval(() => {
+  if (GlobalVariables.AllCategoriesNameWithId.length > 0) {
+    clearInterval(intervalone)
+    let Names = GlobalVariables.AllCategoriesNameWithId
+    Names.forEach(element => {
+      main_territory_arr.value.push({ label: element.name, id: element.id })
+    });
+  }
+}, 1000);
+
+const main_territories = ref(true)
+const main_territory_arr = ref([])
+// const territories_list = ref(['Gold Hills', 'Back Kitchen', 'The Valley', 'Sub Urbs', 'High Village'])
+
+const selected_territory = ((territory_id) => {
+  main_territories.value = false
+  console.log(territory_id);
+})
+
+const activeRace = ref(-1);
+const main_races = ref([1, 2, 3, 4])
+
+
+
+
 </script>
+<style lang="scss">
+.races {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-items: center;
+
+  .race_main {
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    font-size: 40px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: green;
+      transition: 300ms;
+      cursor: pointer;
+      color: white;
+    }
+  }
+}
+
+.territory-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+
+  .territory-card {
+    min-height: 200px;
+    background-color: gray;
+    border-radius: 25px;
+    color: white;
+
+    &:hover {
+      transition: 300ms;
+      cursor: pointer;
+      background-color: green;
+    }
+  }
+}
+
+.active_main {
+  background-color: green;
+}
+</style>

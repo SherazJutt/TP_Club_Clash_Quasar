@@ -6,7 +6,7 @@
   </q-tabs>
   <q-tab-panels v-model="tab" class="bg-transparen" animated>
     <q-tab-panel name="Defence" class="q-pa-xs">
-      <div class="border q-mb-xs" v-if="all_races" v-for="(race, index) in race_data_arr" :key="index">
+      <div class="border q-mb-xs" v-if="defence_races_assigned" v-for="(race, index) in race_data_arr" :key="index">
         <q-expansion-item expand-icon-class="text-white q-pa-none" group="somegroup" :header-class="(race.completed == true) ? 'bg-green text-white q-py-md justify-between' : 'bg-blue-8 bg-blue-8 text-white q-py-md justify-between'">
           <template v-slot:header>
             <div class="c-h-main-h">Race # {{ (index + 1) }}</div>
@@ -48,7 +48,7 @@
           </q-markup-table>
         </q-expansion-item>
       </div>
-      <div v-else>
+      <div v-if="empty_defence">
         <h3 class="text-capitalize text-center">NO races assigned</h3>
       </div>
 
@@ -56,7 +56,7 @@
 
     <q-tab-panel name="Attack">
 
-      <div v-for="(item, mainindex) in AttackStreets_arr" :key="mainindex">
+      <div v-if="attack_streets_assigned" v-for="(item, mainindex) in AttackStreets_arr" :key="mainindex">
         <h5 class="q-my-md">{{ item.main_territory_name }} <small class="text-red">Street No {{ item.Street_no }}</small></h5>
         <q-stepper v-if="showele[mainindex]" v-model="steps[mainindex]" vertical animated class="shadow-1">
           <template v-if="check(item, mainindex)">
@@ -71,8 +71,11 @@
           </template>
         </q-stepper>
         <template v-if="!showele[mainindex]">
-          <p>No Races Assigned Yet</p>
+          <p>No races assigned to you in this street yet</p>
         </template>
+      </div>
+      <div class="text-center">
+        <h3 v-if="empty_attack">No Streets Assigned Yet</h3>
       </div>
 
     </q-tab-panel>
@@ -120,7 +123,6 @@ for (let i = 1; i <= 59; i++) {
   sec.push(i)
 }
 
-
 const steps = ref([1, 1, 1, 1, 1, 1, 1])
 
 // const user_data = ref()
@@ -133,8 +135,13 @@ let collection_name = 'user_races'
 
 $q.loading.show()
 
-let no_race = ref(false)
-let all_races = ref(true)
+let defence_races_assigned = ref(false)
+let empty_defence = ref(true)
+
+let attack_streets_assigned = ref(false)
+let empty_attack = ref(true)
+
+
 
 const opponent_club = ref()
 
@@ -143,12 +150,18 @@ getDoc(doc(db, 'management_data', 'clash_information')).then(opponent_data => {
   opponent_club.value = opponent_data.data().opponent_club.ClubWithRandomID
 
   onSnapshot(doc(db, collection_name, user_id), (data) => {
+
     if (data.data()[opponent_club.value].defence.length > 0) {
+      defence_races_assigned.value = true
+      empty_defence.value = false
       race_data_arr.value = data.data()[opponent_club.value].defence;
+    }
+    console.log(data.data()[opponent_club.value].AttackStreets.length);
+    if (data.data()[opponent_club.value].AttackStreets.length > 0) {
+      attack_streets_assigned.value = true
+      empty_attack.value = false
       attack_data_arr.value = data.data()[opponent_club.value].attack;
       AttackStreets_arr.value = data.data()[opponent_club.value].AttackStreets;
-    } else {
-      no_race.value = true
     }
     tab.value = GlobalVariables.current_clash
     $q.loading.hide()

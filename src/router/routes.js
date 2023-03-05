@@ -18,10 +18,10 @@ const routes = [
       { path: '/managecars', component: () => import('pages/managecars.vue') },
       { path: '/manageterritories', component: () => import('pages/manageterritories.vue') },
       { path: '/mapsmanagement', component: () => import('pages/mapsmanagement.vue') },
-      { path: '/test', component: () => import('pages/test.vue') }
     ],
   },
-//   { path: '/test1', component: () => import('pages/test1.vue') },
+  { path: '/test', component: () => import('pages/test.vue') },
+  { path: '/test1', component: () => import('pages/test1.vue') },
   {
     path: '/auth',
     component: () => import('layouts/NoLayout.vue'),
