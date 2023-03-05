@@ -21,7 +21,6 @@ const routes = [
     ],
   },
   { path: '/test', component: () => import('pages/test.vue') },
-  { path: '/test1', component: () => import('pages/test1.vue') },
   {
     path: '/auth',
     component: () => import('layouts/NoLayout.vue'),
