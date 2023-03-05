@@ -6,41 +6,43 @@
   </q-tabs>
   <q-tab-panels v-model="tab" animated class="q-mt-sm">
     <q-tab-panel name="Defence" class="q-pa-none">
-
+      <div v-if="territories_racs_list">
+        <div> {{ territories_racs_list }}</div>
+      </div>
 
       <div class="territory-cards" v-if="main_territories">
         <div class="territory-card flex justify-center items-center border" v-for="(territory, index) in main_territory_arr" :key="index" @click="selected_territory(territory.id), races = true">{{ territory.label }}</div>
       </div>
-      <q-btn v-if="races" color="primary" label="back" @click="main_territories = true, races = false" />
-      <div class="races q-mt-md" v-if="races">
+      <q-btn v-if="races" color="primary" label="back" @click="main_territories = true, races = false, territories_racs_list = null" />
+      <div class="races q-mt-md" v-if="races && territories_racs_list">
         <!-- <div class="race_main q-pa-md flex justify-center items-center border rounded-borders" v-for="(race, index) in main_races" :key="index" :class="{ active_main: activeRace === index }" @click="activeRace = index">{{ race }}</div> -->
         <div class="main_row_one relative-position">
           <div class="row_one">
-            <q-btn color="primary" class="one" label="1" />
-            <q-btn color="primary" class="five" label="5" />
-            <q-btn color="primary" class="nine" label="9" />
+            <q-btn color="primary" class="one" :class="territories_racs_list[0].is_assigned ? 'bg-blue' : 'bg-primary'" label="1" @click="clicked_race(territories_racs_list[0].label)" />
+            <q-btn color="primary" class="five" :class="territories_racs_list[4].is_assigned ? 'bg-blue' : 'bg-primary'" label="5" @click="clicked_race(territories_racs_list[4].label)" />
+            <q-btn color="primary" class="nine" :class="territories_racs_list[8].is_assigned ? 'bg-blue' : 'bg-primary'" label="9" @click="clicked_race(territories_racs_list[8].label)" />
           </div>
           <div class="row_two">
-            <q-btn color="primary" class="two" label="2" />
-            <q-btn color="primary" class="six" label="6" />
-            <q-btn color="primary" class="ten" label="10" />
+            <q-btn color="primary" class="two" :class="territories_racs_list[1].is_assigned ? 'bg-blue' : 'bg-primary'" label="2" @click="clicked_race(territories_racs_list[1].label)" />
+            <q-btn color="primary" class="six" :class="territories_racs_list[5].is_assigned ? 'bg-blue' : 'bg-primary'" label="6" @click="clicked_race(territories_racs_list[5].label)" />
+            <q-btn color="primary" class="ten" :class="territories_racs_list[9].is_assigned ? 'bg-blue' : 'bg-primary'" label="10" @click="clicked_race(territories_racs_list[9].label)" />
           </div>
-          <q-btn color="primary" label="13" class="absolute thirteen" />
-          <q-btn color="primary" label="15" class="absolute fifteen" />
+          <q-btn color="primary" label="13" :class="territories_racs_list[12].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute thirteen" @click="clicked_race(territories_racs_list[12].label)" />
+          <q-btn color="primary" label="15" :class="territories_racs_list[14].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute fifteen" @click="clicked_race(territories_racs_list[14].label)" />
         </div>
         <div class="main_row_two relative-position">
           <div class="row_three">
-            <q-btn color="primary" class="three" label="3" />
-            <q-btn color="primary" class="seven" label="7" />
-            <q-btn color="primary" class="eleven" label="11" />
+            <q-btn color="primary" class="three" :class="territories_racs_list[2].is_assigned ? 'bg-blue' : 'bg-primary'" label="3" @click="clicked_race(territories_racs_list[2].label)" />
+            <q-btn color="primary" class="seven" :class="territories_racs_list[6].is_assigned ? 'bg-blue' : 'bg-primary'" label="7" @click="clicked_race(territories_racs_list[6].label)" />
+            <q-btn color="primary" class="eleven" :class="territories_racs_list[10].is_assigned ? 'bg-blue' : 'bg-primary'" label="11" @click="clicked_race(territories_racs_list[10].label)" />
           </div>
           <div class="row_four">
-            <q-btn color="primary" class="four" label="4" />
-            <q-btn color="primary" class="eight" label="8" />
-            <q-btn color="primary" class="twelve" label="12" />
+            <q-btn color="primary" class="four" :class="territories_racs_list[3].is_assigned ? 'bg-blue' : 'bg-primary'" label="4" @click="clicked_race(territories_racs_list[3].label)" />
+            <q-btn color="primary" class="eight" :class="territories_racs_list[7].is_assigned ? 'bg-blue' : 'bg-primary'" label="8" @click="clicked_race(territories_racs_list[7].label)" />
+            <q-btn color="primary" class="twelve" :class="territories_racs_list[11].is_assigned ? 'bg-blue' : 'bg-primary'" label="12" @click="clicked_race(territories_racs_list[11].label)" />
           </div>
-          <q-btn color="primary" label="14" class="absolute fourteen" />
-          <q-btn color="primary" label="16" class="absolute sixteen" />
+          <q-btn color="primary" label="14" :class="territories_racs_list[13].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute fourteen" @click="clicked_race(territories_racs_list[13].label)" />
+          <q-btn color="primary" label="16" :class="territories_racs_list[15].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute sixteen" @click="clicked_race(territories_racs_list[15].label)" />
         </div>
 
       </div>
@@ -435,10 +437,57 @@ const intervalone = setInterval(() => {
   }
 }, 1000);
 
+
+// territory races array
+const territories_racs_list = ref()
+const clicked_territory_id = ref()
+
 const selected_territory = ((territory_id) => {
+
+  clicked_territory_id.value = territory_id
+
   main_territories.value = false
   console.log(territory_id);
+
+  getDoc(doc(db, 'management_data', 'TerritoryManagement')).then((data) => {
+    let data_arr = data.data()[territory_id]
+    territories_racs_list.value = data_arr
+    // console.log(data_arr);
+  })
+
 })
+
+const clicked_race = ((label) => {
+  let race = territories_racs_list.value[label - 1]
+  race.is_assigned = true
+  // console.log(race.is_assigned);
+
+  // getDoc(doc(db, 'management_data', 'test')).then((data) => {
+  //   // let data_arr = data.data()[territory_id]
+  //   console.log(data.data());
+  // })F
+  // updateDoc(doc(db, 'management_data', 'TerritoryManagement'), {
+  //   [clicked_territory_id.value]: territories_racs_list.value
+  // }).then((res) => {
+  //   console.log('updated');
+  // })
+  // console.log(clicked_territory_id.value);
+})
+
+// watch(main_territory, (territory) => {
+//   if (territory) {
+//     console.log(territory);
+//     getDoc(doc(db, 'management_data', 'TerritoryManagement')).then((data) => {
+//       let data_arr = data.data()[territory.id]
+//       console.log(data_arr);
+//       // data_arr.forEach(element => {
+//       //   console.log(element);
+//       // });
+//     })
+//   }
+// })
+
+
 
 const activeRace = ref(-1);
 const main_races = ref([1, 2, 3, 4])
@@ -460,20 +509,6 @@ const races = ref(false)
 const main_territory_arr = ref([])
 const main_territory = ref(null)
 // const territories_list = ref(['Gold Hills', 'Back Kitchen', 'The Valley', 'Sub Urbs', 'High Village'])
-
-
-watch(main_territory, (territory) => {
-  if (territory) {
-    console.log(territory);
-    getDoc(doc(db, 'management_data', 'TerritoryManagement')).then((data) => {
-      let data_arr = data.data()[territory.id]
-      console.log(data_arr);
-      // data_arr.forEach(element => {
-      //   console.log(element);
-      // });
-    })
-  }
-})
 
 
 // database functions
