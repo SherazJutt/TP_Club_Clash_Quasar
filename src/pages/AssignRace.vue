@@ -6,18 +6,19 @@
   </q-tabs>
   <q-tab-panels v-model="tab" animated class="q-mt-sm">
     <q-tab-panel name="Defence" class="q-pa-none">
-      <!-- <div v-if="territories_racs_list">
-        <div> {{ territories_racs_list }}</div>
-      </div> -->
 
-      <div class="territory-cards" v-if="main_territories">
-        <div class="territory-card flex justify-center items-center border" v-for="(territory, index) in main_territory_arr" :key="index" @click="selected_territory(territory), races = true">{{ territory.label }}</div>
+      <div class="territory-cards w-100" v-if="main_territories">
+        <!-- <div class="territory-card flex justify-center items-center border" v-for="(territory, index) in main_territory_arr" :key="index" @click="selected_territory(territory), races = true">{{ territory.label }}</div> -->
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[0]), races = true">{{ main_territory_arr[0].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[1]), races = true">{{ main_territory_arr[1].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[2]), races = true">{{ main_territory_arr[2].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[3]), races = true">{{ main_territory_arr[3].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[4]), races = true">{{ main_territory_arr[4].label }}</div>
       </div>
 
       <q-btn v-if="races" class="q-mt-sm" color="primary" label="back" @click="main_territories = true, races = false, territories_racs_list = null" />
 
       <div class="races" v-if="races && territories_racs_list">
-        <!-- <div class="race_main q-pa-md flex justify-center items-center border rounded-borders" v-for="(race, index) in main_races" :key="index" :class="{ active_main: activeRace === index }" @click="activeRace = index">{{ race }}</div> -->
         <div class="main_row_one relative-position">
           <div class="row_one">
             <q-btn color="primary" class="one" :disable="territories_racs_list[0].is_assigned" :class="territories_racs_list[0].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[0].is_assigned ? territories_racs_list[0].assigned_to : '1'" @click="clicked_race(territories_racs_list[0].label)" />
@@ -63,11 +64,6 @@
                 </q-item>
               </template>
             </q-select>
-
-            <!-- <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!player_name" v-model="main_territory" :options="main_territory_arr" /> -->
-
-            <!-- <q-select label="Street No" class="col-xs-5 col-sm-3 col-md-2" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!main_territory" v-model="street_no" :options="street_no_arr" /> -->
-            <!-- <q-select label="Race No" class="col-xs-5 col-sm-3 col-md-2" clearable transition-show="jump-up" transition-hide="jump-up" filled :disable="!main_territory" v-model="race_no" :options="race_no_arr" /> -->
 
             <q-select filled :model-value="recommended_car" class="col-xs-12 col-sm-6 col-md-4" clearable @clear="clear_recommended_car" :disable="!player_name" label="Recommended Car" use-input hide-selected fill-input input-debounce="0" :options="recommended_cars" @filter="filterFn" @input-value="setreccar">
               <template v-slot:no-option>
@@ -166,14 +162,59 @@
     <!-- attack -->
     <q-tab-panel name="Attack" class="q-pa-none">
 
-      <div class="row q-col-gutter-xs">
+      <div class="territory-cards w-100" v-if="main_territories">
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[5]), attack_races = true">{{ main_territory_arr[5].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[6]), attack_races = true">{{ main_territory_arr[6].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[7]), attack_races = true">{{ main_territory_arr[7].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[8]), attack_races = true">{{ main_territory_arr[8].label }}</div>
+        <div class="territory-card flex justify-center items-center border" v-if="main_territory_arr && main_territory_arr.length > 0" @click="selected_territory(main_territory_arr[9]), attack_races = true">{{ main_territory_arr[9].label }}</div>
+      </div>
+
+      <q-btn v-if="attack_races" class="q-mt-sm" color="primary" label="back" @click="attack_races = false, main_territories = true" />
+
+      <div class="races" v-if="territories_racs_list && attack_races">
+
+        <div class="main_row_one relative-position">
+          <div class="row_one">
+            <q-btn color="primary" class="one" :class="territories_racs_list[0].street_is_assigned ? 'bg-green' : 'bg-primary', territories_racs_list[0].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[0].is_assigned ? territories_racs_list[0].assigned_to : '1'" @click="clicked_attack_race(territories_racs_list[0].label)" />
+            <q-btn color="primary" class="five" :disable="!territories_racs_list[0].street_is_assigned" :class="territories_racs_list[4].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[4].is_assigned ? territories_racs_list[4].assigned_to : '5'" @click="clicked_attack_race(territories_racs_list[4].label)" />
+            <q-btn color="primary" class="nine" :disable="!territories_racs_list[0].street_is_assigned" :class="territories_racs_list[8].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[8].is_assigned ? territories_racs_list[8].assigned_to : '9'" @click="clicked_attack_race(territories_racs_list[8].label)" />
+          </div>
+          <div class="row_two">
+            <q-btn color="primary" class="two" :class="territories_racs_list[1].street_is_assigned ? 'bg-green' : 'bg-primary', territories_racs_list[1].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[1].is_assigned ? territories_racs_list[1].assigned_to : '2'" @click="clicked_attack_race(territories_racs_list[1].label)" />
+            <q-btn color="primary" class="six" :disable="!territories_racs_list[1].street_is_assigned" :class="territories_racs_list[5].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[5].is_assigned ? territories_racs_list[5].assigned_to : '6'" @click="clicked_attack_race(territories_racs_list[5].label)" />
+            <q-btn color="primary" class="ten" :disable="!territories_racs_list[1].street_is_assigned" :class="territories_racs_list[9].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[9].is_assigned ? territories_racs_list[9].assigned_to : '10'" @click="clicked_attack_race(territories_racs_list[9].label)" />
+          </div>
+          <q-btn color="primary" :label="territories_racs_list[12].is_assigned ? territories_racs_list[12].assigned_to : '13'" :disable="!territories_racs_list[0].street_is_assigned || territories_racs_list[1].street_is_assigned" :class="territories_racs_list[12].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute thirteen" @click="clicked_attack_race(territories_racs_list[12].label)" />
+          <q-btn color="primary" :label="territories_racs_list[14].is_assigned ? territories_racs_list[14].assigned_to : '15'" :disable="!territories_racs_list[0].street_is_assigned || territories_racs_list[1].street_is_assigned" :class="territories_racs_list[14].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute fifteen" @click="clicked_attack_race(territories_racs_list[14].label)" />
+        </div>
+        <div class="main_row_two relative-position">
+          <div class="row_three">
+            <q-btn color="primary" class="three" :class="territories_racs_list[2].street_is_assigned ? 'bg-green' : 'bg-primary', territories_racs_list[2].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[2].is_assigned ? territories_racs_list[2].assigned_to : '3'" @click="clicked_attack_race(territories_racs_list[2].label)" />
+            <q-btn color="primary" class="seven" :disable="!territories_racs_list[2].street_is_assigned" :class="territories_racs_list[6].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[6].is_assigned ? territories_racs_list[6].assigned_to : '7'" @click="clicked_attack_race(territories_racs_list[6].label)" />
+            <q-btn color="primary" class="eleven" :disable="!territories_racs_list[2].street_is_assigned" :class="territories_racs_list[10].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[10].is_assigned ? territories_racs_list[10].assigned_to : '11'" @click="clicked_attack_race(territories_racs_list[10].label)" />
+          </div>
+          <div class="row_four">
+            <q-btn color="primary" class="four" :class="territories_racs_list[3].street_is_assigned ? 'bg-green' : 'bg-primary', territories_racs_list[3].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[3].is_assigned ? territories_racs_list[3].assigned_to : '4'" @click="clicked_attack_race(territories_racs_list[3].label)" />
+            <q-btn color="primary" class="eight" :disable="!territories_racs_list[3].street_is_assigned" :class="territories_racs_list[7].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[7].is_assigned ? territories_racs_list[7].assigned_to : '8'" @click="clicked_attack_race(territories_racs_list[7].label)" />
+            <q-btn color="primary" class="twelve" :disable="!territories_racs_list[3].street_is_assigned" :class="territories_racs_list[11].is_assigned ? 'bg-blue' : 'bg-primary'" :label="territories_racs_list[11].is_assigned ? territories_racs_list[11].assigned_to : '12'" @click="clicked_attack_race(territories_racs_list[11].label)" />
+          </div>
+          <q-btn color="primary" :label="territories_racs_list[13].is_assigned ? territories_racs_list[13].assigned_to : '14'" :disable="!territories_racs_list[2].street_is_assigned || territories_racs_list[3].street_is_assigned" :class="territories_racs_list[13].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute fourteen" @click="clicked_attack_race(territories_racs_list[13].label)" />
+          <q-btn color="primary" :label="territories_racs_list[15].is_assigned ? territories_racs_list[15].assigned_to : '16'" :disable="!territories_racs_list[2].street_is_assigned || territories_racs_list[3].street_is_assigned" :class="territories_racs_list[15].is_assigned ? 'bg-blue' : 'bg-primary'" class="absolute sixteen" @click="clicked_attack_race(territories_racs_list[15].label)" />
+        </div>
+
+      </div>
+
+
+      <!-- <div class="row q-col-gutter-xs">
         <div class="col-6">
           <q-btn class="q-py-md w-100" :color="AssignStreets ? 'blue' : 'primary'" label="Assign Street" @click="AssignStreets = !AssignStreets, Streetstable = !Streetstable, AddGuide = false, Guidestable = false" />
         </div>
         <div class="col-6">
           <q-btn class="q-py-md w-100" :color="AddGuide ? 'blue' : 'primary'" label="Add Street Races Guide" @click="AddGuide = !AddGuide, Guidestable = !Guidestable, AssignStreets = false, Streetstable = false" />
         </div>
-      </div>
+      </div> -->
+      <q-btn v-if="AssignStreets" class="q-mt-sm" color="primary" label="back" @click="AssignStreets = false, Streetstable = false, attack_races = true" />
 
       <q-form @submit="AssignStreet" class="row q-col-gutter-xs q-mx-auto q-pr-xs q-pt-md" style="max-width: 1000px;" v-if="AssignStreets">
         <q-select label="Player Name" class="text-capitalize col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
@@ -183,11 +224,11 @@
             </q-item>
           </template>
         </q-select>
-        <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" />
-        <q-select v-model="Street" :options="StreetNO" label="Street No" clearable="" filled class="col-xs-12 col-sm-6 col-md-4" />
-        <div class="col-xs-12 col-sm-6 q-mx-auto q-mt-sm">
-          <q-btn class="q-pa-none q-py-md w-100" color="primary" type="submit" :disable="!player_name || !main_territory || !Street">
-            <div>Assign <span class="text-blue-9" v-if="main_territory">{{ main_territory.label }}</span> street no <span class="text-blue-9" v-if="Street">{{ Street }}</span> To <span class="text-blue-9" v-if="player_name">{{ player_name.label }}</span></div>
+        <!-- <q-select label="Territory" class="col-xs-12 col-sm-6 col-md-4" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="main_territory" :options="main_territory_arr" /> -->
+        <!-- <q-select v-model="Street" :options="StreetNO" label="Street No" clearable="" filled class="col-xs-12 col-sm-6 col-md-4" /> -->
+        <div class="col-xs-12 col-sm-6 q-ml-md">
+          <q-btn class="q-pa-none q-py-md q-px-md" color="primary" type="submit" :disable="!player_name">
+            <div>Assign Street NO <span v-if="curr_attack_race">{{ curr_attack_race.label }} TO </span> <span class="text-blue-9" v-if="player_name">{{ player_name.label }}</span></div>
           </q-btn>
         </div>
       </q-form>
@@ -212,8 +253,10 @@
 
       <!-- Add Guide -->
 
+      <q-btn v-if="AddGuide" class="q-mt-sm" color="primary" label="back" @click="AddGuide = false, Guidestable = false, attack_races = true" />
+
       <q-form @submit="AddGuideForm" class="row q-col-gutter-xs q-mx-auto q-pr-xs q-pt-md" style="max-width: 1000px;" v-if="AddGuide">
-        <q-select label="Player Name" class="text-capitalize col-xs-12 col-sm-6 col-md-3" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="player_name" :options="player_name_arr">
+        <q-select v-if="select_player_for_street_arr" label="Assign To" class="text-capitalize col-xs-12 col-sm-6 col-md-3" clearable transition-show="jump-up" transition-hide="jump-up" filled v-model="selected_player_for_race" :options="select_player_for_street_arr">
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">Add members to team1</q-item-section>
@@ -500,12 +543,6 @@ const clicked_race = ((label) => {
   assign.value = true
   races.value = false
   curr_race.value = territories_racs_list.value[label - 1]
-  // curr_race.value.is_assigned = false
-  // updateDoc(doc(db, 'management_data', 'TerritoryManagement'), {
-  //   [clicked_territory.value.id]: territories_racs_list.value
-  // }).then((res) => {
-  //   console.log('updated');
-  // })
 
 })
 
@@ -571,10 +608,77 @@ const deleteDefenceRace = ((index) => {
 
 // <============================== ATTACK================================>
 
+const select_player_for_street_arr = ref()
+const selected_player_for_race = ref()
+
+const attack_races = ref(false)
+const curr_attack_race = ref()
+
+const clicked_attack_race = ((label) => {
+
+  curr_attack_race.value = territories_racs_list.value[label - 1];
+  // console.log(curr_attack_race.value);
+
+  attack_races.value = false;
+
+  if (label === 1 || label === 2 || label === 3 || label === 4) {
+
+    if (territories_racs_list.value[label - 1].street_is_assigned == false) {
+      AssignStreets.value = true;
+      Streetstable.value = true;
+      console.log('false value');
+    } else {
+
+      console.log(territories_racs_list.value[label - 1]);
+
+      AddGuide.value = true
+      Guidestable.value = true
+    }
+    // console.log("yes => " + label);
+
+  } else {
+    AddGuide.value = true
+    Guidestable.value = true
+    // console.log("no => " + label);
+
+    if (label === 5 || label === 9) {
+      console.log('assign to 1');
+      console.log(territories_racs_list.value[0]);
+    } else if (label === 13 || label === 15) {
+
+      console.log('select one');
+    }
+
+
+
+  }
+
+})
+
+
+const selected_attack_territory = ((territory) => {
+
+  console.log(territory);
+  // main_territories.value = false
+
+  // clicked_territory.value = territory
+  // // console.log(territory);
+
+  // getDoc(doc(db, 'management_data', 'TerritoryManagement')).then((data) => {
+  //   let data_arr = data.data()[territory.id]
+  //   territories_racs_list.value = data_arr
+  //   // console.log(data_arr);
+  // })
+
+})
+
+
+
+
 const AssignStreets = ref(false)
 const Streetstable = ref(false)
-const AddGuide = ref(true)
-const Guidestable = ref(true)
+const AddGuide = ref(false)
+const Guidestable = ref(false)
 const Description = ref()
 
 // street
@@ -588,11 +692,22 @@ for (let index = 1; index <= 16; index++) {
 }
 
 const AssignStreet = (() => {
+
+  curr_attack_race.value.street_is_assigned = true
+  curr_attack_race.value.assigned_to = player_name.value.label
+  curr_attack_race.value.assigned_to_id = player_name.value.uid
+
+  updateDoc(doc(db, 'management_data', 'TerritoryManagement'), {
+    [clicked_territory.value.id]: territories_racs_list.value
+  }).then((res) => {
+    console.log('updated');
+  })
+
   outAttackStreetsarr.value.push({
-    main_territory_name: main_territory.value.label,
-    main_territory_id: main_territory.value.id,
-    Street_no: Street.value,
-    data_id: main_territory.value.id + '_street_no_' + Street.value
+    main_territory_name: clicked_territory.value.label,
+    main_territory_id: clicked_territory.value.id,
+    Street_no: curr_attack_race.value.label,
+    data_id: clicked_territory.value.id + '_street_no_' + curr_attack_race
   })
   updateDoc(doc(db, collection_name, player_name.value.uid), {
     [opponent_club.value]: { AttackStreets: outAttackStreetsarr.value, defence: outdefencearr.value, attack: outattackarr.value }
